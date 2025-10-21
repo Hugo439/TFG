@@ -121,9 +121,4 @@ El objetivo principal de este proyecto es desarrollar una aplicación móvil mul
   - Diseño accesible, adaptable y uniforme.  
   - Experiencia fluida en dispositivos móviles.  
 
-Ejemplo de configuración en Flutter:
-```dart
-theme: ThemeData(
-  colorSchemeSeed: Colors.green,
-  useMaterial3: true,
-)
+
