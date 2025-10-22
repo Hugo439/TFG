@@ -1,3 +1,5 @@
+<div style="text-align: justify; text-justify: inter-word;">
+
 # SmartMeal  
 ### 2º DAM  
 ### Anteproyecto TFG  
@@ -113,12 +115,14 @@ El objetivo principal de este proyecto es desarrollar una aplicación móvil mul
 - **Windows / Linux / macOS** (entornos de desarrollo y prueba).  
 
 ### Tipo de Dispositivo
-- Smartphones y tabletas Android.
+- Smartphones y tablets Android.
 
 ### Usabilidad de los Diseños Elegidos
 - Interfaz basada en **Material Design 3**, que proporciona:  
   - Colores dinámicos y componentes modernos (NavigationBar, Cards, FABs).  
   - Diseño accesible, adaptable y uniforme.  
-  - Experiencia fluida en dispositivos móviles.  
+  - Experiencia fluida en dispositivos móviles.
+
+</div>
 
 
