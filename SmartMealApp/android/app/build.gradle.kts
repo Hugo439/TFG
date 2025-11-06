@@ -3,6 +3,8 @@ plugins {
     id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
+    // Add the Google services Gradle plugin
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -41,4 +43,19 @@ android {
 
 flutter {
     source = "../.."
+}
+dependencies {
+    // ✅ Importa la plataforma Firebase BoM
+    implementation(platform("com.google.firebase:firebase-bom:34.5.0"))
+
+    // ✅ Dependencias iniciales de Firebase que usarás
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
+
+    // OCR con ML Kit
+    // implementation("com.google.mlkit:text-recognition:16.0.0")
+
+    // Almacenamiento en la nube (para imágenes de recetas)
+    // implementation("com.google.firebase:firebase-storage")
 }

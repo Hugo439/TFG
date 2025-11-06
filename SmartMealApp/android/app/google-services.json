@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "529684647159",
+    "project_id": "smartmeal-5d57d",
+    "storage_bucket": "smartmeal-5d57d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:529684647159:android:708eb7a932c2ef7d1297f2",
+        "android_client_info": {
+          "package_name": "es.etg.tfg.hgc.smartmeal.smartmeal"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDx8hL4mb9sAkeGcEtQ8oMl9lTRtQzpzLA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
