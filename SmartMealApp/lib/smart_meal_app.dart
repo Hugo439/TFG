@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'views/home_view.dart';
+import 'views/home/home_view.dart';
 
 class SmartMealApp extends StatelessWidget {
   const SmartMealApp({super.key});
