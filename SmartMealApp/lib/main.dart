@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'smart_meal_app.dart';
+import 'presentation/app/smart_meal_app.dart';
 
 
 void main() async {

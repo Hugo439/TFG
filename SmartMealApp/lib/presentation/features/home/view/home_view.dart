@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smartmeal/presentation/theme/colors.dart';
-import 'widgets/menu_card.dart';
+import '../../../widgets/cards/menu_card.dart';
 import 'package:smartmeal/presentation/widgets/layout/app_shell.dart';
 
 class HomeView extends StatefulWidget {
