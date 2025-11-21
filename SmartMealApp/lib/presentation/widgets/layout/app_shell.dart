@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:smartmeal/presentation/theme/colors.dart';
 import 'package:smartmeal/presentation/widgets/navigation/bottom_nav_bar.dart';
 import 'package:smartmeal/presentation/widgets/layout/smart_meal_app_bar.dart';
 
@@ -35,7 +34,7 @@ class AppShell extends StatelessWidget {
     final horizontal = width > 1000 ? 48.0 : width > 800 ? 32.0 : 16.0;
 
     return Scaffold(
-      backgroundColor: AppColors.primaryBackground,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: SmartMealAppBar(
         title: title,
         subtitle: subtitle,

@@ -7,6 +7,7 @@ class AppColors {
   static const Color secondary = Color(0xFFA5D6A7);        // #a5d6a7
   static const Color tertiary = Color(0xFFC8E6C9);         // #c8e6c9
   static const Color alternate = Color(0xFFFFFFFF);        // #ffffff
+  static const Color white = Color(0xFFFFFFFF);            // #ffffff
 
   // Text
   static const Color primaryText = Color(0xFF000000);      // #000000
@@ -23,10 +24,14 @@ class AppColors {
   static const Color accent3 = Color(0xFF388E3C); // #388e3c
   static const Color accent4 = Color(0xFFB2DFDB); // #b2dfdb
 
-  static const Color success = primary;           // #4caf50
+  static const Color success = Color(0xFF4CAF50);           // #4caf50
   static const Color error = Color(0xFFF44336);  // #f44336
-  static const Color warning = Color(0xFFFFEB3B);// #ffeb3b
+  static const Color warning = Color(0xFFFFA726); // #ffa726
   static const Color info = Color(0xFF2196F3);   // #2196f3
+
+  // Error containers (light)
+  static const Color errorContainer = Color(0xFFFFCDD2);
+  static const Color onErrorContainer = Color(0xFFB71C1C);
 
   // Custom (gradient / translucent) — tomado de la paleta (ARGB)
   static const Color colorDegradado = Color(0x7EB2FF59); // 0x7E B2 FF 59 (transparente)
@@ -50,6 +55,7 @@ class AppColors {
   static const Color darkSecondary = Color(0xFF1B5E20);     // #1b5e20
   static const Color darkTertiary = Color(0xFF004D40);      // #004d40
   static const Color darkAlternate = Color(0xFF121212);     // #121212
+  static const Color darkWhite = Color(0xFFFFFFFF);         // #ffffff (para iconos y texto en dark)
 
   static const Color darkPrimaryText = Color(0xFFFFFFFF);   // #ffffff
   static const Color darkSecondaryText = Color(0xFFCBCBCB); // #cbcbcb
@@ -66,4 +72,40 @@ class AppColors {
   static const Color darkError = Color(0xFFD32F2F);   // #d32f2f
   static const Color darkWarning = Color(0xFFFBC02D); // #fbc02d
   static const Color darkInfo = Color(0xFF1976D2);    // #1976d2
+
+  // Error containers (dark)
+  static const Color darkErrorContainer = Color(0xFF5D1F1F);
+  static const Color darkOnErrorContainer = Color(0xFFFFCDD2);
+
+  /// Helper para obtener colores según el tema actual
+  static ColorScheme of(BuildContext context) {
+    return Theme.of(context).colorScheme;
+  }
+
+  /// Obtener color de texto primario según tema
+  static Color textPrimary(BuildContext context) {
+    return Theme.of(context).colorScheme.onSurface;
+  }
+
+  /// Obtener color de texto secundario según tema
+  static Color textSecondary(BuildContext context) {
+    return Theme.of(context).colorScheme.onSurface.withOpacity(0.7);
+  }
+
+  /// Obtener color de fondo primario según tema
+  static Color backgroundPrimary(BuildContext context) {
+    return Theme.of(context).colorScheme.surface;
+  }
+
+  /// Obtener color de fondo secundario según tema
+  static Color backgroundSecondary(BuildContext context) {
+    return Theme.of(context).colorScheme.surfaceContainerHighest;
+  }
+
+  /// Obtener color de card/contenedor según tema
+  static Color cardBackground(BuildContext context) {
+    return Theme.of(context).brightness == Brightness.dark
+        ? darkSecondaryBackground
+        : white;
+  }
 }

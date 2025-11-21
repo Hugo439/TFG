@@ -1,55 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:smartmeal/presentation/theme/colors.dart';
+import 'package:smartmeal/presentation/routes/navigation_controller.dart';
+import 'package:smartmeal/presentation/routes/routes.dart';
 import '../../../widgets/cards/menu_card.dart';
 import 'package:smartmeal/presentation/widgets/layout/app_shell.dart';
 
-class HomeView extends StatefulWidget {
+class HomeView extends StatelessWidget {
   const HomeView({super.key});
-
-  @override
-  State<HomeView> createState() => _HomeViewState();
-}
-
-class _HomeViewState extends State<HomeView> {
-  int _selectedIndex = 1;
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
     final crossAxisCount = _computeCrossAxisCount(width);
     final aspectRatio = _computeChildAspectRatio(width);
-    final cards = _buildCards();
+    final colorScheme = Theme.of(context).colorScheme;
 
     return AppShell(
       title: 'SmartMeal',
       subtitle: 'Panel Principal',
-      selectedIndex: _selectedIndex,
-      onNavChange: (index) {
-        setState(() => _selectedIndex = index);
-        _handleNavigation(index);
-      },
+      selectedIndex: 1,
+      onNavChange: (index) => NavigationController.navigateToIndex(context, index, 1),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Bienvenid@',
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
-              color: AppColors.primaryText,
+              color: colorScheme.onSurface,
             ),
           ),
           const SizedBox(height: 8),
-          const Text(
+          Text(
             'Accede rápidamente a todas las secciones de SmartMeal',
             style: TextStyle(
               fontSize: 14,
-              color: AppColors.mutedText,
+              color: colorScheme.onSurface.withOpacity(0.6),
             ),
           ),
           const SizedBox(height: 24),
           GridView.builder(
-            itemCount: cards.length,
+            itemCount: 6,
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -58,7 +49,7 @@ class _HomeViewState extends State<HomeView> {
               crossAxisSpacing: 16,
               childAspectRatio: aspectRatio,
             ),
-            itemBuilder: (_, i) => cards[i],
+            itemBuilder: (_, i) => _buildCard(context, i),
           ),
         ],
       ),
@@ -77,22 +68,50 @@ class _HomeViewState extends State<HomeView> {
     return 0.95;
   }
 
-  List<Widget> _buildCards() {
-    return const [
-      MenuCard(icon: Icons.dashboard,       title: 'Otra cosa',       subtitle: 'Descripcion otra cosa'),
-      MenuCard(icon: Icons.person,          title: 'Perfil',          subtitle: 'Mi cuenta'),
-      MenuCard(icon: Icons.restaurant_menu, title: 'Menús',           subtitle: 'Menús semanales'),
-      MenuCard(icon: Icons.settings,        title: 'Configuración',   subtitle: 'Ajustes'),
-      MenuCard(icon: Icons.shopping_cart,   title: 'Lista compra',    subtitle: 'Productos'),
-      MenuCard(icon: Icons.headset_mic,     title: 'Soporte',         subtitle: 'Ayuda'),
-    ];
-  }
-
-  void _handleNavigation(int index) {
+  Widget _buildCard(BuildContext context, int index) {
     switch (index) {
-      case 0: /* TODO: Menús */ break;
-      case 1: /* Home */ break;
-      case 2: /* TODO: Lista */ break;
+      case 0:
+        return MenuCard(
+          icon: Icons.person,
+          title: 'Perfil',
+          subtitle: 'Mi cuenta',
+          onTap: () => Navigator.of(context).pushNamed(Routes.profile),
+        );
+      case 1:
+        return MenuCard(
+          icon: Icons.restaurant_menu,
+          title: 'Menús',
+          subtitle: 'Menús semanales',
+          onTap: () => NavigationController.navigateToMenu(context),
+        );
+      case 2:
+        return MenuCard(
+          icon: Icons.shopping_cart,
+          title: 'Lista compra',
+          subtitle: 'Productos',
+          onTap: () => NavigationController.navigateToShopping(context),
+        );
+      case 3:
+        return const MenuCard(
+          icon: Icons.dashboard,
+          title: 'Estadísticas',
+          subtitle: 'Análisis nutricional',
+        );
+      case 4:
+        return MenuCard(
+          icon: Icons.settings,
+          title: 'Configuración',
+          subtitle: 'Ajustes',
+          onTap: () => Navigator.of(context).pushNamed(Routes.settings),
+        );
+      case 5:
+        return const MenuCard(
+          icon: Icons.headset_mic,
+          title: 'Soporte',
+          subtitle: 'Ayuda',
+        );
+      default:
+        return const SizedBox.shrink();
     }
   }
 }

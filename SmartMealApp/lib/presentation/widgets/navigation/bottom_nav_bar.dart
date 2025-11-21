@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:smartmeal/presentation/theme/colors.dart';
 
 class BottomNavBar extends StatelessWidget {
   final int selectedIndex;
@@ -13,30 +12,32 @@ class BottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
       decoration: BoxDecoration(
-        color: AppColors.navBackground,
+        color: colorScheme.surfaceContainerHighest,
         border: Border(
-          top: BorderSide(color: AppColors.navBorder),
+          top: BorderSide(
+            color: colorScheme.outline.withOpacity(0.2),
+          ),
         ),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(
-            color: AppColors.shadowStrong,
+            color: Colors.black.withOpacity(0.1),
             blurRadius: 8,
-            offset: Offset(0, -2),
+            offset: const Offset(0, -2),
           ),
         ],
       ),
       child: BottomNavigationBar(
         currentIndex: selectedIndex,
         onTap: onItemSelected,
-        backgroundColor: AppColors.navBackground,
+        backgroundColor: colorScheme.surfaceContainerHighest,
         elevation: 0,
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: cs.primary,
-        unselectedItemColor: AppColors.mutedText,
+        selectedItemColor: colorScheme.primary,
+        unselectedItemColor: colorScheme.onSurface.withOpacity(0.6),
         selectedIconTheme: const IconThemeData(size: 24),
         unselectedIconTheme: const IconThemeData(size: 22),
         showSelectedLabels: true,
@@ -51,7 +52,7 @@ class BottomNavBar extends StatelessWidget {
             label: 'Home',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.list),
+            icon: Icon(Icons.shopping_cart),
             label: 'Lista de la compra',
           ),
         ],

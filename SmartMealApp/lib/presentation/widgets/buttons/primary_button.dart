@@ -1,38 +1,48 @@
 import 'package:flutter/material.dart';
-import 'package:smartmeal/presentation/theme/colors.dart';
 
 class PrimaryButton extends StatelessWidget {
-  final String label;
+  final String? text;
+  final String? label; // Para compatibilidad hacia atrás
   final VoidCallback? onPressed;
-  final bool loading;
+  final bool isLoading;
+  final bool loading; // Para compatibilidad hacia atrás
 
   const PrimaryButton({
     super.key,
-    required this.label,
+    this.text,
+    this.label,
     this.onPressed,
+    this.isLoading = false,
     this.loading = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final displayText = text ?? label ?? '';
+    final isButtonLoading = isLoading || loading;
+    final colorScheme = Theme.of(context).colorScheme;
+
     return SizedBox(
       height: 48,
       child: ElevatedButton(
-        onPressed: loading ? null : onPressed,
+        onPressed: isButtonLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
-          foregroundColor: AppColors.alternate,
+          backgroundColor: colorScheme.primary,
+          foregroundColor: colorScheme.onPrimary,
           elevation: 0,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
           textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
         ),
-        child: loading
-            ? const SizedBox(
+        child: isButtonLoading
+            ? SizedBox(
                 width: 18,
                 height: 18,
-                child: CircularProgressIndicator(color: AppColors.alternate, strokeWidth: 2),
+                child: CircularProgressIndicator(
+                  color: colorScheme.onPrimary,
+                  strokeWidth: 2,
+                ),
               )
-            : Text(label),
+            : Text(displayText),
       ),
     );
   }

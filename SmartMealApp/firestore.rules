@@ -1,0 +1,31 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Función helper para verificar autenticación
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    
+    // Función helper para verificar que el usuario es el propietario
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+    
+    // Colección de usuarios
+    match /users/{userId} {
+      // Permitir lectura y escritura solo al propietario
+      allow read, write: if isOwner(userId);
+      
+      // Subcolección de items de menú
+      match /menuItems/{menuItemId} {
+        allow read, write: if isOwner(userId);
+      }
+      
+      // Subcolección de items de la lista de compra
+      match /shoppingItems/{shoppingItemId} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+  }
+}
