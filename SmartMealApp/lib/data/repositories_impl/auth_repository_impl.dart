@@ -1,6 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smartmeal/domain/repositories/auth_repository.dart';
-import 'package:smartmeal/domain/repositories/user_repository.dart';
 import 'package:smartmeal/data/datasources/remote/firebase_auth_datasource.dart';
+import 'package:smartmeal/data/datasources/remote/firestore_datasource.dart';
 import 'package:smartmeal/domain/entities/user_profile.dart';
 import 'package:smartmeal/domain/value_objects/email.dart';
 import 'package:smartmeal/domain/value_objects/password.dart';
@@ -9,20 +10,20 @@ import 'package:smartmeal/domain/value_objects/height.dart';
 import 'package:smartmeal/domain/value_objects/weight.dart';
 import 'package:smartmeal/domain/value_objects/goal.dart';
 import 'package:smartmeal/domain/value_objects/allergies.dart';
+import 'package:smartmeal/data/mappers/user_profile_mapper.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final FirebaseAuthDataSource _authDataSource;
-  final UserRepository _userRepository;
+  final FirestoreDataSource _firestoreDataSource;
 
   AuthRepositoryImpl({
     required FirebaseAuthDataSource authDataSource,
-    required UserRepository userRepository,
+    required FirestoreDataSource firestoreDataSource,
   })  : _authDataSource = authDataSource,
-        _userRepository = userRepository;
+        _firestoreDataSource = firestoreDataSource;
 
   @override
   Future<void> signIn({required String email, required String password}) async {
-    // Validar con Value Objects
     final emailVO = Email(email);
     final passwordVO = Password(password);
     
@@ -42,7 +43,6 @@ class AuthRepositoryImpl implements AuthRepository {
     required String goal,
     String? allergies,
   }) async {
-    // Validar todos los campos con Value Objects
     final emailVO = Email(email);
     final passwordVO = Password(password);
     final displayNameVO = DisplayName(displayName);
@@ -71,7 +71,10 @@ class AuthRepositoryImpl implements AuthRepository {
       allergies: allergiesVO,
     );
 
-    await _userRepository.createUserProfile(profile);
+    await _firestoreDataSource.createUserProfile(
+      user.uid,
+      UserProfileMapper.toFirestoreCreate(profile),
+    );
   }
 
   @override
@@ -89,7 +92,12 @@ class AuthRepositoryImpl implements AuthRepository {
     final user = _authDataSource.getCurrentUser();
     if (user == null) throw Exception('Usuario no autenticado');
     
-    await _userRepository.deleteUserProfile(user.uid);
+    await _firestoreDataSource.deleteUserProfile(user.uid);
     await _authDataSource.deleteAccount();
+  }
+
+  @override
+  User? getCurrentUser() {
+    return _authDataSource.getCurrentUser();
   }
 }

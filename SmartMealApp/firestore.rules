@@ -27,5 +27,18 @@ service cloud.firestore {
         allow read, write: if isOwner(userId);
       }
     }
+    
+    // Colección de recetas (públicas para lectura, solo admin para escritura)
+    match /recipes/{recipeId} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn(); // Cambiar a false en producción si solo admin puede crear
+    }
+    
+    // Colección de menús semanales
+    match /weekly_menus/{menuId} {
+      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update, delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
   }
 }

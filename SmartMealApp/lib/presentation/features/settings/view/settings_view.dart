@@ -91,7 +91,7 @@ class _SettingsContent extends StatelessWidget {
                         trailing: Switch(
                           value: state.notificationsEnabled,
                           onChanged: vm.toggleNotifications,
-                          activeColor: colorScheme.primary,
+                          activeThumbColor: colorScheme.primary,
                         ),
                       ),
                       SettingsTile(
@@ -103,7 +103,7 @@ class _SettingsContent extends StatelessWidget {
                           onChanged: (value) {
                             themeProvider.toggleTheme(value);
                           },
-                          activeColor: colorScheme.primary,
+                          activeThumbColor: colorScheme.primary,
                         ),
                       ),
                       SettingsTile(

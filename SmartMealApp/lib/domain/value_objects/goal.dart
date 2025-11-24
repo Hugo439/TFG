@@ -19,7 +19,7 @@ enum GoalType {
 }
 
 class Goal extends ValueObject<GoalType> {
-  Goal(GoalType value) : super(value);
+  Goal(super.value);
   
   factory Goal.fromString(String value) {
     return Goal(GoalType.fromString(value));

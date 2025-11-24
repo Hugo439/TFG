@@ -6,6 +6,7 @@ import 'package:smartmeal/presentation/features/home/view/home_view.dart';
 import 'package:smartmeal/presentation/features/profile/view/profile_view.dart';
 import 'package:smartmeal/presentation/features/profile/view/edit_profile_view.dart';
 import 'package:smartmeal/presentation/features/menu/view/menu_view.dart';
+import 'package:smartmeal/presentation/features/menu/view/generate_menu_view.dart';
 import 'package:smartmeal/presentation/features/shopping/view/shopping_view.dart';
 import 'package:smartmeal/presentation/features/shopping/view/add_shopping_item_view.dart';
 import 'package:smartmeal/presentation/features/settings/view/settings_view.dart';
@@ -20,6 +21,7 @@ class Routes {
   static const String profile = '/profile';
   static const String editProfile = '/edit-profile';
   static const String menu = '/menu';
+  static const String generateMenu = '/generate-menu';
   static const String shopping = '/shopping';
   static const String addShoppingItem = '/add-shopping-item';
   static const String settings = '/settings';
@@ -42,6 +44,8 @@ class Routes {
         return MaterialPageRoute(builder: (_) => EditProfileView(profile: profile));
       case menu:
         return MaterialPageRoute(builder: (_) => const MenuView());
+      case generateMenu:
+        return MaterialPageRoute(builder: (_) => const GenerateMenuView());
       case shopping:
         return MaterialPageRoute(builder: (_) => const ShoppingView());
       case addShoppingItem:
