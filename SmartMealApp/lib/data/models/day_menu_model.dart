@@ -1,25 +1,20 @@
 class DayMenuModel {
   final String day;
-  final String? breakfast;
-  final String? lunch;
-  final String? dinner;
-  final String? snack;
+  final List<String> recipes;
 
   DayMenuModel({
     required this.day,
-    this.breakfast,
-    this.lunch,
-    this.dinner,
-    this.snack,
+    required this.recipes,
   });
 
   factory DayMenuModel.fromMap(Map<String, dynamic> map) {
-    return DayMenuModel(
-      day: map['dia'] ?? '',
-      breakfast: map['breakfast'],
-      lunch: map['lunch'],
-      dinner: map['dinner'],
-      snack: map['snack'],
-    );
+    try {
+      return DayMenuModel(
+        day: map['day'] ?? '',
+        recipes: List<String>.from(map['recipes'] ?? []),
+      );
+    } catch (e) {
+      throw Exception('Error al convertir DayMenuModel: $e');
+    }
   }
 }

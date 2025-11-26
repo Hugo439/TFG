@@ -30,12 +30,10 @@ class MenuViewModel extends ChangeNotifier {
   }
 
   Future<void> loadWeeklyMenus(String userId) async {
-    print('Buscando menús para userId: $userId');
     _state = MenuState.loading;
     safeNotifyListeners();
     try {
       final result = await _weeklyMenuRepository.getWeeklyMenus(userId);
-      print('Menús encontrados: ${result.length}');
       _menus = result;
       _state = MenuState.loaded;
       safeNotifyListeners();

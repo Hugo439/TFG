@@ -1,44 +1,35 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // Función helper para verificar autenticación
+
+    // Helper: ¿Está autenticado?
     function isSignedIn() {
       return request.auth != null;
     }
-    
-    // Función helper para verificar que el usuario es el propietario
+
+    // Helper: ¿Es el propietario?
     function isOwner(userId) {
       return isSignedIn() && request.auth.uid == userId;
     }
-    
+
     // Colección de usuarios
     match /users/{userId} {
-      // Permitir lectura y escritura solo al propietario
       allow read, write: if isOwner(userId);
-      
-      // Subcolección de items de menú
-      match /menuItems/{menuItemId} {
+
+      // Subcolección de recetas
+      match /recipes/{recipeId} {
         allow read, write: if isOwner(userId);
       }
-      
-      // Subcolección de items de la lista de compra
-      match /shoppingItems/{shoppingItemId} {
+
+      // Subcolección de menús semanales
+      match /weekly_menus/{menuId} {
         allow read, write: if isOwner(userId);
       }
-    }
-    
-    // Colección de recetas (públicas para lectura, solo admin para escritura)
-    match /recipes/{recipeId} {
-      allow read: if isSignedIn();
-      allow write: if isSignedIn(); // Cambiar a false en producción si solo admin puede crear
-    }
-    
-    // Colección de menús semanales
-    match /weekly_menus/{menuId} {
-      allow read: if isSignedIn() && resource.data.userId == request.auth.uid;
-      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
-      allow update, delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+
+      // Subcolección de lista de la compra
+      match /shoppingItems/{itemId} {
+        allow read, write: if isOwner(userId);
+      }
     }
   }
 }

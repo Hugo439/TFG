@@ -1,9 +1,9 @@
 import 'package:smartmeal/data/models/weekly_menu_model.dart';
 import 'package:smartmeal/data/models/day_menu_model.dart';
 import 'package:smartmeal/domain/entities/weekly_menu.dart';
-import 'package:smartmeal/domain/entities/day_menu.dart'; // Importa la nueva entidad
+import 'package:smartmeal/domain/entities/day_menu.dart';
 import 'package:smartmeal/domain/entities/recipe.dart';
-
+import 'package:smartmeal/core/utils/day_of_week_utils.dart';
 
 class WeeklyMenuMapper {
   static Future<WeeklyMenu> toEntity(
@@ -12,34 +12,24 @@ class WeeklyMenuMapper {
   ) async {
     final daysEntities = <DayMenu>[];
     for (final dayModel in model.days) {
-      final breakfast = dayModel.breakfast != null && dayModel.breakfast != ''
-          ? await getRecipeById(dayModel.breakfast!)
-          : null;
-      final lunch = dayModel.lunch != null && dayModel.lunch != ''
-          ? await getRecipeById(dayModel.lunch!)
-          : null;
-      final dinner = dayModel.dinner != null && dayModel.dinner != ''
-          ? await getRecipeById(dayModel.dinner!)
-          : null;
-      final snack = dayModel.snack != null && dayModel.snack != ''
-          ? await getRecipeById(dayModel.snack!)
-          : null;
+      final recipes = <Recipe>[];
+      for (final recipeId in dayModel.recipes) {
+        final recipe = await getRecipeById(recipeId);
+        if (recipe != null) recipes.add(recipe);
+      }
       daysEntities.add(DayMenu(
-        day: _parseDayOfWeek(dayModel.day),
-        breakfast: breakfast,
-        lunch: lunch,
-        dinner: dinner,
-        snack: snack,
+        day: dayOfWeekFromString(dayModel.day),
+        recipes: recipes,
       ));
     }
     return WeeklyMenu(
       id: model.id,
       userId: model.userId,
-      name: '', // Si tienes nombre, ponlo aquí
+      name: model.name ?? '',
       weekStartDate: model.weekStartDate,
       days: daysEntities,
-      createdAt: model.weekStartDate,
-      updatedAt: null,
+      createdAt: model.createdAt,
+      updatedAt: model.updatedAt,
     );
   }
 
@@ -47,14 +37,14 @@ class WeeklyMenuMapper {
     return WeeklyMenuModel(
       id: entity.id,
       userId: entity.userId,
+      name: entity.name,
       weekStartDate: entity.weekStartDate,
+      createdAt: entity.createdAt,
+      updatedAt: entity.updatedAt,
       days: entity.days.map((day) {
         return DayMenuModel(
-          day: _dayOfWeekToString(day.day),
-          breakfast: day.breakfast?.id,
-          lunch: day.lunch?.id,
-          dinner: day.dinner?.id,
-          snack: day.snack?.id,
+          day: dayOfWeekToString(day.day),
+          recipes: day.recipes.map((r) => r.id).toList(),
         );
       }).toList(),
     );
@@ -63,41 +53,16 @@ class WeeklyMenuMapper {
   static Map<String, dynamic> toFirestore(WeeklyMenuModel model) {
     return {
       'userId': model.userId,
-      'semana': model.weekStartDate.toIso8601String(),
-      'dias': model.days.map((day) {
+      'name': model.name,
+      'weekStart': model.weekStartDate,
+      'createdAt': model.createdAt,
+      'updatedAt': model.updatedAt,
+      'days': model.days.map((day) {
         return {
-          'dia': day.day,
-          'breakfast': day.breakfast,
-          'lunch': day.lunch,
-          'dinner': day.dinner,
-          'snack': day.snack,
+          'day': day.day,
+          'recipes': day.recipes,
         };
       }).toList(),
     };
-  }
-
-  static DayOfWeek _parseDayOfWeek(String day) {
-    switch (day.toLowerCase()) {
-      case 'lunes': return DayOfWeek.monday;
-      case 'martes': return DayOfWeek.tuesday;
-      case 'miércoles': return DayOfWeek.wednesday;
-      case 'jueves': return DayOfWeek.thursday;
-      case 'viernes': return DayOfWeek.friday;
-      case 'sábado': return DayOfWeek.saturday;
-      case 'domingo': return DayOfWeek.sunday;
-      default: return DayOfWeek.monday;
-    }
-  }
-
-  static String _dayOfWeekToString(DayOfWeek day) {
-    switch (day) {
-      case DayOfWeek.monday: return 'lunes';
-      case DayOfWeek.tuesday: return 'martes';
-      case DayOfWeek.wednesday: return 'miércoles';
-      case DayOfWeek.thursday: return 'jueves';
-      case DayOfWeek.friday: return 'viernes';
-      case DayOfWeek.saturday: return 'sábado';
-      case DayOfWeek.sunday: return 'domingo';
-    }
   }
 }

@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smartmeal/presentation/features/menu/viewmodel/menu_view_model.dart';
-import 'package:smartmeal/presentation/features/menu/widgets/weekly_menu_card.dart';
-import 'package:smartmeal/core/di/service_locator.dart';
+import 'package:smartmeal/presentation/routes/navigation_controller.dart';
+import 'package:smartmeal/presentation/widgets/layout/app_shell.dart';
+import 'package:smartmeal/presentation/features/menu/widgets/stat_card.dart';
+import 'package:smartmeal/presentation/features/menu/widgets/weekly_menu_calendar.dart';
 
 class MenuView extends StatelessWidget {
   const MenuView({super.key});
@@ -11,7 +13,7 @@ class MenuView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<MenuViewModel>(
-      create: (_) => sl<MenuViewModel>(),
+      create: (_) => MenuViewModel(),
       child: const _MenuContent(),
     );
   }
@@ -23,16 +25,17 @@ class _MenuContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<MenuViewModel>(context);
-    final colorScheme = Theme.of(context).colorScheme;
     final user = Provider.of<User?>(context);
-    // final userId = user?.uid ?? '';
-    // print('UserId en MenuView: $userId');
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Mis Menús Semanales'),
-        backgroundColor: colorScheme.surfaceContainerHighest,
-        elevation: 0,
-      ),
+
+    final lastMenu = vm.menus.isNotEmpty ? vm.menus.first : null;
+
+    return AppShell(
+      title: 'Menú semanal',
+      subtitle: 'Tu menú personalizado',
+      selectedIndex: 0,
+      onNavChange: (index) {
+        NavigationController.navigateToIndex(context, index, 0);
+      },
       body: Builder(
         builder: (context) {
           if (vm.state == MenuState.loading) {
@@ -42,40 +45,69 @@ class _MenuContent extends StatelessWidget {
             return Center(
               child: Text(
                 vm.errorMessage ?? 'Error al cargar menús',
-                style: TextStyle(color: colorScheme.error),
+                style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
             );
           }
-          if (vm.menus.isEmpty) {
+          if (lastMenu == null) {
             return Center(
               child: Text(
                 'No tienes menús generados aún.',
-                style: TextStyle(color: colorScheme.onSurface),
+                style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
               ),
             );
           }
-          return ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: vm.menus.length,
-            itemBuilder: (context, index) {
-              final menu = vm.menus[index];
-              return WeeklyMenuCard(menu: menu);
-            },
+
+          final colorScheme = Theme.of(context).colorScheme;
+
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: StatCard(
+                      icon: Icons.local_fire_department,
+                      value: '${lastMenu.totalWeeklyCalories} kcal',
+                      label: 'Calorías totales',
+                      color: colorScheme.primary,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: StatCard(
+                      icon: Icons.trending_up,
+                      value: '${lastMenu.avgDailyCalories.toInt()} kcal',
+                      label: 'Promedio diario',
+                      color: colorScheme.primary,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              WeeklyMenuCalendar(
+                menu: lastMenu,
+                onRecipeTap: (id) => Navigator.of(context).pushNamed('/recipe-detail', arguments: id),
+              ),
+            ],
           );
         },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).pushNamed('/generate-menu').then((result) {
-            if (!context.mounted) return;
-            final userId = user?.uid ?? '';
-            if (result == true && userId.isNotEmpty) {
-              vm.loadWeeklyMenus(userId);
-            }
-          });
-        },
-        child: const Icon(Icons.add),
-      ),
+      actions: [
+        IconButton(
+          icon: const Icon(Icons.add),
+          tooltip: 'Generar nuevo menú',
+          onPressed: () {
+            Navigator.of(context).pushNamed('/generate-menu').then((result) {
+              if (!context.mounted) return;
+              final userId = user?.uid ?? '';
+              if (result == true && userId.isNotEmpty) {
+                vm.loadWeeklyMenus(userId);
+              }
+            });
+          },
+        ),
+      ],
     );
   }
 }

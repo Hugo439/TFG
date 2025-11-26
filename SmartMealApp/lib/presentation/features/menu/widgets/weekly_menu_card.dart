@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:smartmeal/domain/entities/weekly_menu.dart';
-import 'package:smartmeal/domain/entities/recipe.dart';
+import 'package:smartmeal/presentation/features/menu/widgets/day_menu_card.dart';
 
 class WeeklyMenuCard extends StatelessWidget {
   final WeeklyMenu menu;
+  final void Function(String recipeId)? onRecipeTap;
 
-  const WeeklyMenuCard({super.key, required this.menu});
+  const WeeklyMenuCard({super.key, required this.menu, this.onRecipeTap});
 
   @override
   Widget build(BuildContext context) {
@@ -20,61 +21,12 @@ class WeeklyMenuCard extends StatelessWidget {
         ),
         subtitle: Text('Calorías totales: ${menu.totalWeeklyCalories}'),
         children: menu.days.map((dayMenu) {
-          return Container(
-            margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-            decoration: BoxDecoration(
-              color: colorScheme.surfaceContainerLowest,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: ExpansionTile(
-              leading: const Icon(Icons.calendar_today),
-              title: Text(
-                '${_dayOfWeekToString(dayMenu.day)} - ${dayMenu.totalCalories} kcal',
-                style: const TextStyle(fontWeight: FontWeight.w600),
-              ),
-              children: dayMenu.allRecipes.map((recipe) {
-                return ListTile(
-                  leading: Icon(_mealTypeIcon(recipe.mealType), color: colorScheme.primary),
-                  title: Text(recipe.nameValue),
-                  subtitle: Text('${_mealTypeToString(recipe.mealType)} - ${recipe.calories} kcal'),
-                );
-              }).toList(),
-            ),
+          return DayMenuCard(
+            day: dayMenu,
+            onRecipeTap: onRecipeTap,
           );
         }).toList(),
       ),
     );
-  }
-
-  String _dayOfWeekToString(DayOfWeek day) {
-    switch (day) {
-      case DayOfWeek.monday: return 'Lunes';
-      case DayOfWeek.tuesday: return 'Martes';
-      case DayOfWeek.wednesday: return 'Miércoles';
-      case DayOfWeek.thursday: return 'Jueves';
-      case DayOfWeek.friday: return 'Viernes';
-      case DayOfWeek.saturday: return 'Sábado';
-      case DayOfWeek.sunday: return 'Domingo';
-    }
-  }
-
-  String _mealTypeToString(MealType type) {
-    switch (type) {
-      case MealType.breakfast: return 'Desayuno';
-      case MealType.lunch: return 'Comida';
-      case MealType.dinner: return 'Cena';
-      case MealType.snack: return 'Snack';
-      default: return '';
-    }
-  }
-
-  IconData _mealTypeIcon(MealType type) {
-    switch (type) {
-      case MealType.breakfast: return Icons.free_breakfast;
-      case MealType.lunch: return Icons.lunch_dining;
-      case MealType.dinner: return Icons.dinner_dining;
-      case MealType.snack: return Icons.fastfood;
-      default: return Icons.restaurant;
-    }
   }
 }

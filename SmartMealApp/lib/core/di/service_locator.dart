@@ -62,6 +62,8 @@ import 'package:smartmeal/domain/usecases/get_recipes_usecase.dart';
 import 'package:smartmeal/domain/usecases/get_recipes_by_meal_type_usecase.dart';
 import 'package:smartmeal/domain/usecases/get_weekly_menus_usecase.dart';
 import 'package:smartmeal/domain/usecases/generate_weekly_menu_usecase.dart';
+import 'package:smartmeal/domain/usecases/save_menu_recipes_usecase.dart';
+import 'package:smartmeal/domain/usecases/get_recipe_by_id_usecase.dart';
 
 // ViewModels
 import 'package:smartmeal/presentation/features/menu/viewmodel/menu_view_model.dart';
@@ -81,9 +83,8 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => FirestoreDataSource(firestore: sl()));
   sl.registerLazySingleton(() => MenuDataSource(firestore: sl(), auth: sl()));
   sl.registerLazySingleton(() => ShoppingDataSource(firestore: sl(), auth: sl()));
-  sl.registerLazySingleton(() => GroqRecipeDataSource(
-    apiKey: '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',
-  ));
+  sl.registerLazySingleton(() => GroqRecipeDataSource());
+  
 
   // Repositories
   sl.registerLazySingleton<AppRepository>(
@@ -143,6 +144,7 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => GetMenuItemsUseCase(sl()));
   sl.registerLazySingleton(() => GetRecommendedMenuItemsUseCase(sl()));
   sl.registerLazySingleton(() => DeleteMenuItemUseCase(sl()));
+  sl.registerLazySingleton(() => SaveMenuRecipesUseCase(sl()));
 
   // Use Cases - Shopping
   sl.registerLazySingleton(() => GetShoppingItemsUseCase(sl()));
@@ -160,6 +162,9 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => GetRecipesByMealTypeUseCase(sl()));
   sl.registerLazySingleton(() => GetWeeklyMenusUseCase(sl()));
   sl.registerLazySingleton(() => GenerateWeeklyMenuUseCase(sl(), sl()));
+  sl.registerLazySingleton<GetRecipeByIdUseCase>(
+    () => GetRecipeByIdUseCase(sl<RecipeRepository>())
+  );
 
   // ViewModels
   sl.registerFactory<MenuViewModel>(() => MenuViewModel());

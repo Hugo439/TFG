@@ -4,6 +4,7 @@ import 'package:smartmeal/domain/entities/weekly_menu.dart';
 import 'package:smartmeal/domain/usecases/generate_weekly_menu_usecase.dart';
 import 'package:smartmeal/domain/usecases/get_user_profile_usecase.dart';
 import 'package:smartmeal/domain/usecases/get_current_user_usecase.dart';
+import 'package:smartmeal/domain/usecases/save_menu_recipes_usecase.dart';
 import 'package:smartmeal/domain/repositories/weekly_menu_repository.dart';
 
 enum GenerateMenuStatus { idle, loading, success, error }
@@ -37,6 +38,7 @@ class GenerateMenuViewModel extends ChangeNotifier {
   final GetUserProfileUseCase _getUserProfile;
   final GetCurrentUserUseCase _getCurrentUser;
   final WeeklyMenuRepository _weeklyMenuRepository;
+  final SaveMenuRecipesUseCase _saveMenuRecipesUseCase;
 
   GenerateMenuState _state = const GenerateMenuState();
   GenerateMenuState get state => _state;
@@ -46,6 +48,7 @@ class GenerateMenuViewModel extends ChangeNotifier {
     this._getUserProfile,
     this._getCurrentUser,
     this._weeklyMenuRepository,
+    this._saveMenuRecipesUseCase,
   );
 
   Future<void> generateMenu() async {
@@ -111,6 +114,12 @@ class GenerateMenuViewModel extends ChangeNotifier {
     }
 
     await _weeklyMenuRepository.saveMenu(_state.generatedMenu!);
+  }
+
+  Future<void> generateMenuAndSaveRecipes(WeeklyMenu menu) async {
+    await _saveMenuRecipesUseCase(menu);
+    await _weeklyMenuRepository.saveMenu(menu);
+    // ...actualiza estado y notifica...
   }
 
   int _calculateCaloriesFromGoal(String goal) {

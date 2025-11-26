@@ -4,6 +4,7 @@ import 'package:smartmeal/core/di/service_locator.dart';
 import 'package:smartmeal/domain/usecases/generate_weekly_menu_usecase.dart';
 import 'package:smartmeal/domain/usecases/get_user_profile_usecase.dart';
 import 'package:smartmeal/domain/usecases/get_current_user_usecase.dart';
+import 'package:smartmeal/domain/usecases/save_menu_recipes_usecase.dart';
 import 'package:smartmeal/presentation/features/menu/viewmodel/generate_menu_view_model.dart';
 import 'package:smartmeal/presentation/features/menu/widgets/weekly_menu_calendar.dart';
 import 'package:smartmeal/domain/repositories/weekly_menu_repository.dart';
@@ -19,6 +20,7 @@ class GenerateMenuView extends StatelessWidget {
         sl<GetUserProfileUseCase>(),
         sl<GetCurrentUserUseCase>(),
         sl<WeeklyMenuRepository>(),
+        sl<SaveMenuRecipesUseCase>(),
       ),
       child: const _GenerateMenuContent(),
     );
