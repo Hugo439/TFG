@@ -10,6 +10,7 @@ import 'package:smartmeal/presentation/features/menu/view/generate_menu_view.dar
 import 'package:smartmeal/presentation/features/shopping/view/shopping_view.dart';
 import 'package:smartmeal/presentation/features/shopping/view/add_shopping_item_view.dart';
 import 'package:smartmeal/presentation/features/settings/view/settings_view.dart';
+import 'package:smartmeal/presentation/features/support/view/support_view.dart';
 import 'package:smartmeal/domain/entities/user_profile.dart';
 import 'package:smartmeal/domain/entities/shopping_item.dart';
 
@@ -25,6 +26,7 @@ class Routes {
   static const String shopping = '/shopping';
   static const String addShoppingItem = '/add-shopping-item';
   static const String settings = '/settings';
+  static const String support = '/support';
 
   static Route<dynamic>? onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
@@ -55,6 +57,8 @@ class Routes {
         );
       case settings:
         return MaterialPageRoute(builder: (_) => const SettingsView());
+      case support:
+        return MaterialPageRoute(builder: (_) => const SupportView());
       default:
         return null;
     }

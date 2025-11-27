@@ -105,10 +105,11 @@ class HomeView extends StatelessWidget {
           onTap: () => Navigator.of(context).pushNamed(Routes.settings),
         );
       case 5:
-        return const MenuCard(
+        return MenuCard(
           icon: Icons.headset_mic,
           title: 'Soporte',
           subtitle: 'Ayuda',
+          onTap: () => Navigator.of(context).pushNamed(Routes.support), 
         );
       default:
         return const SizedBox.shrink();

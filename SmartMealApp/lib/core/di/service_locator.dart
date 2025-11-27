@@ -11,6 +11,7 @@ import 'package:smartmeal/domain/repositories/menu_repository.dart';
 import 'package:smartmeal/domain/repositories/shopping_repository.dart';
 import 'package:smartmeal/domain/repositories/recipe_repository.dart';
 import 'package:smartmeal/domain/repositories/weekly_menu_repository.dart';
+import 'package:smartmeal/domain/repositories/support_message_repository.dart';
 
 // Repository Implementations
 import 'package:smartmeal/data/repositories_impl/app_repository_impl.dart';
@@ -20,6 +21,7 @@ import 'package:smartmeal/data/repositories_impl/menu_repository_impl.dart';
 import 'package:smartmeal/data/repositories_impl/shopping_repository_impl.dart';
 import 'package:smartmeal/data/repositories_impl/recipe_repository_impl.dart';
 import 'package:smartmeal/data/repositories_impl/weekly_menu_repository_impl.dart';
+import 'package:smartmeal/data/repositories_impl/support_message_repository_impl.dart';
 
 // Data Sources
 import 'package:smartmeal/data/datasources/local/auth_local_datasource.dart';
@@ -64,6 +66,7 @@ import 'package:smartmeal/domain/usecases/get_weekly_menus_usecase.dart';
 import 'package:smartmeal/domain/usecases/generate_weekly_menu_usecase.dart';
 import 'package:smartmeal/domain/usecases/save_menu_recipes_usecase.dart';
 import 'package:smartmeal/domain/usecases/get_recipe_by_id_usecase.dart';
+import 'package:smartmeal/domain/usecases/get_support_messages_usecase.dart';
 
 // ViewModels
 import 'package:smartmeal/presentation/features/menu/viewmodel/menu_view_model.dart';
@@ -125,6 +128,10 @@ Future<void> setupServiceLocator() async {
     () => WeeklyMenuRepositoryImpl(sl(), sl()),
   );
 
+  sl.registerLazySingleton<SupportMessageRepository>(
+    () => SupportMessageRepositoryImpl(),
+  );
+
   // Use Cases - App
   sl.registerLazySingleton(() => InitializeAppUseCase(sl()));
   sl.registerLazySingleton(() => CheckAuthStatusUseCase(sl()));
@@ -165,6 +172,9 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<GetRecipeByIdUseCase>(
     () => GetRecipeByIdUseCase(sl<RecipeRepository>())
   );
+
+  // Use Cases - Support Messages
+  sl.registerLazySingleton(() => GetSupportMessagesUseCase(sl()));
 
   // ViewModels
   sl.registerFactory<MenuViewModel>(() => MenuViewModel());
