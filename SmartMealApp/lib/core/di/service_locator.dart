@@ -27,7 +27,7 @@ import 'package:smartmeal/data/datasources/remote/firebase_auth_datasource.dart'
 import 'package:smartmeal/data/datasources/remote/firestore_datasource.dart';
 import 'package:smartmeal/data/datasources/remote/menu_datasource.dart';
 import 'package:smartmeal/data/datasources/remote/shopping_datasource.dart';
-import 'package:smartmeal/data/datasources/remote/groq_recipe_datasource.dart';
+import 'package:smartmeal/data/datasources/remote/groq_menu_datasource.dart';
 
 // Use Cases - App
 import 'package:smartmeal/domain/usecases/initialize_app_usecase.dart';
@@ -83,7 +83,7 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => FirestoreDataSource(firestore: sl()));
   sl.registerLazySingleton(() => MenuDataSource(firestore: sl(), auth: sl()));
   sl.registerLazySingleton(() => ShoppingDataSource(firestore: sl(), auth: sl()));
-  sl.registerLazySingleton(() => GroqRecipeDataSource());
+  sl.registerLazySingleton(() => GroqMenuDatasource());
   
 
   // Repositories
