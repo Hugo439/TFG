@@ -63,13 +63,13 @@ import 'package:smartmeal/domain/usecases/generate_shopping_from_menus_usecase.d
 import 'package:smartmeal/domain/usecases/get_recipes_usecase.dart';
 import 'package:smartmeal/domain/usecases/get_recipes_by_meal_type_usecase.dart';
 import 'package:smartmeal/domain/usecases/get_weekly_menus_usecase.dart';
-import 'package:smartmeal/domain/usecases/generate_weekly_menu_usecase.dart';
 import 'package:smartmeal/domain/usecases/save_menu_recipes_usecase.dart';
 import 'package:smartmeal/domain/usecases/get_recipe_by_id_usecase.dart';
 import 'package:smartmeal/domain/usecases/get_support_messages_usecase.dart';
 
 // ViewModels
 import 'package:smartmeal/presentation/features/menu/viewmodel/menu_view_model.dart';
+import 'package:smartmeal/core/services/fcm_service.dart';
 
 final sl = GetIt.instance;
 
@@ -87,7 +87,13 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => MenuDataSource(firestore: sl(), auth: sl()));
   sl.registerLazySingleton(() => ShoppingDataSource(firestore: sl(), auth: sl()));
   sl.registerLazySingleton(() => GroqMenuDatasource());
-  
+
+  // Services
+  sl.registerLazySingleton<FCMService>(
+    () => FCMService(
+      firestoreDataSource: sl<FirestoreDataSource>(),
+    ),
+  );
 
   // Repositories
   sl.registerLazySingleton<AppRepository>(
@@ -168,7 +174,6 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => GetRecipesUseCase(sl()));
   sl.registerLazySingleton(() => GetRecipesByMealTypeUseCase(sl()));
   sl.registerLazySingleton(() => GetWeeklyMenusUseCase(sl()));
-  sl.registerLazySingleton(() => GenerateWeeklyMenuUseCase(sl(), sl()));
   sl.registerLazySingleton<GetRecipeByIdUseCase>(
     () => GetRecipeByIdUseCase(sl<RecipeRepository>())
   );

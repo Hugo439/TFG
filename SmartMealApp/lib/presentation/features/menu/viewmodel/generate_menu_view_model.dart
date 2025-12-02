@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:smartmeal/core/usecases/usecase.dart';
 import 'package:smartmeal/domain/entities/weekly_menu.dart';
-import 'package:smartmeal/domain/usecases/generate_weekly_menu_usecase.dart';
 import 'package:smartmeal/domain/usecases/get_user_profile_usecase.dart';
 import 'package:smartmeal/domain/usecases/get_current_user_usecase.dart';
 import 'package:smartmeal/domain/usecases/save_menu_recipes_usecase.dart';
@@ -34,7 +33,6 @@ class GenerateMenuState {
 }
 
 class GenerateMenuViewModel extends ChangeNotifier {
-  final GenerateWeeklyMenuUseCase _generateWeeklyMenu;
   final GetUserProfileUseCase _getUserProfile;
   final GetCurrentUserUseCase _getCurrentUser;
   final WeeklyMenuRepository _weeklyMenuRepository;
@@ -44,7 +42,6 @@ class GenerateMenuViewModel extends ChangeNotifier {
   GenerateMenuState get state => _state;
 
   GenerateMenuViewModel(
-    this._generateWeeklyMenu,
     this._getUserProfile,
     this._getCurrentUser,
     this._weeklyMenuRepository,
@@ -84,19 +81,10 @@ class GenerateMenuViewModel extends ChangeNotifier {
       );
 
       // Generar menú
-      final params = GenerateWeeklyMenuParams(
-        userId: currentUser.uid,
-        userProfile: profile,
-        startDate: weekStart,
-        targetCaloriesPerDay: targetCalories,
-        excludedTags: allergies,
-      );
 
-      final menu = await _generateWeeklyMenu(params);
 
       _state = _state.copyWith(
         status: GenerateMenuStatus.success,
-        generatedMenu: menu,
       );
       notifyListeners();
     } catch (e) {

@@ -4,6 +4,7 @@ import 'package:smartmeal/presentation/features/auth/viewmodel/register_view_mod
 import 'package:smartmeal/presentation/widgets/inputs/filled_text_field.dart';
 import 'package:smartmeal/presentation/widgets/buttons/primary_button.dart';
 import 'package:smartmeal/presentation/routes/routes.dart';
+import 'package:smartmeal/l10n/l10n_ext.dart';
 
 class RegisterForm extends StatefulWidget {
   const RegisterForm({super.key});
@@ -38,6 +39,7 @@ class _RegisterFormState extends State<RegisterForm> {
   Widget build(BuildContext context) {
     final vm = context.watch<RegisterViewModel>();
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
 
     return Form(
       key: _formKey,
@@ -45,7 +47,7 @@ class _RegisterFormState extends State<RegisterForm> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Nombre de Usuario', 
+            l10n.registerUsernameLabel, 
             style: TextStyle(
               color: colorScheme.onSurface, 
               fontSize: 14, 
@@ -54,13 +56,13 @@ class _RegisterFormState extends State<RegisterForm> {
           ),
           const SizedBox(height: 8),
           FilledTextField(
-            hintText: 'Ingresa tu nombre de usuario',
+            hintText: l10n.registerUsernameHint,
             controller: _nameCtrl,
-            validator: (v) => (v == null || v.trim().isEmpty) ? 'Campo obligatorio' : null,
+            validator: (v) => (v == null || v.trim().isEmpty) ? l10n.registerFieldRequired : null,
           ),
           const SizedBox(height: 16),
           Text(
-            'Correo Electrónico', 
+            l10n.registerEmailLabel, 
             style: TextStyle(
               color: colorScheme.onSurface, 
               fontSize: 14, 
@@ -69,18 +71,18 @@ class _RegisterFormState extends State<RegisterForm> {
           ),
           const SizedBox(height: 8),
           FilledTextField(
-            hintText: 'ejemplo@correo.com',
+            hintText: l10n.registerEmailHint,
             controller: _emailCtrl,
             keyboardType: TextInputType.emailAddress,
             validator: (v) {
-              if (v == null || v.trim().isEmpty) return 'Campo obligatorio';
-              if (!v.contains('@')) return 'Correo no válido';
+              if (v == null || v.trim().isEmpty) return l10n.registerFieldRequired;
+              if (!v.contains('@')) return l10n.registerEmailInvalid;
               return null;
             },
           ),
           const SizedBox(height: 16),
           Text(
-            'Contraseña', 
+            l10n.registerPasswordLabel, 
             style: TextStyle(
               color: colorScheme.onSurface, 
               fontSize: 14, 
@@ -89,7 +91,7 @@ class _RegisterFormState extends State<RegisterForm> {
           ),
           const SizedBox(height: 8),
           FilledTextField(
-            hintText: 'Mínimo 8 caracteres, mayúscula, minúscula y número',
+            hintText: l10n.registerPasswordHint,
             controller: _passCtrl,
             obscureText: vm.obscurePassword,
             suffix: IconButton(
@@ -100,17 +102,17 @@ class _RegisterFormState extends State<RegisterForm> {
               onPressed: context.read<RegisterViewModel>().togglePasswordVisibility,
             ),
             validator: (v) {
-              if (v == null || v.isEmpty) return 'Campo obligatorio';
-              if (v.length < 8) return 'Mínimo 8 caracteres';
-              if (!RegExp(r'[A-Z]').hasMatch(v)) return 'Debe contener al menos una mayúscula';
-              if (!RegExp(r'[a-z]').hasMatch(v)) return 'Debe contener al menos una minúscula';
-              if (!RegExp(r'[0-9]').hasMatch(v)) return 'Debe contener al menos un número';
+              if (v == null || v.isEmpty) return l10n.registerFieldRequired;
+              if (v.length < 8) return l10n.registerPasswordMinLength;
+              if (!RegExp(r'[A-Z]').hasMatch(v)) return l10n.registerPasswordUppercase;
+              if (!RegExp(r'[a-z]').hasMatch(v)) return l10n.registerPasswordLowercase;
+              if (!RegExp(r'[0-9]').hasMatch(v)) return l10n.registerPasswordNumber;
               return null;
             },
           ),
           const SizedBox(height: 16),
           Text(
-            'Confirmar Contraseña', 
+            l10n.registerConfirmPasswordLabel, 
             style: TextStyle(
               color: colorScheme.onSurface, 
               fontSize: 14, 
@@ -119,7 +121,7 @@ class _RegisterFormState extends State<RegisterForm> {
           ),
           const SizedBox(height: 8),
           FilledTextField(
-            hintText: 'Confirma tu contraseña',
+            hintText: l10n.registerConfirmPasswordHint,
             controller: _confirmPassCtrl,
             obscureText: vm.obscureConfirmPassword,
             suffix: IconButton(
@@ -130,8 +132,8 @@ class _RegisterFormState extends State<RegisterForm> {
               onPressed: context.read<RegisterViewModel>().toggleConfirmPasswordVisibility,
             ),
             validator: (v) {
-              if (v == null || v.isEmpty) return 'Campo obligatorio';
-              if (v != _passCtrl.text) return 'Las contraseñas no coinciden';
+              if (v == null || v.isEmpty) return l10n.registerFieldRequired;
+              if (v != _passCtrl.text) return l10n.registerPasswordMismatch;
               return null;
             },
           ),
@@ -143,7 +145,7 @@ class _RegisterFormState extends State<RegisterForm> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Altura (cm)', 
+                      l10n.registerHeightLabel, 
                       style: TextStyle(
                         color: colorScheme.onSurface, 
                         fontSize: 14, 
@@ -152,12 +154,12 @@ class _RegisterFormState extends State<RegisterForm> {
                     ),
                     const SizedBox(height: 8),
                     FilledTextField(
-                      hintText: '170',
+                      hintText: l10n.registerHeightHint,
                       controller: _heightCtrl,
                       keyboardType: TextInputType.number,
                       validator: (v) {
-                        if (v == null || v.isEmpty) return 'Requerido';
-                        if (int.tryParse(v) == null) return 'Número inválido';
+                        if (v == null || v.isEmpty) return l10n.registerFieldRequiredShort;
+                        if (int.tryParse(v) == null) return l10n.registerInvalidNumber;
                         return null;
                       },
                     ),
@@ -170,7 +172,7 @@ class _RegisterFormState extends State<RegisterForm> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Peso (kg)', 
+                      l10n.registerWeightLabel, 
                       style: TextStyle(
                         color: colorScheme.onSurface, 
                         fontSize: 14, 
@@ -179,12 +181,12 @@ class _RegisterFormState extends State<RegisterForm> {
                     ),
                     const SizedBox(height: 8),
                     FilledTextField(
-                      hintText: '70',
+                      hintText: l10n.registerWeightHint,
                       controller: _weightCtrl,
                       keyboardType: const TextInputType.numberWithOptions(decimal: true),
                       validator: (v) {
-                        if (v == null || v.isEmpty) return 'Requerido';
-                        if (double.tryParse(v) == null) return 'Número inválido';
+                        if (v == null || v.isEmpty) return l10n.registerFieldRequiredShort;
+                        if (double.tryParse(v) == null) return l10n.registerInvalidNumber;
                         return null;
                       },
                     ),
@@ -195,7 +197,7 @@ class _RegisterFormState extends State<RegisterForm> {
           ),
           const SizedBox(height: 16),
           Text(
-            'Objetivo', 
+            l10n.registerGoalLabel, 
             style: TextStyle(
               color: colorScheme.onSurface, 
               fontSize: 14, 
@@ -203,10 +205,10 @@ class _RegisterFormState extends State<RegisterForm> {
             ),
           ),
           const SizedBox(height: 8),
-          _buildGoalSelector(vm, colorScheme),
+          _buildGoalSelector(vm, colorScheme, l10n),
           const SizedBox(height: 16),
           Text(
-            'Alergias', 
+            l10n.registerAllergiesLabel, 
             style: TextStyle(
               color: colorScheme.onSurface, 
               fontSize: 14, 
@@ -215,7 +217,7 @@ class _RegisterFormState extends State<RegisterForm> {
           ),
           const SizedBox(height: 8),
           FilledTextField(
-            hintText: 'Ejemplo: Gluten, Lactosa',
+            hintText: l10n.registerAllergiesHint,
             controller: _allergiesCtrl,
             maxLines: 2,
           ),
@@ -228,7 +230,7 @@ class _RegisterFormState extends State<RegisterForm> {
             const SizedBox(height: 8),
           ],
           PrimaryButton(
-            text: 'Registrarse',
+            text: l10n.registerButton,
             isLoading: vm.isLoading,
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
@@ -255,7 +257,7 @@ class _RegisterFormState extends State<RegisterForm> {
     );
   }
 
-  Widget _buildGoalSelector(RegisterViewModel vm, ColorScheme colorScheme) {
+  Widget _buildGoalSelector(RegisterViewModel vm, ColorScheme colorScheme, l10n) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
@@ -272,19 +274,19 @@ class _RegisterFormState extends State<RegisterForm> {
           items: [
             DropdownMenuItem(
               value: 'Perder peso', 
-              child: Text('Perder peso', style: TextStyle(color: colorScheme.onSurface)),
+              child: Text(l10n.registerGoalLoseWeight, style: TextStyle(color: colorScheme.onSurface)),
             ),
             DropdownMenuItem(
               value: 'Ganar masa muscular', 
-              child: Text('Ganar masa muscular', style: TextStyle(color: colorScheme.onSurface)),
+              child: Text(l10n.registerGoalGainMuscle, style: TextStyle(color: colorScheme.onSurface)),
             ),
             DropdownMenuItem(
               value: 'Mantener peso', 
-              child: Text('Mantener peso', style: TextStyle(color: colorScheme.onSurface)),
+              child: Text(l10n.registerGoalMaintainWeight, style: TextStyle(color: colorScheme.onSurface)),
             ),
             DropdownMenuItem(
               value: 'Alimentación saludable', 
-              child: Text('Alimentación saludable', style: TextStyle(color: colorScheme.onSurface)),
+              child: Text(l10n.registerGoalHealthyEating, style: TextStyle(color: colorScheme.onSurface)),
             ),
           ],
           onChanged: (v) => vm.setGoal(v ?? 'Perder peso'),

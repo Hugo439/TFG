@@ -14,6 +14,7 @@ import 'package:smartmeal/presentation/features/shopping/widgets/shopping_item_c
 import 'package:smartmeal/presentation/features/shopping/widgets/total_price_card.dart';
 import 'package:smartmeal/presentation/widgets/layout/app_shell.dart';
 import 'package:smartmeal/presentation/routes/navigation_controller.dart';
+import 'package:smartmeal/l10n/l10n_ext.dart';
 
 class ShoppingView extends StatelessWidget {
   const ShoppingView({super.key});
@@ -42,17 +43,18 @@ class _ShoppingContent extends StatelessWidget {
     final vm = context.watch<ShoppingViewModel>();
     final state = vm.state;
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
 
     return AppShell(
-      title: 'Lista de la Compra',
-      subtitle: 'Productos',
+      title: l10n.shoppingTitle,
+      subtitle: l10n.shoppingSubtitle,
       selectedIndex: 2,
       onNavChange: (index) => NavigationController.navigateToIndex(context, index, 2),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ShoppingHeaderCard(
-            subtitle: '${state.items.length} productos',
+            subtitle: l10n.shoppingItemsCount(state.items.length),
           ),
           const SizedBox(height: 16),
           // Botones de acción
@@ -71,7 +73,7 @@ class _ShoppingContent extends StatelessWidget {
                     }
                   },
                   icon: const Icon(Icons.add),
-                  label: const Text('Añadir'),
+                  label: Text(l10n.shoppingAddButton),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: colorScheme.primary,
                     foregroundColor: colorScheme.onPrimary,
@@ -87,14 +89,14 @@ class _ShoppingContent extends StatelessWidget {
                     if (context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: const Text('Lista generada desde menús'),
+                          content: Text(l10n.shoppingGeneratedFromMenus),
                           backgroundColor: colorScheme.primary,
                         ),
                       );
                     }
                   },
                   icon: const Icon(Icons.auto_awesome),
-                  label: const Text('Generar'),
+                  label: Text(l10n.shoppingGenerateButton),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: colorScheme.primary,
                     padding: const EdgeInsets.symmetric(vertical: 12),
@@ -125,7 +127,7 @@ class _ShoppingContent extends StatelessWidget {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'Lista vacía',
+                      l10n.shoppingEmptyTitle,
                       style: TextStyle(
                         color: colorScheme.onSurface.withOpacity(0.6),
                         fontSize: 16,
@@ -133,7 +135,7 @@ class _ShoppingContent extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Añade productos o genera desde menús',
+                      l10n.shoppingEmptySubtitle,
                       style: TextStyle(
                         color: colorScheme.onSurface.withOpacity(0.6),
                         fontSize: 14,

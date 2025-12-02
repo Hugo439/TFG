@@ -23,4 +23,10 @@ class FirestoreDataSource {
   Future<void> deleteUserProfile(String uid) async {
     await _firestore.collection('users').doc(uid).delete();
   }
+
+  Future<void> saveFCMToken(String uid, String token) async {
+    await _firestore.collection('users').doc(uid).update({
+      'fcmToken': token,
+    });
+  }
 }

@@ -11,6 +11,7 @@ import 'package:smartmeal/presentation/features/profile/widgets/personal_info_se
 import 'package:smartmeal/presentation/features/profile/widgets/goals_section.dart';
 import 'package:smartmeal/presentation/features/profile/widgets/account_actions_section.dart';
 import 'package:smartmeal/presentation/routes/routes.dart';
+import 'package:smartmeal/l10n/l10n_ext.dart';
 
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
@@ -37,6 +38,7 @@ class _ProfileContent extends StatelessWidget {
     final vm = context.watch<ProfileViewModel>();
     final state = vm.state;
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
@@ -48,16 +50,17 @@ class _ProfileContent extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          'Mi Perfil',
+          l10n.profileTitle,
           style: TextStyle(
-            color: colorScheme.onSurface, 
-            fontSize: 20, 
+            color: colorScheme.onSurface,
+            fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
         ),
         actions: [
           IconButton(
             icon: Icon(Icons.edit_outlined, color: colorScheme.onSurface),
+            tooltip: l10n.profileEditTooltip,
             onPressed: state.profile != null
                 ? () async {
                     final result = await Navigator.of(context).pushNamed(
@@ -77,12 +80,12 @@ class _ProfileContent extends StatelessWidget {
           : state.status == ProfileStatus.error
               ? Center(
                   child: Text(
-                    'Error: ${state.error}',
+                    '${l10n.profileError}: ${state.error}',
                     style: TextStyle(color: colorScheme.error),
                   ),
                 )
               : state.profile == null
-                  ? const Center(child: Text('Sin datos'))
+                  ? Center(child: Text(l10n.profileNoData))
                   : SingleChildScrollView(
                       padding: const EdgeInsets.all(16),
                       child: Column(
@@ -96,8 +99,8 @@ class _ProfileContent extends StatelessWidget {
                           AccountActionsSection(
                             onChangePassword: () {
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Cambio de contraseña próximamente'),
+                                SnackBar(
+                                  content: Text(l10n.profileChangePasswordSoon),
                                 ),
                               );
                             },
@@ -114,21 +117,19 @@ class _ProfileContent extends StatelessWidget {
                               final confirm = await showDialog<bool>(
                                 context: context,
                                 builder: (context) => AlertDialog(
-                                  title: const Text('Eliminar Cuenta'),
-                                  content: const Text(
-                                    '¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer.',
-                                  ),
+                                  title: Text(l10n.profileDeleteAccountDialogTitle),
+                                  content: Text(l10n.profileDeleteAccountDialogMessage),
                                   actions: [
                                     TextButton(
                                       onPressed: () => Navigator.of(context).pop(false),
-                                      child: const Text('Cancelar'),
+                                      child: Text(l10n.commonCancel),
                                     ),
                                     TextButton(
                                       onPressed: () => Navigator.of(context).pop(true),
                                       style: TextButton.styleFrom(
                                         foregroundColor: colorScheme.error,
                                       ),
-                                      child: const Text('Eliminar'),
+                                      child: Text(l10n.profileDeleteAccountConfirm),
                                     ),
                                   ],
                                 ),

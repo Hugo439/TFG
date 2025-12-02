@@ -6,6 +6,7 @@ import 'package:smartmeal/presentation/routes/navigation_controller.dart';
 import 'package:smartmeal/presentation/widgets/layout/app_shell.dart';
 import 'package:smartmeal/presentation/features/menu/widgets/stat_card.dart';
 import 'package:smartmeal/presentation/features/menu/widgets/weekly_menu_calendar.dart';
+import 'package:smartmeal/l10n/l10n_ext.dart';
 
 class MenuView extends StatelessWidget {
   const MenuView({super.key});
@@ -26,16 +27,14 @@ class _MenuContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final vm = Provider.of<MenuViewModel>(context);
     final user = Provider.of<User?>(context);
-
     final lastMenu = vm.menus.isNotEmpty ? vm.menus.first : null;
+    final l10n = context.l10n;
 
     return AppShell(
-      title: 'Menú semanal',
-      subtitle: 'Tu menú personalizado',
+      title: l10n.menuTitle,
+      subtitle: l10n.menuSubtitle,
       selectedIndex: 0,
-      onNavChange: (index) {
-        NavigationController.navigateToIndex(context, index, 0);
-      },
+      onNavChange: (index) => NavigationController.navigateToIndex(context, index, 0),
       body: Builder(
         builder: (context) {
           if (vm.state == MenuState.loading) {
@@ -44,7 +43,7 @@ class _MenuContent extends StatelessWidget {
           if (vm.state == MenuState.error) {
             return Center(
               child: Text(
-                vm.errorMessage ?? 'Error al cargar menús',
+                vm.errorMessage ?? l10n.menuLoadError,
                 style: TextStyle(color: Theme.of(context).colorScheme.error),
               ),
             );
@@ -52,7 +51,7 @@ class _MenuContent extends StatelessWidget {
           if (lastMenu == null) {
             return Center(
               child: Text(
-                'No tienes menús generados aún.',
+                l10n.menuEmpty,
                 style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
               ),
             );
@@ -69,7 +68,7 @@ class _MenuContent extends StatelessWidget {
                     child: StatCard(
                       icon: Icons.local_fire_department,
                       value: '${lastMenu.totalWeeklyCalories} kcal',
-                      label: 'Calorías totales',
+                      label: l10n.menuTotalCalories,
                       color: colorScheme.primary,
                     ),
                   ),
@@ -78,7 +77,7 @@ class _MenuContent extends StatelessWidget {
                     child: StatCard(
                       icon: Icons.trending_up,
                       value: '${lastMenu.avgDailyCalories.toInt()} kcal',
-                      label: 'Promedio diario',
+                      label: l10n.menuAvgDaily,
                       color: colorScheme.primary,
                     ),
                   ),
@@ -96,7 +95,7 @@ class _MenuContent extends StatelessWidget {
       actions: [
         IconButton(
           icon: const Icon(Icons.add),
-          tooltip: 'Generar nuevo menú',
+          tooltip: l10n.menuGenerateTooltip,
           onPressed: () {
             Navigator.of(context).pushNamed('/generate-menu').then((result) {
               if (!context.mounted) return;

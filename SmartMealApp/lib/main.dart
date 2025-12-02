@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,6 +8,7 @@ import 'core/di/service_locator.dart';
 import 'package:provider/provider.dart';
 import 'domain/usecases/get_support_messages_usecase.dart';
 import 'domain/repositories/support_message_repository.dart';
+import 'core/services/fcm_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,9 +16,20 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await setupServiceLocator();
+
+  await FirebaseMessaging.instance.requestPermission();
+
+  // Inicializar FCM cuando hay un usuario autenticado
+  FirebaseAuth.instance.authStateChanges().listen((User? user) {
+    if (user != null) {
+      sl<FCMService>().initialize();
+    }
+  });
+
   runApp(
     MultiProvider(
       providers: [
+        // Providers globales
         StreamProvider<User?>.value(
           value: FirebaseAuth.instance.authStateChanges(),
           initialData: null,

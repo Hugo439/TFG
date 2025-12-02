@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smartmeal/domain/entities/user_profile.dart';
+import 'package:smartmeal/l10n/l10n_ext.dart';
 
 class PersonalInfoSection extends StatelessWidget {
   final UserProfile profile;
@@ -9,6 +10,7 @@ class PersonalInfoSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
     
     return Container(
       padding: const EdgeInsets.all(16),
@@ -22,7 +24,7 @@ class PersonalInfoSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Información Personal',
+            l10n.profilePersonalInfoSection,
             style: TextStyle(
               color: colorScheme.primary,
               fontSize: 16,
@@ -31,33 +33,33 @@ class PersonalInfoSection extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           _InfoRow(
-            label: 'Correo Electrónico',
+            label: l10n.profileEmailLabel,
             value: profile.email.value,
             icon: Icons.email_outlined,
           ),
           if (profile.phone != null) ...[
             const SizedBox(height: 12),
             _InfoRow(
-              label: 'Teléfono',
+              label: l10n.profilePhoneLabel,
               value: profile.phone!.formatted,
               icon: Icons.phone_outlined,
             ),
           ],
           const SizedBox(height: 12),
           _InfoRow(
-            label: 'Altura',
+            label: l10n.profileHeightLabel,
             value: profile.height.formatted,
             icon: Icons.height,
           ),
           const SizedBox(height: 12),
           _InfoRow(
-            label: 'Peso',
+            label: l10n.profileWeightLabel,
             value: profile.weight.formatted,
             icon: Icons.monitor_weight_outlined,
           ),
           const SizedBox(height: 12),
           _InfoRow(
-            label: 'IMC',
+            label: l10n.profileBmiLabel,
             value: '${profile.bmi.toStringAsFixed(1)} - ${profile.bmiCategory}',
             icon: Icons.health_and_safety_outlined,
           ),

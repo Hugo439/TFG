@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smartmeal/l10n/l10n_ext.dart';
 
 class AccountActionsSection extends StatelessWidget {
   final VoidCallback? onChangePassword;
@@ -15,6 +16,7 @@ class AccountActionsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
     
     return Container(
       padding: const EdgeInsets.all(16),
@@ -28,7 +30,7 @@ class AccountActionsSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Configuración de Cuenta',
+            l10n.profileAccountSection,
             style: TextStyle(
               color: colorScheme.primary,
               fontSize: 16,
@@ -37,19 +39,19 @@ class AccountActionsSection extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           _ActionButton(
-            label: 'Cambiar Contraseña',
+            label: l10n.profileChangePasswordButton,
             icon: Icons.lock_outline,
             onTap: onChangePassword,
           ),
           const SizedBox(height: 8),
           _ActionButton(
-            label: 'Cerrar Sesión',
+            label: l10n.profileSignOutButton,
             icon: Icons.logout,
             onTap: onSignOut,
           ),
           const SizedBox(height: 8),
           _ActionButton(
-            label: 'Eliminar Cuenta',
+            label: l10n.profileDeleteAccountButton,
             icon: Icons.delete_outline,
             isDestructive: true,
             onTap: onDeleteAccount,

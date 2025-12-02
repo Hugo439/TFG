@@ -77,35 +77,19 @@ class AppColors {
   static const Color darkErrorContainer = Color(0xFF5D1F1F);
   static const Color darkOnErrorContainer = Color(0xFFFFCDD2);
 
-  /// Helper para obtener colores según el tema actual
-  static ColorScheme of(BuildContext context) {
-    return Theme.of(context).colorScheme;
-  }
+  // Colores de categorías de soporte (LIGHT)
+  static const Color categoryDudas = Color(0xFF2196F3);        // Azul
+  static const Color categoryErrores = Color(0xFFF44336);      // Rojo
+  static const Color categorySugerencias = Color(0xFF9C27B0);  // Púrpura
+  static const Color categoryCuenta = Color(0xFFFF9800);       // Naranja
+  static const Color categoryMenus = Color(0xFF4CAF50);        // Verde
+  static const Color categoryOtro = Color(0xFF757575);         // Gris
 
-  /// Obtener color de texto primario según tema
-  static Color textPrimary(BuildContext context) {
-    return Theme.of(context).colorScheme.onSurface;
-  }
-
-  /// Obtener color de texto secundario según tema
-  static Color textSecondary(BuildContext context) {
-    return Theme.of(context).colorScheme.onSurface.withOpacity(0.7);
-  }
-
-  /// Obtener color de fondo primario según tema
-  static Color backgroundPrimary(BuildContext context) {
-    return Theme.of(context).colorScheme.surface;
-  }
-
-  /// Obtener color de fondo secundario según tema
-  static Color backgroundSecondary(BuildContext context) {
-    return Theme.of(context).colorScheme.surfaceContainerHighest;
-  }
-
-  /// Obtener color de card/contenedor según tema
-  static Color cardBackground(BuildContext context) {
-    return Theme.of(context).brightness == Brightness.dark
-        ? darkSecondaryBackground
-        : white;
-  }
+  // Colores de categorías de soporte (DARK)
+  static const Color darkCategoryDudas = Color(0xFF64B5F6);        // Azul claro
+  static const Color darkCategoryErrores = Color(0xFFE57373);      // Rojo claro
+  static const Color darkCategorySugerencias = Color(0xFFBA68C8);  // Púrpura claro
+  static const Color darkCategoryCuenta = Color(0xFFFFB74D);       // Naranja claro
+  static const Color darkCategoryMenus = Color(0xFF81C784);        // Verde claro
+  static const Color darkCategoryOtro = Color(0xFFBDBDBD);         // Gris claro
 }

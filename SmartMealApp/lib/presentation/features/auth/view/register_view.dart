@@ -6,6 +6,7 @@ import 'package:smartmeal/presentation/features/auth/viewmodel/register_view_mod
 import 'package:smartmeal/presentation/features/auth/widgets/register_header.dart';
 import 'package:smartmeal/presentation/features/auth/widgets/register_form.dart';
 import 'package:smartmeal/presentation/features/auth/widgets/login_prompt.dart';
+import 'package:smartmeal/l10n/l10n_ext.dart';
 
 class RegisterView extends StatelessWidget {
   const RegisterView({super.key});
@@ -14,6 +15,7 @@ class RegisterView extends StatelessWidget {
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
 
     return ChangeNotifierProvider(
       create: (_) => RegisterViewModel(sl<SignUpUseCase>()),
@@ -27,7 +29,7 @@ class RegisterView extends StatelessWidget {
             onPressed: () => Navigator.of(context).pop(),
           ),
           title: Text(
-            'Registro', 
+            l10n.registerTitle, 
             style: TextStyle(
               color: colorScheme.onSurface, 
               fontSize: 20, 

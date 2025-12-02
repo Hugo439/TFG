@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:smartmeal/presentation/routes/navigation_controller.dart';
 import 'package:smartmeal/presentation/routes/routes.dart';
-import '../../../widgets/cards/menu_card.dart';
+import 'package:smartmeal/presentation/widgets/cards/menu_card.dart';
 import 'package:smartmeal/presentation/widgets/layout/app_shell.dart';
+import 'package:smartmeal/l10n/l10n_ext.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -13,17 +14,18 @@ class HomeView extends StatelessWidget {
     final crossAxisCount = _computeCrossAxisCount(width);
     final aspectRatio = _computeChildAspectRatio(width);
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
 
     return AppShell(
-      title: 'SmartMeal',
-      subtitle: 'Panel Principal',
+      title: l10n.homeTitle,
+      subtitle: l10n.homeSubtitle,
       selectedIndex: 1,
       onNavChange: (index) => NavigationController.navigateToIndex(context, index, 1),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Bienvenid@',
+            l10n.homeWelcome,
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
@@ -32,7 +34,7 @@ class HomeView extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            'Accede rápidamente a todas las secciones de SmartMeal',
+            l10n.homeDescription,
             style: TextStyle(
               fontSize: 14,
               color: colorScheme.onSurface.withOpacity(0.6),
@@ -69,47 +71,48 @@ class HomeView extends StatelessWidget {
   }
 
   Widget _buildCard(BuildContext context, int index) {
+    final l10n = context.l10n;
     switch (index) {
       case 0:
         return MenuCard(
           icon: Icons.person,
-          title: 'Perfil',
-          subtitle: 'Mi cuenta',
+          title: l10n.homeCardProfileTitle,
+          subtitle: l10n.homeCardProfileSubtitle,
           onTap: () => Navigator.of(context).pushNamed(Routes.profile),
         );
       case 1:
         return MenuCard(
           icon: Icons.restaurant_menu,
-          title: 'Menús',
-          subtitle: 'Menús semanales',
+          title: l10n.homeCardMenusTitle,
+          subtitle: l10n.homeCardMenusSubtitle,
           onTap: () => NavigationController.navigateToMenu(context),
         );
       case 2:
         return MenuCard(
           icon: Icons.shopping_cart,
-          title: 'Lista compra',
-          subtitle: 'Productos',
+          title: l10n.homeCardShoppingTitle,
+          subtitle: l10n.homeCardShoppingSubtitle,
           onTap: () => NavigationController.navigateToShopping(context),
         );
       case 3:
-        return const MenuCard(
+        return MenuCard(
           icon: Icons.dashboard,
-          title: 'Estadísticas',
-          subtitle: 'Análisis nutricional',
+          title: l10n.homeCardStatsTitle,
+          subtitle: l10n.homeCardStatsSubtitle,
         );
       case 4:
         return MenuCard(
           icon: Icons.settings,
-          title: 'Configuración',
-          subtitle: 'Ajustes',
+          title: l10n.homeCardSettingsTitle,
+          subtitle: l10n.homeCardSettingsSubtitle,
           onTap: () => Navigator.of(context).pushNamed(Routes.settings),
         );
       case 5:
         return MenuCard(
           icon: Icons.headset_mic,
-          title: 'Soporte',
-          subtitle: 'Ayuda',
-          onTap: () => Navigator.of(context).pushNamed(Routes.support), 
+          title: l10n.homeCardSupportTitle,
+          subtitle: l10n.homeCardSupportSubtitle,
+          onTap: () => Navigator.of(context).pushNamed(Routes.support),
         );
       default:
         return const SizedBox.shrink();

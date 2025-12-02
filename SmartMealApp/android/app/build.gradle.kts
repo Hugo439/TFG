@@ -57,5 +57,6 @@ dependencies {
     // implementation("com.google.mlkit:text-recognition:16.0.0")
 
     // Almacenamiento en la nube (para imágenes de recetas)
-    // implementation("com.google.firebase:firebase-storage")
+    implementation("com.google.firebase:firebase-storage")
+    implementation("com.google.firebase:firebase-messaging")
 }

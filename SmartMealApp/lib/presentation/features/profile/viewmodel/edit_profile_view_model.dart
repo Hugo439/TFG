@@ -10,22 +10,34 @@ import 'package:smartmeal/domain/value_objects/weight.dart';
 
 enum EditProfileStatus { idle, loading, success, error }
 
+enum EditProfileErrorCode {
+  nameRequired,
+  heightInvalid,
+  weightInvalid,
+  validationError,
+  generic,
+}
+
 class EditProfileState {
   final EditProfileStatus status;
-  final String? error;
+  final EditProfileErrorCode? errorCode;
+  final String? errorMessage; // Para errores de Value Objects
 
   const EditProfileState({
     this.status = EditProfileStatus.idle,
-    this.error,
+    this.errorCode,
+    this.errorMessage,
   });
 
   EditProfileState copyWith({
     EditProfileStatus? status,
-    String? error,
+    EditProfileErrorCode? errorCode,
+    String? errorMessage,
   }) {
     return EditProfileState(
       status: status ?? this.status,
-      error: error,
+      errorCode: errorCode,
+      errorMessage: errorMessage,
     );
   }
 }
@@ -86,14 +98,18 @@ class EditProfileViewModel extends ChangeNotifier {
   }
 
   Future<bool> saveChanges() async {
-    _update(_state.copyWith(status: EditProfileStatus.loading, error: null));
+    _update(_state.copyWith(
+      status: EditProfileStatus.loading,
+      errorCode: null,
+      errorMessage: null,
+    ));
 
     try {
-      // Validar campos básicos primero
+      // Validar campos básicos
       if (displayName.trim().isEmpty) {
         _update(_state.copyWith(
           status: EditProfileStatus.error,
-          error: 'El nombre es obligatorio',
+          errorCode: EditProfileErrorCode.nameRequired,
         ));
         return false;
       }
@@ -102,7 +118,7 @@ class EditProfileViewModel extends ChangeNotifier {
       if (height == null) {
         _update(_state.copyWith(
           status: EditProfileStatus.error,
-          error: 'La altura debe ser un número válido',
+          errorCode: EditProfileErrorCode.heightInvalid,
         ));
         return false;
       }
@@ -111,12 +127,12 @@ class EditProfileViewModel extends ChangeNotifier {
       if (weight == null) {
         _update(_state.copyWith(
           status: EditProfileStatus.error,
-          error: 'El peso debe ser un número válido',
+          errorCode: EditProfileErrorCode.weightInvalid,
         ));
         return false;
       }
 
-      // Crear Value Objects (aquí se validan automáticamente)
+      // Crear Value Objects
       final displayNameVO = DisplayName(displayName.trim());
       final phoneVO = PhoneNumber.tryParse(phone.trim());
       final heightVO = Height(height);
@@ -144,13 +160,15 @@ class EditProfileViewModel extends ChangeNotifier {
       // Errores de validación de Value Objects
       _update(_state.copyWith(
         status: EditProfileStatus.error,
-        error: e.message,
+        errorCode: EditProfileErrorCode.validationError,
+        errorMessage: e.message,
       ));
       return false;
     } catch (e) {
       _update(_state.copyWith(
         status: EditProfileStatus.error,
-        error: e.toString(),
+        errorCode: EditProfileErrorCode.generic,
+        errorMessage: e.toString(),
       ));
       return false;
     }

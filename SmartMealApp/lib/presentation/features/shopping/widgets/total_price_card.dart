@@ -1,20 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:smartmeal/l10n/l10n_ext.dart';
 
 class TotalPriceCard extends StatelessWidget {
   final double totalPrice;
   final int checkedCount;
   final int totalCount;
+  final String? totalLabel;
+  final String? selectedLabel;
 
   const TotalPriceCard({
     super.key,
     required this.totalPrice,
     this.checkedCount = 0,
     this.totalCount = 0,
+    this.totalLabel,
+    this.selectedLabel,
   });
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -43,7 +49,7 @@ class TotalPriceCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Total Estimado',
+                totalLabel ?? l10n.shoppingTotalLabel,
                 style: TextStyle(
                   color: colorScheme.onSecondary,
                   fontSize: 16,
@@ -52,7 +58,7 @@ class TotalPriceCard extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                '$checkedCount/$totalCount productos',
+                l10n.shoppingSelectedCount(checkedCount, totalCount),
                 style: TextStyle(
                   color: colorScheme.onSecondary,
                   fontSize: 13,

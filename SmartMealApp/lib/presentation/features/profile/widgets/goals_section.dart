@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smartmeal/domain/entities/user_profile.dart';
+import 'package:smartmeal/l10n/l10n_ext.dart';
 
 class GoalsSection extends StatelessWidget {
   final UserProfile profile;
@@ -9,6 +10,7 @@ class GoalsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
     
     return Container(
       padding: const EdgeInsets.all(16),
@@ -22,7 +24,7 @@ class GoalsSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Objetivos y Preferencias',
+            l10n.profileGoalsSection,
             style: TextStyle(
               color: colorScheme.primary,
               fontSize: 16,
@@ -30,7 +32,7 @@ class GoalsSection extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          _buildDropdown(context, 'Objetivo Principal', profile.goal.displayName),
+          _buildDropdown(context, l10n.profileMainGoalLabel, profile.goal.displayName),
           const SizedBox(height: 16),
           _buildAllergies(context, profile.allergies?.value),
         ],
@@ -81,6 +83,7 @@ class GoalsSection extends StatelessWidget {
 
   Widget _buildAllergies(BuildContext context, String? allergies) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
     
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -88,7 +91,7 @@ class GoalsSection extends StatelessWidget {
         Row(
           children: [
             Text(
-              'Alergias Alimentarias',
+              l10n.profileAllergiesLabel,
               style: TextStyle(
                 color: colorScheme.onSurface.withOpacity(0.6),
                 fontSize: 12,
@@ -101,13 +104,13 @@ class GoalsSection extends StatelessWidget {
         const SizedBox(height: 4),
         Container(
           width: double.infinity,
-          padding: const EdgeInsets.all(12),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
             color: colorScheme.surface,
             borderRadius: BorderRadius.circular(8),
           ),
           child: Text(
-            allergies?.isEmpty ?? true ? 'Sin alergias registradas' : allergies!,
+            allergies ?? l10n.profileNoAllergies,
             style: TextStyle(
               color: colorScheme.onSurface,
               fontSize: 14,

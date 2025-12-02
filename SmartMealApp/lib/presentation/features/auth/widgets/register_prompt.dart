@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smartmeal/presentation/routes/routes.dart';
+import 'package:smartmeal/l10n/l10n_ext.dart';
 
 class RegisterPrompt extends StatelessWidget {
   const RegisterPrompt({super.key});
@@ -7,12 +8,13 @@ class RegisterPrompt extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
     
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          '¿No tienes cuenta? ', 
+          l10n.loginNoAccount, 
           style: TextStyle(
             color: colorScheme.onSurface.withOpacity(0.6), 
             fontSize: 14,
@@ -25,41 +27,10 @@ class RegisterPrompt extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 4),
             textStyle: const TextStyle(fontWeight: FontWeight.w600),
           ),
-          child: const Text('Regístrate'),
+          child: Text(l10n.loginRegisterLink),
         ),
       ],
     );
   }
 }
 
-class LoginPrompt extends StatelessWidget {
-  final VoidCallback? onTap;
-  const LoginPrompt({super.key, this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Text(
-          '¿Ya tienes cuenta? ', 
-          style: TextStyle(
-            color: colorScheme.onSurface.withOpacity(0.6), 
-            fontSize: 14,
-          ),
-        ),
-        TextButton(
-          onPressed: onTap,
-          style: TextButton.styleFrom(
-            foregroundColor: colorScheme.primary,
-            padding: const EdgeInsets.symmetric(horizontal: 4),
-            textStyle: const TextStyle(fontWeight: FontWeight.w600),
-          ),
-          child: const Text('Inicia Sesión'),
-        ),
-      ],
-    );
-  }
-}

@@ -31,5 +31,15 @@ service cloud.firestore {
         allow read, write: if isOwner(userId);
       }
     }
+    
+    // Mensajes de soporte: solo usuarios autenticados pueden leer y escribir
+    match /support_messages/{docId} {
+      allow read, write: if request.auth != null;
+    }
+    
+    // FAQs: cualquier usuario puede leer
+    match /faqs/{docId} {
+      allow read: if true;
+    }
   }
 }

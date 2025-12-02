@@ -4,12 +4,14 @@ import 'package:smartmeal/core/di/service_locator.dart';
 import 'package:smartmeal/domain/usecases/get_user_profile_usecase.dart';
 import 'package:smartmeal/domain/usecases/sign_out_usecase.dart';
 import 'package:smartmeal/domain/usecases/delete_account_usecase.dart';
+import 'package:smartmeal/presentation/app/locale_provider.dart';
 import 'package:smartmeal/presentation/features/settings/viewmodel/settings_view_model.dart';
 import 'package:smartmeal/presentation/features/settings/widgets/settings_section.dart';
 import 'package:smartmeal/presentation/features/settings/widgets/settings_tile.dart';
 import 'package:smartmeal/presentation/features/settings/widgets/account_info_card.dart';
 import 'package:smartmeal/presentation/theme/theme_provider.dart';
 import 'package:smartmeal/presentation/routes/routes.dart';
+import 'package:smartmeal/l10n/l10n_ext.dart';
 
 class SettingsView extends StatelessWidget {
   const SettingsView({super.key});
@@ -36,6 +38,7 @@ class _SettingsContent extends StatelessWidget {
     final state = vm.state;
     final themeProvider = context.watch<ThemeProvider>();
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
@@ -47,7 +50,7 @@ class _SettingsContent extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          'Configuración',
+          l10n.settingsTitle,
           style: TextStyle(
             color: colorScheme.onPrimary,
             fontSize: 20,
@@ -67,12 +70,12 @@ class _SettingsContent extends StatelessWidget {
                   const SizedBox(height: 24),
 
                   SettingsSection(
-                    title: 'Perfil',
+                    title: l10n.settingsProfileSection,
                     children: [
                       SettingsTile(
                         icon: Icons.person_outline,
-                        title: 'Mi Perfil',
-                        subtitle: 'Ver y editar información personal',
+                        title: l10n.settingsMyProfile,
+                        subtitle: l10n.settingsMyProfileSubtitle,
                         onTap: () {
                           Navigator.of(context).pushNamed(Routes.profile);
                         },
@@ -82,12 +85,12 @@ class _SettingsContent extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   SettingsSection(
-                    title: 'Preferencias',
+                    title: l10n.settingsPreferencesSection,
                     children: [
                       SettingsTile(
                         icon: Icons.notifications_outlined,
-                        title: 'Notificaciones',
-                        subtitle: 'Activar/desactivar notificaciones',
+                        title: l10n.settingsNotifications,
+                        subtitle: l10n.settingsNotificationsSubtitle,
                         trailing: Switch(
                           value: state.notificationsEnabled,
                           onChanged: vm.toggleNotifications,
@@ -96,8 +99,8 @@ class _SettingsContent extends StatelessWidget {
                       ),
                       SettingsTile(
                         icon: Icons.dark_mode_outlined,
-                        title: 'Modo Oscuro',
-                        subtitle: 'Cambiar tema de la aplicación',
+                        title: l10n.settingsDarkMode,
+                        subtitle: l10n.settingsDarkModeSubtitle,
                         trailing: Switch(
                           value: themeProvider.isDarkMode,
                           onChanged: (value) {
@@ -107,15 +110,37 @@ class _SettingsContent extends StatelessWidget {
                         ),
                       ),
                       SettingsTile(
-                        icon: Icons.language_outlined,
-                        title: 'Idioma',
-                        subtitle: 'Español',
-                        trailing: Icon(
-                          Icons.chevron_right,
-                          color: colorScheme.onSurface.withOpacity(0.6),
-                        ),
-                        onTap: () {
-                          _showLanguageDialog(context, vm);
+                        icon: Icons.language,
+                        title: l10n.settingsLanguage,
+                        subtitle: l10n.settingsLanguageSubtitle,
+                        onTap: () async {
+                          final provider = context.read<LocaleProvider>();
+                          final selected = await showModalBottomSheet<String>(
+                            context: context,
+                            builder: (ctx) {
+                              return SafeArea(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    ListTile(
+                                      leading: const Icon(Icons.flag, color: Colors.red),
+                                      title: Text(l10n.settingsLanguageSpanish),
+                                      onTap: () => Navigator.pop(ctx, 'es'),
+                                    ),
+                                    ListTile(
+                                      leading: const Icon(Icons.flag, color: Colors.blue),
+                                      title: Text(l10n.settingsLanguageEnglish),
+                                      onTap: () => Navigator.pop(ctx, 'en'),
+                                    ),
+                                    const SizedBox(height: 8),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                          if (selected != null) {
+                            provider.setLocale(Locale(selected));
+                          }
                         },
                       ),
                     ],
@@ -123,44 +148,40 @@ class _SettingsContent extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   SettingsSection(
-                    title: 'Ayuda y Soporte',
+                    title: l10n.settingsHelpSection,
                     children: [
                       SettingsTile(
                         icon: Icons.help_outline,
-                        title: 'Centro de Ayuda',
-                        subtitle: 'Preguntas frecuentes y tutoriales',
+                        title: l10n.settingsHelpCenter,
+                        subtitle: l10n.settingsHelpCenterSubtitle,
                         trailing: Icon(
                           Icons.chevron_right,
                           color: colorScheme.onSurface.withOpacity(0.6),
                         ),
                         onTap: () {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Centro de Ayuda próximamente'),
+                            SnackBar(
+                              content: Text(l10n.settingsComingSoon),
                             ),
                           );
                         },
                       ),
                       SettingsTile(
                         icon: Icons.contact_support_outlined,
-                        title: 'Contactar Soporte',
-                        subtitle: 'Obtener ayuda del equipo',
+                        title: l10n.settingsContactSupport,
+                        subtitle: l10n.settingsContactSupportSubtitle,
                         trailing: Icon(
                           Icons.chevron_right,
                           color: colorScheme.onSurface.withOpacity(0.6),
                         ),
                         onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Soporte próximamente'),
-                            ),
-                          );
+                          Navigator.of(context).pushNamed(Routes.support);
                         },
                       ),
                       SettingsTile(
                         icon: Icons.info_outline,
-                        title: 'Acerca de',
-                        subtitle: 'Versión 1.0.0',
+                        title: l10n.settingsAbout,
+                        subtitle: l10n.settingsAboutSubtitle,
                         trailing: Icon(
                           Icons.chevron_right,
                           color: colorScheme.onSurface.withOpacity(0.6),
@@ -174,34 +195,34 @@ class _SettingsContent extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   SettingsSection(
-                    title: 'Legal',
+                    title: l10n.settingsLegalSection,
                     children: [
                       SettingsTile(
                         icon: Icons.privacy_tip_outlined,
-                        title: 'Política de Privacidad',
+                        title: l10n.settingsPrivacyPolicy,
                         trailing: Icon(
                           Icons.chevron_right,
                           color: colorScheme.onSurface.withOpacity(0.6),
                         ),
                         onTap: () {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Política de Privacidad próximamente'),
+                            SnackBar(
+                              content: Text(l10n.settingsComingSoon),
                             ),
                           );
                         },
                       ),
                       SettingsTile(
                         icon: Icons.description_outlined,
-                        title: 'Términos y Condiciones',
+                        title: l10n.settingsTermsAndConditions,
                         trailing: Icon(
                           Icons.chevron_right,
                           color: colorScheme.onSurface.withOpacity(0.6),
                         ),
                         onTap: () {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('Términos y Condiciones próximamente'),
+                            SnackBar(
+                              content: Text(l10n.settingsComingSoon),
                             ),
                           );
                         },
@@ -211,17 +232,17 @@ class _SettingsContent extends StatelessWidget {
                   const SizedBox(height: 16),
 
                   SettingsSection(
-                    title: 'Cuenta',
+                    title: l10n.settingsAccountSection,
                     children: [
                       SettingsTile(
                         icon: Icons.logout,
-                        title: 'Cerrar Sesión',
+                        title: l10n.settingsSignOut,
                         titleColor: colorScheme.primary,
                         onTap: () async {
                           final confirm = await _showConfirmDialog(
                             context,
-                            title: 'Cerrar Sesión',
-                            message: '¿Estás seguro de que quieres cerrar sesión?',
+                            title: l10n.settingsSignOutDialogTitle,
+                            message: l10n.settingsSignOutDialogMessage,
                           );
                           if (confirm == true) {
                             final ok = await vm.signOut();
@@ -236,15 +257,14 @@ class _SettingsContent extends StatelessWidget {
                       ),
                       SettingsTile(
                         icon: Icons.delete_forever,
-                        title: 'Eliminar Cuenta',
+                        title: l10n.settingsDeleteAccount,
                         titleColor: colorScheme.error,
                         onTap: () async {
                           final confirm = await _showConfirmDialog(
                             context,
-                            title: 'Eliminar Cuenta',
-                            message:
-                                '¿Estás seguro de que quieres eliminar tu cuenta? Esta acción no se puede deshacer y perderás todos tus datos.',
-                            confirmText: 'Eliminar',
+                            title: l10n.settingsDeleteAccountDialogTitle,
+                            message: l10n.settingsDeleteAccountDialogMessage,
+                            confirmText: l10n.settingsDeleteAccountConfirm,
                             isDestructive: true,
                           );
                           if (confirm == true) {
@@ -271,10 +291,11 @@ class _SettingsContent extends StatelessWidget {
     BuildContext context, {
     required String title,
     required String message,
-    String confirmText = 'Aceptar',
+    String? confirmText,
     bool isDestructive = false,
   }) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
     
     return showDialog<bool>(
       context: context,
@@ -284,58 +305,23 @@ class _SettingsContent extends StatelessWidget {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('Cancelar'),
+            child: Text(l10n.commonCancel),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: TextButton.styleFrom(
               foregroundColor: isDestructive ? colorScheme.error : colorScheme.primary,
             ),
-            child: Text(confirmText),
+            child: Text(confirmText ?? l10n.commonAccept),
           ),
         ],
       ),
     );
   }
 
-  void _showLanguageDialog(BuildContext context, SettingsViewModel vm) {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Seleccionar Idioma'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            RadioListTile<String>(
-              title: const Text('Español'),
-              value: 'es',
-              groupValue: vm.state.language,
-              onChanged: (value) {
-                if (value != null) {
-                  vm.changeLanguage(value);
-                  Navigator.of(context).pop();
-                }
-              },
-            ),
-            RadioListTile<String>(
-              title: const Text('English'),
-              value: 'en',
-              groupValue: vm.state.language,
-              onChanged: (value) {
-                if (value != null) {
-                  vm.changeLanguage(value);
-                  Navigator.of(context).pop();
-                }
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   void _showAboutDialog(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
     
     showAboutDialog(
       context: context,
@@ -343,11 +329,9 @@ class _SettingsContent extends StatelessWidget {
       applicationVersion: '1.0.0',
       applicationIcon: Icon(Icons.restaurant_menu, size: 48, color: colorScheme.primary),
       children: [
-        const Text(
-          'SmartMeal es tu asistente personal de nutrición y planificación de comidas.',
-        ),
+        Text(l10n.settingsAboutDescription),
         const SizedBox(height: 16),
-        const Text('© 2025 SmartMeal. Todos los derechos reservados.'),
+        Text(l10n.settingsAboutCopyright),
       ],
     );
   }

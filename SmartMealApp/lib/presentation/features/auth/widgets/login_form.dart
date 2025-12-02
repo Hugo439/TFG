@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:smartmeal/presentation/features/auth/viewmodel/login_view_model.dart';
 import 'package:smartmeal/presentation/widgets/inputs/filled_text_field.dart';
 import 'package:smartmeal/presentation/widgets/buttons/primary_button.dart';
+import 'package:smartmeal/l10n/l10n_ext.dart';
 
 class LoginForm extends StatefulWidget {
   final VoidCallback? onSuccess;
@@ -49,25 +50,26 @@ class _LoginFormState extends State<LoginForm> {
   Widget build(BuildContext context) {
     final vm = context.watch<LoginViewModel>();
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
 
     return Form(
       key: _formKey,
       child: Column(
         children: [
           FilledTextField(
-            hintText: 'Correo electrónico',
+            hintText: l10n.loginEmailHint,
             controller: _emailCtrl,
             keyboardType: TextInputType.emailAddress,
             prefixIcon: Icons.mail_outlined,
             validator: (v) {
-              if (v == null || v.trim().isEmpty) return 'Campo obligatorio';
-              if (!v.contains('@')) return 'Correo no válido';
+              if (v == null || v.trim().isEmpty) return l10n.loginFieldRequired;
+              if (!v.contains('@')) return l10n.loginEmailInvalid;
               return null;
             },
           ),
           const SizedBox(height: 12),
           FilledTextField(
-            hintText: 'Contraseña',
+            hintText: l10n.loginPasswordHint,
             controller: _passCtrl,
             obscureText: vm.obscurePassword,
             prefixIcon: Icons.lock_outline,
@@ -99,7 +101,7 @@ class _LoginFormState extends State<LoginForm> {
                     activeColor: colorScheme.primary,
                   ),
                   Text(
-                    'Recordarme',
+                    l10n.loginRememberMe,
                     style: TextStyle(
                       color: colorScheme.onSurface, 
                       fontSize: 14,
@@ -111,7 +113,7 @@ class _LoginFormState extends State<LoginForm> {
           ),
           const SizedBox(height: 24),
           PrimaryButton(
-            text: 'Iniciar Sesión',
+            text: l10n.loginButton,
             isLoading: vm.isLoading,
             onPressed: () async {
               if (_formKey.currentState!.validate()) {

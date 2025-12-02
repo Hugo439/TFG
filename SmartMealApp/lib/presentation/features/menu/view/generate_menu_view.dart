@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smartmeal/core/di/service_locator.dart';
-import 'package:smartmeal/domain/usecases/generate_weekly_menu_usecase.dart';
 import 'package:smartmeal/domain/usecases/get_user_profile_usecase.dart';
 import 'package:smartmeal/domain/usecases/get_current_user_usecase.dart';
 import 'package:smartmeal/domain/usecases/save_menu_recipes_usecase.dart';
@@ -16,7 +15,6 @@ class GenerateMenuView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) => GenerateMenuViewModel(
-        sl<GenerateWeeklyMenuUseCase>(),
         sl<GetUserProfileUseCase>(),
         sl<GetCurrentUserUseCase>(),
         sl<WeeklyMenuRepository>(),

@@ -6,6 +6,7 @@ import 'package:smartmeal/domain/usecases/update_user_profile_usecase.dart';
 import 'package:smartmeal/presentation/features/profile/viewmodel/edit_profile_view_model.dart';
 import 'package:smartmeal/presentation/widgets/inputs/filled_text_field.dart';
 import 'package:smartmeal/presentation/widgets/buttons/primary_button.dart';
+import 'package:smartmeal/l10n/l10n_ext.dart';
 
 class EditProfileView extends StatelessWidget {
   final UserProfile profile;
@@ -27,11 +28,32 @@ class EditProfileView extends StatelessWidget {
 class _EditProfileContent extends StatelessWidget {
   const _EditProfileContent();
 
+  String _getErrorMessage(BuildContext context, EditProfileState state) {
+    final l10n = context.l10n;
+    
+    if (state.errorCode != null) {
+      switch (state.errorCode!) {
+        case EditProfileErrorCode.nameRequired:
+          return l10n.editProfileErrorNameRequired;
+        case EditProfileErrorCode.heightInvalid:
+          return l10n.editProfileErrorHeightInvalid;
+        case EditProfileErrorCode.weightInvalid:
+          return l10n.editProfileErrorWeightInvalid;
+        case EditProfileErrorCode.validationError:
+          return state.errorMessage ?? l10n.editProfileErrorGeneric;
+        case EditProfileErrorCode.generic:
+          return l10n.editProfileErrorGeneric;
+      }
+    }
+    
+    return state.errorMessage ?? l10n.editProfileErrorGeneric;
+  }
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<EditProfileViewModel>();
     final state = vm.state;
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
@@ -43,7 +65,7 @@ class _EditProfileContent extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          'Editar Perfil',
+          l10n.editProfileTitle,
           style: TextStyle(
             color: colorScheme.onSurface,
             fontSize: 20,
@@ -97,24 +119,24 @@ class _EditProfileContent extends StatelessWidget {
             const SizedBox(height: 32),
 
             // Información Personal
-            _SectionTitle(title: 'Información Personal'),
+            _SectionTitle(title: l10n.editProfilePersonalInfo),
             const SizedBox(height: 12),
             FilledTextField(
-              label: 'Nombre',
+              label: l10n.editProfileNameLabel,
               initialValue: vm.displayName,
               onChanged: vm.setDisplayName,
               prefixIcon: Icons.person_outline,
             ),
             const SizedBox(height: 12),
             FilledTextField(
-              label: 'Correo Electrónico',
+              label: l10n.editProfileEmailLabel,
               initialValue: vm.initialProfile.email.value,
               enabled: false,
               prefixIcon: Icons.email_outlined,
             ),
             const SizedBox(height: 12),
             FilledTextField(
-              label: 'Teléfono (opcional)',
+              label: l10n.editProfilePhoneLabel,
               initialValue: vm.phone,
               onChanged: vm.setPhone,
               prefixIcon: Icons.phone_outlined,
@@ -123,13 +145,13 @@ class _EditProfileContent extends StatelessWidget {
             const SizedBox(height: 24),
 
             // Datos Físicos
-            _SectionTitle(title: 'Datos Físicos'),
+            _SectionTitle(title: l10n.editProfilePhysicalData),
             const SizedBox(height: 12),
             Row(
               children: [
                 Expanded(
                   child: FilledTextField(
-                    label: 'Altura (cm)',
+                    label: l10n.editProfileHeightLabel,
                     initialValue: vm.heightCm,
                     onChanged: vm.setHeightCm,
                     prefixIcon: Icons.height,
@@ -139,7 +161,7 @@ class _EditProfileContent extends StatelessWidget {
                 const SizedBox(width: 12),
                 Expanded(
                   child: FilledTextField(
-                    label: 'Peso (kg)',
+                    label: l10n.editProfileWeightLabel,
                     initialValue: vm.weightKg,
                     onChanged: vm.setWeightKg,
                     prefixIcon: Icons.monitor_weight_outlined,
@@ -151,7 +173,7 @@ class _EditProfileContent extends StatelessWidget {
             const SizedBox(height: 24),
 
             // Objetivos y Preferencias
-            _SectionTitle(title: 'Objetivos y Preferencias'),
+            _SectionTitle(title: l10n.editProfileGoalsPreferences),
             const SizedBox(height: 12),
             _GoalDropdown(
               value: vm.goal,
@@ -159,7 +181,7 @@ class _EditProfileContent extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             FilledTextField(
-              label: 'Alergias Alimentarias (opcional)',
+              label: l10n.editProfileAllergiesLabel,
               initialValue: vm.allergies,
               onChanged: vm.setAllergies,
               prefixIcon: Icons.warning_amber_outlined,
@@ -168,7 +190,7 @@ class _EditProfileContent extends StatelessWidget {
             const SizedBox(height: 32),
 
             // Error message
-            if (state.error != null) ...[
+            if (state.errorCode != null || state.errorMessage != null) ...[
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
@@ -176,7 +198,7 @@ class _EditProfileContent extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
-                  state.error!,
+                  _getErrorMessage(context, state),
                   style: TextStyle(color: colorScheme.error),
                   textAlign: TextAlign.center,
                 ),
@@ -186,14 +208,14 @@ class _EditProfileContent extends StatelessWidget {
 
             // Save button
             PrimaryButton(
-              text: 'Guardar Cambios',
+              text: l10n.editProfileSaveButton,
               isLoading: state.status == EditProfileStatus.loading,
               onPressed: () async {
                 final success = await vm.saveChanges();
                 if (success && context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: const Text('Perfil actualizado correctamente'),
+                      content: Text(l10n.editProfileSaveSuccess),
                       backgroundColor: colorScheme.primary,
                     ),
                   );
@@ -240,6 +262,7 @@ class _GoalDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
     
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -257,26 +280,47 @@ class _GoalDropdown extends StatelessWidget {
           icon: Icon(Icons.arrow_drop_down, color: colorScheme.primary),
           dropdownColor: colorScheme.surfaceContainerHighest,
           items: [
-            'Perder peso',
-            'Ganar masa muscular',
-            'Mantener peso',
-            'Alimentación saludable',
-          ].map((goal) {
-            return DropdownMenuItem(
-              value: goal,
+            DropdownMenuItem(
+              value: 'Perder peso',
               child: Row(
                 children: [
-                  Icon(
-                    Icons.flag_outlined,
-                    color: colorScheme.primary,
-                    size: 20,
-                  ),
+                  Icon(Icons.flag_outlined, color: colorScheme.primary, size: 20),
                   const SizedBox(width: 12),
-                  Text(goal, style: TextStyle(color: colorScheme.onSurface)),
+                  Text(l10n.registerGoalLoseWeight, style: TextStyle(color: colorScheme.onSurface)),
                 ],
               ),
-            );
-          }).toList(),
+            ),
+            DropdownMenuItem(
+              value: 'Ganar masa muscular',
+              child: Row(
+                children: [
+                  Icon(Icons.flag_outlined, color: colorScheme.primary, size: 20),
+                  const SizedBox(width: 12),
+                  Text(l10n.registerGoalGainMuscle, style: TextStyle(color: colorScheme.onSurface)),
+                ],
+              ),
+            ),
+            DropdownMenuItem(
+              value: 'Mantener peso',
+              child: Row(
+                children: [
+                  Icon(Icons.flag_outlined, color: colorScheme.primary, size: 20),
+                  const SizedBox(width: 12),
+                  Text(l10n.registerGoalMaintainWeight, style: TextStyle(color: colorScheme.onSurface)),
+                ],
+              ),
+            ),
+            DropdownMenuItem(
+              value: 'Alimentación saludable',
+              child: Row(
+                children: [
+                  Icon(Icons.flag_outlined, color: colorScheme.primary, size: 20),
+                  const SizedBox(width: 12),
+                  Text(l10n.registerGoalHealthyEating, style: TextStyle(color: colorScheme.onSurface)),
+                ],
+              ),
+            ),
+          ],
           onChanged: (v) => onChanged(v ?? value),
         ),
       ),
