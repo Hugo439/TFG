@@ -7,6 +7,7 @@ import 'package:smartmeal/domain/usecases/save_menu_recipes_usecase.dart';
 import 'package:smartmeal/presentation/features/menu/viewmodel/generate_menu_view_model.dart';
 import 'package:smartmeal/presentation/features/menu/widgets/weekly_menu_calendar.dart';
 import 'package:smartmeal/domain/repositories/weekly_menu_repository.dart';
+import 'package:smartmeal/l10n/l10n_ext.dart';
 
 class GenerateMenuView extends StatelessWidget {
   const GenerateMenuView({super.key});
@@ -33,6 +34,7 @@ class _GenerateMenuContent extends StatelessWidget {
     final vm = context.watch<GenerateMenuViewModel>();
     final state = vm.state;
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
@@ -44,7 +46,7 @@ class _GenerateMenuContent extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          'Generar Menú Semanal',
+          l10n.generateMenuTitle,
           style: TextStyle(
             color: colorScheme.onSurface,
             fontSize: 20,
@@ -62,6 +64,7 @@ class _GenerateMenuContent extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final state = vm.state;
     final isLoading = state.status == GenerateMenuStatus.loading;
+    final l10n = context.l10n;
 
     return Center(
       child: SingleChildScrollView(
@@ -86,7 +89,7 @@ class _GenerateMenuContent extends StatelessWidget {
 
             // Título
             Text(
-              'Generación Inteligente de Menús',
+              l10n.generateMenuMainTitle,
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -98,7 +101,7 @@ class _GenerateMenuContent extends StatelessWidget {
 
             // Descripción
             Text(
-              'Crea un menú semanal personalizado basado en tu perfil, objetivos y restricciones alimentarias',
+              l10n.generateMenuDescription,
               style: TextStyle(
                 fontSize: 16,
                 color: colorScheme.onSurface.withOpacity(0.7),
@@ -112,22 +115,22 @@ class _GenerateMenuContent extends StatelessWidget {
             _buildFeatureItem(
               context,
               Icons.restaurant_menu,
-              '28 recetas únicas',
-              'Desayuno, comida, cena y snack para cada día',
+              l10n.generateMenuFeature1Title,
+              l10n.generateMenuFeature1Desc,
             ),
             const SizedBox(height: 16),
             _buildFeatureItem(
               context,
               Icons.psychology,
-              'Personalizado con IA',
-              'Adaptado a tus objetivos nutricionales',
+              l10n.generateMenuFeature2Title,
+              l10n.generateMenuFeature2Desc,
             ),
             const SizedBox(height: 16),
             _buildFeatureItem(
               context,
               Icons.health_and_safety,
-              'Respeta tus alergias',
-              'Sin ingredientes que no puedas consumir',
+              l10n.generateMenuFeature3Title,
+              l10n.generateMenuFeature3Desc,
             ),
             const SizedBox(height: 48),
 
@@ -189,8 +192,8 @@ class _GenerateMenuContent extends StatelessWidget {
                           ),
                           const SizedBox(width: 16),
                           Text(
-                            'Generando menú...',
-                            style: TextStyle(
+                            l10n.generateMenuGenerating,
+                            style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
@@ -200,11 +203,11 @@ class _GenerateMenuContent extends StatelessWidget {
                     : Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.auto_awesome, size: 24),
+                          const Icon(Icons.auto_awesome, size: 24),
                           const SizedBox(width: 12),
                           Text(
-                            'Generar Mi Menú Semanal',
-                            style: TextStyle(
+                            l10n.generateMenuButton,
+                            style: const TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
@@ -218,7 +221,7 @@ class _GenerateMenuContent extends StatelessWidget {
             // Texto informativo
             if (isLoading)
               Text(
-                'Esto puede tardar unos segundos...',
+                l10n.generateMenuWaitMessage,
                 style: TextStyle(
                   color: colorScheme.onSurface.withOpacity(0.6),
                   fontSize: 14,
@@ -227,7 +230,7 @@ class _GenerateMenuContent extends StatelessWidget {
               )
             else
               Text(
-                'El menú se generará automáticamente según tu perfil',
+                l10n.generateMenuAutoMessage,
                 style: TextStyle(
                   color: colorScheme.onSurface.withOpacity(0.6),
                   fontSize: 14,
@@ -300,6 +303,7 @@ class _GenerateMenuContent extends StatelessWidget {
   Widget _buildSuccessView(BuildContext context, GenerateMenuViewModel vm) {
     final colorScheme = Theme.of(context).colorScheme;
     final menu = vm.state.generatedMenu!;
+    final l10n = context.l10n;
 
     return Column(
       children: [
@@ -337,7 +341,7 @@ class _GenerateMenuContent extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              '¡Menú generado con éxito!',
+                              l10n.generateMenuSuccess,
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -366,7 +370,7 @@ class _GenerateMenuContent extends StatelessWidget {
                     Expanded(
                       child: _buildStatCard(
                         context,
-                        'Calorías totales',
+                        l10n.generateMenuTotalCalories,
                         '${menu.totalWeeklyCalories} kcal',
                         Icons.local_fire_department,
                       ),
@@ -375,7 +379,7 @@ class _GenerateMenuContent extends StatelessWidget {
                     Expanded(
                       child: _buildStatCard(
                         context,
-                        'Promedio diario',
+                        l10n.generateMenuAvgCalories,
                         '${menu.avgDailyCalories.toInt()} kcal',
                         Icons.trending_up,
                       ),
@@ -415,7 +419,7 @@ class _GenerateMenuContent extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       side: BorderSide(color: colorScheme.primary),
                     ),
-                    child: const Text('Descartar'),
+                    child: Text(l10n.generateMenuDiscard),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -423,13 +427,12 @@ class _GenerateMenuContent extends StatelessWidget {
                   flex: 2,
                   child: ElevatedButton(
                     onPressed: () async {
-                      // Guardar el menú en Firestore antes de cerrar
                       try {
                         await vm.saveGeneratedMenu();
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text('✓ Menú guardado correctamente'),
+                            SnackBar(
+                              content: Text(l10n.menuSaveSuccess),
                               backgroundColor: Colors.green,
                             ),
                           );
@@ -439,7 +442,7 @@ class _GenerateMenuContent extends StatelessWidget {
                         if (context.mounted) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                              content: Text('Error al guardar: $e'),
+                              content: Text('${l10n.menuSaveError}: $e'),
                               backgroundColor: Colors.red,
                             ),
                           );
@@ -451,7 +454,7 @@ class _GenerateMenuContent extends StatelessWidget {
                       foregroundColor: colorScheme.onPrimary,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                     ),
-                    child: const Text('Guardar Menú'),
+                    child: Text(l10n.generateMenuSave),
                   ),
                 ),
               ],

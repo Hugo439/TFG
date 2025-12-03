@@ -1,6 +1,6 @@
-// widgets/recipe_detail_content.dart
 import 'package:flutter/material.dart';
 import 'package:smartmeal/domain/entities/recipe.dart';
+import 'package:smartmeal/l10n/l10n_ext.dart';
 
 class RecipeDetailContent extends StatelessWidget {
   final Recipe recipe;
@@ -9,6 +9,8 @@ class RecipeDetailContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -27,13 +29,39 @@ class RecipeDetailContent extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 16),
-        Text('Descripción', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: colorScheme.primary)),
+        Text(
+          l10n.recipeDescription,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+            color: colorScheme.primary,
+          ),
+        ),
         const SizedBox(height: 4),
-        Text(recipe.description.value, style: TextStyle(fontSize: 15, color: colorScheme.onSurface.withOpacity(0.8))),
+        Text(
+          recipe.description.value,
+          style: TextStyle(
+            fontSize: 15,
+            color: colorScheme.onSurface.withOpacity(0.8),
+          ),
+        ),
         const SizedBox(height: 16),
-        Text('Ingredientes', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: colorScheme.primary)),
+        Text(
+          l10n.recipeIngredients,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+            color: colorScheme.primary,
+          ),
+        ),
         const SizedBox(height: 4),
-        Text(recipe.ingredients.join(', '), style: TextStyle(fontSize: 15, color: colorScheme.onSurface.withOpacity(0.8))),
+        Text(
+          recipe.ingredients.join(', '),
+          style: TextStyle(
+            fontSize: 15,
+            color: colorScheme.onSurface.withOpacity(0.8),
+          ),
+        ),
       ],
     );
   }

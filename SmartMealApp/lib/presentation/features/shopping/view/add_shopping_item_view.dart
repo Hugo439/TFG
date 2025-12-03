@@ -6,6 +6,7 @@ import 'package:smartmeal/domain/usecases/add_shopping_item_usecase.dart';
 import 'package:smartmeal/presentation/features/shopping/viewmodel/add_shopping_item_view_model.dart';
 import 'package:smartmeal/presentation/widgets/inputs/filled_text_field.dart';
 import 'package:smartmeal/presentation/widgets/buttons/primary_button.dart';
+import 'package:smartmeal/l10n/l10n_ext.dart';
 
 class AddShoppingItemView extends StatelessWidget {
   final ShoppingItem? itemToEdit;
@@ -32,6 +33,7 @@ class _AddShoppingItemContent extends StatelessWidget {
     final vm = context.watch<AddShoppingItemViewModel>();
     final isEdit = vm.itemToEdit != null;
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
@@ -43,7 +45,7 @@ class _AddShoppingItemContent extends StatelessWidget {
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          isEdit ? 'Editar Producto' : 'Añadir Producto',
+          isEdit ? l10n.shoppingEditTitle : l10n.shoppingAddTitle,
           style: TextStyle(
             color: colorScheme.onSurface,
             fontSize: 20,
@@ -75,7 +77,7 @@ class _AddShoppingItemContent extends StatelessWidget {
 
             // Nombre del producto
             Text(
-              'Nombre del Producto',
+              l10n.shoppingProductNameLabel,
               style: TextStyle(
                 color: colorScheme.onSurface,
                 fontSize: 14,
@@ -84,7 +86,7 @@ class _AddShoppingItemContent extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             FilledTextField(
-              label: 'Ej: Arroz Basmati',
+              label: l10n.shoppingProductNameHint,
               initialValue: vm.name,
               onChanged: vm.setName,
               prefixIcon: Icons.shopping_cart,
@@ -93,7 +95,7 @@ class _AddShoppingItemContent extends StatelessWidget {
 
             // Cantidad
             Text(
-              'Cantidad',
+              l10n.shoppingQuantityLabel,
               style: TextStyle(
                 color: colorScheme.onSurface,
                 fontSize: 14,
@@ -102,7 +104,7 @@ class _AddShoppingItemContent extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             FilledTextField(
-              label: 'Ej: 500g, 1kg, 2 unidades',
+              label: l10n.shoppingQuantityHint,
               initialValue: vm.quantity,
               onChanged: vm.setQuantity,
               prefixIcon: Icons.scale,
@@ -111,7 +113,7 @@ class _AddShoppingItemContent extends StatelessWidget {
 
             // Precio
             Text(
-              'Precio (€)',
+              l10n.shoppingPriceLabel,
               style: TextStyle(
                 color: colorScheme.onSurface,
                 fontSize: 14,
@@ -120,7 +122,7 @@ class _AddShoppingItemContent extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             FilledTextField(
-              label: 'Ej: 3.50',
+              label: l10n.shoppingPriceHint,
               initialValue: vm.price,
               onChanged: vm.setPrice,
               prefixIcon: Icons.euro,
@@ -130,7 +132,7 @@ class _AddShoppingItemContent extends StatelessWidget {
 
             // Categoría
             Text(
-              'Categoría',
+              l10n.shoppingCategoryLabel,
               style: TextStyle(
                 color: colorScheme.onSurface,
                 fontSize: 14,
@@ -146,7 +148,7 @@ class _AddShoppingItemContent extends StatelessWidget {
 
             // Para qué menús
             Text(
-              'Para qué menús (opcional)',
+              l10n.shoppingMenusLabel,
               style: TextStyle(
                 color: colorScheme.onSurface,
                 fontSize: 14,
@@ -155,7 +157,7 @@ class _AddShoppingItemContent extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             FilledTextField(
-              label: 'Ej: Pollo al curry, Ensalada César',
+              label: l10n.shoppingMenusHint,
               initialValue: vm.usedInMenus,
               onChanged: vm.setUsedInMenus,
               prefixIcon: Icons.restaurant_menu,
@@ -164,17 +166,20 @@ class _AddShoppingItemContent extends StatelessWidget {
             const SizedBox(height: 32),
 
             // Error message
-            if (vm.error != null) ...[
+            if (vm.errorCode != null || vm.errorDetails != null) ...[
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
                   color: colorScheme.error.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  vm.error!,
+                  vm.errorCode == ShoppingErrorCode.requiredFields
+                      ? l10n.shoppingFormRequiredError
+                      : vm.errorCode == ShoppingErrorCode.saveError
+                          ? l10n.shoppingSaveError
+                          : vm.errorDetails ?? '',
                   style: TextStyle(color: colorScheme.error),
-                  textAlign: TextAlign.center,
                 ),
               ),
               const SizedBox(height: 16),
@@ -182,7 +187,7 @@ class _AddShoppingItemContent extends StatelessWidget {
 
             // Save button
             PrimaryButton(
-              text: isEdit ? 'Guardar Cambios' : 'Añadir a la Lista',
+              text: isEdit ? l10n.shoppingEditItemButton : l10n.shoppingAddItemButton,
               isLoading: vm.loading,
               onPressed: () async {
                 final success = await vm.save();
@@ -191,8 +196,8 @@ class _AddShoppingItemContent extends StatelessWidget {
                     SnackBar(
                       content: Text(
                         isEdit
-                            ? 'Producto actualizado'
-                            : 'Producto añadido a la lista',
+                            ? l10n.shoppingItemUpdated
+                            : l10n.shoppingItemAdded,
                       ),
                       backgroundColor: colorScheme.primary,
                     ),
@@ -220,15 +225,24 @@ class _CategoryDropdown extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
     
+    // Mapa de valores internos a claves de traducción
+    final categories = {
+      'Frutas y Verduras': l10n.shoppingCategoryFruits,
+      'Carnes y Pescados': l10n.shoppingCategoryMeat,
+      'Lácteos': l10n.shoppingCategoryDairy,
+      'Panadería': l10n.shoppingCategoryBakery,
+      'Bebidas': l10n.shoppingCategoryBeverages,
+      'Snacks': l10n.shoppingCategorySnacks,
+      'Otros': l10n.shoppingCategoryOthers,
+    };
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: colorScheme.outline.withOpacity(0.2),
-        ),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
@@ -236,58 +250,20 @@ class _CategoryDropdown extends StatelessWidget {
           isExpanded: true,
           icon: Icon(Icons.arrow_drop_down, color: colorScheme.primary),
           dropdownColor: colorScheme.surfaceContainerHighest,
-          items: [
-            'Frutas y Verduras',
-            'Carnes y Pescados',
-            'Lácteos',
-            'Panadería',
-            'Conservas',
-            'Congelados',
-            'Bebidas',
-            'Otros',
-          ].map((category) {
+          items: categories.entries.map((entry) {
             return DropdownMenuItem(
-              value: category,
-              child: Row(
-                children: [
-                  Icon(
-                    _getCategoryIcon(category),
-                    size: 20,
-                    color: colorScheme.primary,
-                  ),
-                  const SizedBox(width: 12),
-                  Text(
-                    category,
-                    style: TextStyle(color: colorScheme.onSurface),
-                  ),
-                ],
+              value: entry.key, // Valor interno que se guarda en Firestore
+              child: Text(
+                entry.value, // Texto traducido que se muestra
+                style: TextStyle(color: colorScheme.onSurface),
               ),
             );
           }).toList(),
-          onChanged: (v) => onChanged(v ?? value),
+          onChanged: (v) {
+            if (v != null) onChanged(v);
+          },
         ),
       ),
     );
-  }
-
-  IconData _getCategoryIcon(String category) {
-    switch (category) {
-      case 'Frutas y Verduras':
-        return Icons.apple;
-      case 'Carnes y Pescados':
-        return Icons.set_meal;
-      case 'Lácteos':
-        return Icons.water_drop;
-      case 'Panadería':
-        return Icons.bakery_dining;
-      case 'Conservas':
-        return Icons.local_dining;
-      case 'Congelados':
-        return Icons.ac_unit;
-      case 'Bebidas':
-        return Icons.local_drink;
-      default:
-        return Icons.shopping_bag;
-    }
   }
 }

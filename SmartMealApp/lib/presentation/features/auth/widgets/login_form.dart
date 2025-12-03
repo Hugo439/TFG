@@ -31,7 +31,6 @@ class _LoginFormState extends State<LoginForm> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Cargar credenciales guardadas
     final vm = context.watch<LoginViewModel>();
     if (_emailCtrl.text.isEmpty && vm.email.isNotEmpty) {
       _emailCtrl.text = vm.email;
@@ -44,6 +43,27 @@ class _LoginFormState extends State<LoginForm> {
     _emailCtrl.dispose();
     _passCtrl.dispose();
     super.dispose();
+  }
+
+  String? _getErrorText(BuildContext context, LoginErrorCode? code) {
+    if (code == null) return null;
+    final l10n = context.l10n;
+    switch (code) {
+      case LoginErrorCode.fieldsRequired:
+        return l10n.loginErrorFieldsRequired;
+      case LoginErrorCode.userNotFound:
+        return l10n.loginErrorUserNotFound;
+      case LoginErrorCode.wrongPassword:
+        return l10n.loginErrorWrongPassword;
+      case LoginErrorCode.invalidEmail:
+        return l10n.loginErrorInvalidEmail;
+      case LoginErrorCode.userDisabled:
+        return l10n.loginErrorUserDisabled;
+      case LoginErrorCode.invalidCredential:
+        return l10n.loginErrorInvalidCredential;
+      case LoginErrorCode.generic:
+        return l10n.loginErrorGeneric;
+    }
   }
 
   @override
@@ -81,10 +101,10 @@ class _LoginFormState extends State<LoginForm> {
               onPressed: context.read<LoginViewModel>().togglePasswordVisibility,
             ),
           ),
-          if (vm.error != null) ...[
+          if (_getErrorText(context, vm.errorCode) != null) ...[
             const SizedBox(height: 8),
             Text(
-              vm.error!,
+              _getErrorText(context, vm.errorCode)!,
               style: TextStyle(color: colorScheme.error, fontSize: 12),
             ),
           ],

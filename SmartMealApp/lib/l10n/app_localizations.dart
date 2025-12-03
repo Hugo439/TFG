@@ -98,6 +98,66 @@ abstract class AppLocalizations {
     Locale('es'),
   ];
 
+  /// No description provided for @navMenus.
+  ///
+  /// In es, this message translates to:
+  /// **'Menús'**
+  String get navMenus;
+
+  /// No description provided for @navHome.
+  ///
+  /// In es, this message translates to:
+  /// **'Inicio'**
+  String get navHome;
+
+  /// No description provided for @navShopping.
+  ///
+  /// In es, this message translates to:
+  /// **'Lista de la compra'**
+  String get navShopping;
+
+  /// No description provided for @notificationDefaultTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'¡SmartMeal!'**
+  String get notificationDefaultTitle;
+
+  /// No description provided for @notificationDefaultBody.
+  ///
+  /// In es, this message translates to:
+  /// **'Tienes una nueva notificación'**
+  String get notificationDefaultBody;
+
+  /// No description provided for @notificationActionView.
+  ///
+  /// In es, this message translates to:
+  /// **'Ver'**
+  String get notificationActionView;
+
+  /// No description provided for @logoNotFound.
+  ///
+  /// In es, this message translates to:
+  /// **'Logo no encontrado'**
+  String get logoNotFound;
+
+  /// No description provided for @errorTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ha ocurrido un error'**
+  String get errorTitle;
+
+  /// No description provided for @errorInitializing.
+  ///
+  /// In es, this message translates to:
+  /// **'Error inicializando'**
+  String get errorInitializing;
+
+  /// No description provided for @errorRetry.
+  ///
+  /// In es, this message translates to:
+  /// **'Reintentar'**
+  String get errorRetry;
+
   /// No description provided for @commonCancel.
   ///
   /// In es, this message translates to:
@@ -211,6 +271,48 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Regístrate'**
   String get loginRegisterLink;
+
+  /// No description provided for @loginErrorFieldsRequired.
+  ///
+  /// In es, this message translates to:
+  /// **'Por favor completa todos los campos'**
+  String get loginErrorFieldsRequired;
+
+  /// No description provided for @loginErrorUserNotFound.
+  ///
+  /// In es, this message translates to:
+  /// **'No existe una cuenta con este correo'**
+  String get loginErrorUserNotFound;
+
+  /// No description provided for @loginErrorWrongPassword.
+  ///
+  /// In es, this message translates to:
+  /// **'Contraseña incorrecta'**
+  String get loginErrorWrongPassword;
+
+  /// No description provided for @loginErrorInvalidEmail.
+  ///
+  /// In es, this message translates to:
+  /// **'Correo electrónico inválido'**
+  String get loginErrorInvalidEmail;
+
+  /// No description provided for @loginErrorUserDisabled.
+  ///
+  /// In es, this message translates to:
+  /// **'Esta cuenta ha sido deshabilitada'**
+  String get loginErrorUserDisabled;
+
+  /// No description provided for @loginErrorInvalidCredential.
+  ///
+  /// In es, this message translates to:
+  /// **'Credenciales inválidas'**
+  String get loginErrorInvalidCredential;
+
+  /// No description provided for @loginErrorGeneric.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al iniciar sesión'**
+  String get loginErrorGeneric;
 
   /// No description provided for @registerTitle.
   ///
@@ -415,6 +517,30 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Inicia Sesión'**
   String get registerLoginLink;
+
+  /// No description provided for @registerErrorEmailInUse.
+  ///
+  /// In es, this message translates to:
+  /// **'Este correo ya está registrado'**
+  String get registerErrorEmailInUse;
+
+  /// No description provided for @registerErrorInvalidEmail.
+  ///
+  /// In es, this message translates to:
+  /// **'Correo electrónico inválido'**
+  String get registerErrorInvalidEmail;
+
+  /// No description provided for @registerErrorWeakPassword.
+  ///
+  /// In es, this message translates to:
+  /// **'La contraseña es muy débil'**
+  String get registerErrorWeakPassword;
+
+  /// No description provided for @registerErrorGeneric.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al registrarse'**
+  String get registerErrorGeneric;
 
   /// No description provided for @supportTitle.
   ///
@@ -727,6 +853,24 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'WhatsApp'**
   String get contactWhatsApp;
+
+  /// Formato de fecha para hoy
+  ///
+  /// In es, this message translates to:
+  /// **'Hoy a las {time}'**
+  String supportDateToday(String time);
+
+  /// Formato de fecha para ayer
+  ///
+  /// In es, this message translates to:
+  /// **'Ayer a las {time}'**
+  String supportDateYesterday(String time);
+
+  /// Hace X días
+  ///
+  /// In es, this message translates to:
+  /// **'Hace {days} días'**
+  String supportDateDaysAgo(int days);
 
   /// No description provided for @settingsTitle.
   ///
@@ -1178,6 +1322,54 @@ abstract class AppLocalizations {
   /// **'Eliminar Cuenta'**
   String get profileDeleteAccountButton;
 
+  /// No description provided for @goalLoseWeight.
+  ///
+  /// In es, this message translates to:
+  /// **'Perder peso'**
+  String get goalLoseWeight;
+
+  /// No description provided for @goalMaintainWeight.
+  ///
+  /// In es, this message translates to:
+  /// **'Mantener peso'**
+  String get goalMaintainWeight;
+
+  /// No description provided for @goalGainMuscle.
+  ///
+  /// In es, this message translates to:
+  /// **'Ganar masa muscular'**
+  String get goalGainMuscle;
+
+  /// No description provided for @goalHealthyEating.
+  ///
+  /// In es, this message translates to:
+  /// **'Alimentación saludable'**
+  String get goalHealthyEating;
+
+  /// No description provided for @profileBmiNormal.
+  ///
+  /// In es, this message translates to:
+  /// **'Peso normal'**
+  String get profileBmiNormal;
+
+  /// No description provided for @profileBmiUnderweight.
+  ///
+  /// In es, this message translates to:
+  /// **'Bajo peso'**
+  String get profileBmiUnderweight;
+
+  /// No description provided for @profileBmiOverweight.
+  ///
+  /// In es, this message translates to:
+  /// **'Sobrepeso'**
+  String get profileBmiOverweight;
+
+  /// No description provided for @profileBmiObese.
+  ///
+  /// In es, this message translates to:
+  /// **'Obesidad'**
+  String get profileBmiObese;
+
   /// No description provided for @editProfileTitle.
   ///
   /// In es, this message translates to:
@@ -1316,6 +1508,132 @@ abstract class AppLocalizations {
   /// **'Generar nuevo menú'**
   String get menuGenerateTooltip;
 
+  /// No description provided for @menuSaveError.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al guardar'**
+  String get menuSaveError;
+
+  /// No description provided for @menuSaveSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'Menú guardado correctamente'**
+  String get menuSaveSuccess;
+
+  /// No description provided for @menuCardComingSoon.
+  ///
+  /// In es, this message translates to:
+  /// **'Próximamente'**
+  String get menuCardComingSoon;
+
+  /// No description provided for @generateMenuTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Generar Menú Semanal'**
+  String get generateMenuTitle;
+
+  /// No description provided for @generateMenuMainTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Generación Inteligente de Menús'**
+  String get generateMenuMainTitle;
+
+  /// No description provided for @generateMenuDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Crea un menú semanal personalizado basado en tu perfil, objetivos y restricciones alimentarias'**
+  String get generateMenuDescription;
+
+  /// No description provided for @generateMenuFeature1Title.
+  ///
+  /// In es, this message translates to:
+  /// **'28 recetas únicas'**
+  String get generateMenuFeature1Title;
+
+  /// No description provided for @generateMenuFeature1Desc.
+  ///
+  /// In es, this message translates to:
+  /// **'Desayuno, comida, cena y snack para cada día'**
+  String get generateMenuFeature1Desc;
+
+  /// No description provided for @generateMenuFeature2Title.
+  ///
+  /// In es, this message translates to:
+  /// **'Personalizado con IA'**
+  String get generateMenuFeature2Title;
+
+  /// No description provided for @generateMenuFeature2Desc.
+  ///
+  /// In es, this message translates to:
+  /// **'Adaptado a tus objetivos nutricionales'**
+  String get generateMenuFeature2Desc;
+
+  /// No description provided for @generateMenuFeature3Title.
+  ///
+  /// In es, this message translates to:
+  /// **'Respeta tus alergias'**
+  String get generateMenuFeature3Title;
+
+  /// No description provided for @generateMenuFeature3Desc.
+  ///
+  /// In es, this message translates to:
+  /// **'Sin ingredientes que no puedas consumir'**
+  String get generateMenuFeature3Desc;
+
+  /// No description provided for @generateMenuButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Generar Mi Menú Semanal'**
+  String get generateMenuButton;
+
+  /// No description provided for @generateMenuGenerating.
+  ///
+  /// In es, this message translates to:
+  /// **'Generando menú...'**
+  String get generateMenuGenerating;
+
+  /// No description provided for @generateMenuWaitMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'Esto puede tardar unos segundos...'**
+  String get generateMenuWaitMessage;
+
+  /// No description provided for @generateMenuAutoMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'El menú se generará automáticamente según tu perfil'**
+  String get generateMenuAutoMessage;
+
+  /// No description provided for @generateMenuSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'¡Menú generado con éxito!'**
+  String get generateMenuSuccess;
+
+  /// No description provided for @generateMenuTotalCalories.
+  ///
+  /// In es, this message translates to:
+  /// **'Calorías totales'**
+  String get generateMenuTotalCalories;
+
+  /// No description provided for @generateMenuAvgCalories.
+  ///
+  /// In es, this message translates to:
+  /// **'Promedio diario'**
+  String get generateMenuAvgCalories;
+
+  /// No description provided for @generateMenuDiscard.
+  ///
+  /// In es, this message translates to:
+  /// **'Descartar'**
+  String get generateMenuDiscard;
+
+  /// No description provided for @generateMenuSave.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar Menú'**
+  String get generateMenuSave;
+
   /// No description provided for @shoppingTitle.
   ///
   /// In es, this message translates to:
@@ -1375,6 +1693,186 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'{checked}/{total} productos'**
   String shoppingSelectedCount(int checked, int total);
+
+  /// No description provided for @shoppingAddTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Añadir Producto'**
+  String get shoppingAddTitle;
+
+  /// No description provided for @shoppingEditTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar Producto'**
+  String get shoppingEditTitle;
+
+  /// No description provided for @shoppingProductNameLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Nombre del Producto'**
+  String get shoppingProductNameLabel;
+
+  /// No description provided for @shoppingProductNameHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej: Arroz Basmati'**
+  String get shoppingProductNameHint;
+
+  /// No description provided for @shoppingQuantityLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Cantidad'**
+  String get shoppingQuantityLabel;
+
+  /// No description provided for @shoppingQuantityHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej: 500g, 1kg, 2 unidades'**
+  String get shoppingQuantityHint;
+
+  /// No description provided for @shoppingPriceLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Precio (€)'**
+  String get shoppingPriceLabel;
+
+  /// No description provided for @shoppingPriceHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej: 3.50'**
+  String get shoppingPriceHint;
+
+  /// No description provided for @shoppingCategoryLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Categoría'**
+  String get shoppingCategoryLabel;
+
+  /// No description provided for @shoppingMenusLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Para qué menús (opcional)'**
+  String get shoppingMenusLabel;
+
+  /// No description provided for @shoppingMenusHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej: Pollo al curry, Ensalada César'**
+  String get shoppingMenusHint;
+
+  /// No description provided for @shoppingFormRequiredError.
+  ///
+  /// In es, this message translates to:
+  /// **'Por favor completa todos los campos obligatorios'**
+  String get shoppingFormRequiredError;
+
+  /// No description provided for @shoppingSaveError.
+  ///
+  /// In es, this message translates to:
+  /// **'Error al guardar el producto'**
+  String get shoppingSaveError;
+
+  /// No description provided for @shoppingItemAdded.
+  ///
+  /// In es, this message translates to:
+  /// **'Producto añadido a la lista'**
+  String get shoppingItemAdded;
+
+  /// No description provided for @shoppingItemUpdated.
+  ///
+  /// In es, this message translates to:
+  /// **'Producto actualizado'**
+  String get shoppingItemUpdated;
+
+  /// No description provided for @shoppingAddItemButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Añadir a la Lista'**
+  String get shoppingAddItemButton;
+
+  /// No description provided for @shoppingEditItemButton.
+  ///
+  /// In es, this message translates to:
+  /// **'Guardar Cambios'**
+  String get shoppingEditItemButton;
+
+  /// No description provided for @shoppingCategoryFruits.
+  ///
+  /// In es, this message translates to:
+  /// **'Frutas y Verduras'**
+  String get shoppingCategoryFruits;
+
+  /// No description provided for @shoppingCategoryMeat.
+  ///
+  /// In es, this message translates to:
+  /// **'Carnes y Pescados'**
+  String get shoppingCategoryMeat;
+
+  /// No description provided for @shoppingCategoryDairy.
+  ///
+  /// In es, this message translates to:
+  /// **'Lácteos'**
+  String get shoppingCategoryDairy;
+
+  /// No description provided for @shoppingCategoryBakery.
+  ///
+  /// In es, this message translates to:
+  /// **'Panadería'**
+  String get shoppingCategoryBakery;
+
+  /// No description provided for @shoppingCategoryBeverages.
+  ///
+  /// In es, this message translates to:
+  /// **'Bebidas'**
+  String get shoppingCategoryBeverages;
+
+  /// No description provided for @shoppingCategorySnacks.
+  ///
+  /// In es, this message translates to:
+  /// **'Snacks'**
+  String get shoppingCategorySnacks;
+
+  /// No description provided for @shoppingCategoryOthers.
+  ///
+  /// In es, this message translates to:
+  /// **'Otros'**
+  String get shoppingCategoryOthers;
+
+  /// No description provided for @shoppingFor.
+  ///
+  /// In es, this message translates to:
+  /// **'Para'**
+  String get shoppingFor;
+
+  /// No description provided for @shoppingCategory.
+  ///
+  /// In es, this message translates to:
+  /// **'Categoría'**
+  String get shoppingCategory;
+
+  /// No description provided for @recipeDescription.
+  ///
+  /// In es, this message translates to:
+  /// **'Descripción'**
+  String get recipeDescription;
+
+  /// No description provided for @recipeIngredients.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingredientes'**
+  String get recipeIngredients;
+
+  /// No description provided for @recipeTotalCalories.
+  ///
+  /// In es, this message translates to:
+  /// **'Calorías totales'**
+  String get recipeTotalCalories;
+
+  /// No description provided for @recipeIngredientsPrefix.
+  ///
+  /// In es, this message translates to:
+  /// **'Ingredientes'**
+  String get recipeIngredientsPrefix;
 }
 
 class _AppLocalizationsDelegate

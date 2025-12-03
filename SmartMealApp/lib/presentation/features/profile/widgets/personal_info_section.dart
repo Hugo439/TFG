@@ -7,6 +7,23 @@ class PersonalInfoSection extends StatelessWidget {
 
   const PersonalInfoSection({super.key, required this.profile});
 
+  String _getLocalizedBmiCategory(BuildContext context, String category) {
+    final l10n = context.l10n;
+    // El bmiCategory viene en español desde el dominio
+    switch (category) {
+      case 'Bajo peso':
+        return l10n.profileBmiUnderweight;
+      case 'Peso normal':
+        return l10n.profileBmiNormal;
+      case 'Sobrepeso':
+        return l10n.profileBmiOverweight;
+      case 'Obesidad':
+        return l10n.profileBmiObese;
+      default:
+        return category;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -60,7 +77,7 @@ class PersonalInfoSection extends StatelessWidget {
           const SizedBox(height: 12),
           _InfoRow(
             label: l10n.profileBmiLabel,
-            value: '${profile.bmi.toStringAsFixed(1)} - ${profile.bmiCategory}',
+            value: '${profile.bmi.toStringAsFixed(1)} - ${_getLocalizedBmiCategory(context, profile.bmiCategory)}',
             icon: Icons.health_and_safety_outlined,
           ),
         ],

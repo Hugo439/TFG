@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smartmeal/presentation/theme/colors.dart';
+import 'package:smartmeal/l10n/l10n_ext.dart';
 
 class MenuCard extends StatelessWidget {
   final IconData icon;
@@ -31,6 +32,7 @@ class MenuCard extends StatelessWidget {
     final textTheme = Theme.of(context).textTheme;
     final textScaler = MediaQuery.textScalerOf(context);
     final reduceMotion = MediaQuery.of(context).disableAnimations;
+    final l10n = context.l10n;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -110,7 +112,7 @@ class MenuCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  'Próximamente',
+                  l10n.menuCardComingSoon,
                   style: textTheme.labelSmall?.copyWith(
                     color: cs.error,
                     fontWeight: FontWeight.w600,

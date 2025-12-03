@@ -9,6 +9,36 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
+  String get navMenus => 'Menus';
+
+  @override
+  String get navHome => 'Home';
+
+  @override
+  String get navShopping => 'Shopping List';
+
+  @override
+  String get notificationDefaultTitle => 'SmartMeal!';
+
+  @override
+  String get notificationDefaultBody => 'You have a new notification';
+
+  @override
+  String get notificationActionView => 'View';
+
+  @override
+  String get logoNotFound => 'Logo not found';
+
+  @override
+  String get errorTitle => 'An error occurred';
+
+  @override
+  String get errorInitializing => 'Error initializing';
+
+  @override
+  String get errorRetry => 'Retry';
+
+  @override
   String get commonCancel => 'Cancel';
 
   @override
@@ -64,6 +94,27 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get loginRegisterLink => 'Sign Up';
+
+  @override
+  String get loginErrorFieldsRequired => 'Please fill in all fields';
+
+  @override
+  String get loginErrorUserNotFound => 'No account found for this email';
+
+  @override
+  String get loginErrorWrongPassword => 'Wrong password';
+
+  @override
+  String get loginErrorInvalidEmail => 'Invalid email';
+
+  @override
+  String get loginErrorUserDisabled => 'This account has been disabled';
+
+  @override
+  String get loginErrorInvalidCredential => 'Invalid credentials';
+
+  @override
+  String get loginErrorGeneric => 'Error signing in';
 
   @override
   String get registerTitle => 'Register';
@@ -170,6 +221,18 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get registerLoginLink => 'Sign In';
+
+  @override
+  String get registerErrorEmailInUse => 'This email is already registered';
+
+  @override
+  String get registerErrorInvalidEmail => 'Invalid email';
+
+  @override
+  String get registerErrorWeakPassword => 'The password is too weak';
+
+  @override
+  String get registerErrorGeneric => 'Error registering';
 
   @override
   String get supportTitle => 'Support';
@@ -328,6 +391,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get contactWhatsApp => 'WhatsApp';
+
+  @override
+  String supportDateToday(String time) {
+    return 'Today at $time';
+  }
+
+  @override
+  String supportDateYesterday(String time) {
+    return 'Yesterday at $time';
+  }
+
+  @override
+  String supportDateDaysAgo(int days) {
+    return '$days days ago';
+  }
 
   @override
   String get settingsTitle => 'Settings';
@@ -559,6 +637,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileDeleteAccountButton => 'Delete Account';
 
   @override
+  String get goalLoseWeight => 'Lose weight';
+
+  @override
+  String get goalMaintainWeight => 'Maintain weight';
+
+  @override
+  String get goalGainMuscle => 'Gain muscle';
+
+  @override
+  String get goalHealthyEating => 'Healthy eating';
+
+  @override
+  String get profileBmiNormal => 'Normal weight';
+
+  @override
+  String get profileBmiUnderweight => 'Underweight';
+
+  @override
+  String get profileBmiOverweight => 'Overweight';
+
+  @override
+  String get profileBmiObese => 'Obese';
+
+  @override
   String get editProfileTitle => 'Edit Profile';
 
   @override
@@ -595,18 +697,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editProfileSaveSuccess => 'Profile updated successfully';
 
   @override
-  String get editProfileErrorNameRequired => 'El nombre es obligatorio';
+  String get editProfileErrorNameRequired => 'Name is required';
 
   @override
-  String get editProfileErrorHeightInvalid =>
-      'La altura debe ser un número válido';
+  String get editProfileErrorHeightInvalid => 'Height must be a valid number';
 
   @override
-  String get editProfileErrorWeightInvalid =>
-      'El peso debe ser un número válido';
+  String get editProfileErrorWeightInvalid => 'Weight must be a valid number';
 
   @override
-  String get editProfileErrorGeneric => 'Error al actualizar el perfil';
+  String get editProfileErrorGeneric => 'Error updating profile';
 
   @override
   String get menuTitle => 'Weekly Menu';
@@ -628,6 +728,72 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get menuGenerateTooltip => 'Generate new menu';
+
+  @override
+  String get menuSaveError => 'Error saving';
+
+  @override
+  String get menuSaveSuccess => 'Menu saved successfully';
+
+  @override
+  String get menuCardComingSoon => 'Coming Soon';
+
+  @override
+  String get generateMenuTitle => 'Generate Weekly Menu';
+
+  @override
+  String get generateMenuMainTitle => 'Intelligent Menu Generation';
+
+  @override
+  String get generateMenuDescription =>
+      'Create a personalized weekly menu based on your profile, goals and dietary restrictions';
+
+  @override
+  String get generateMenuFeature1Title => '28 unique recipes';
+
+  @override
+  String get generateMenuFeature1Desc =>
+      'Breakfast, lunch, dinner and snack for each day';
+
+  @override
+  String get generateMenuFeature2Title => 'AI-powered personalization';
+
+  @override
+  String get generateMenuFeature2Desc => 'Adapted to your nutritional goals';
+
+  @override
+  String get generateMenuFeature3Title => 'Respects your allergies';
+
+  @override
+  String get generateMenuFeature3Desc => 'No ingredients you can\'t consume';
+
+  @override
+  String get generateMenuButton => 'Generate My Weekly Menu';
+
+  @override
+  String get generateMenuGenerating => 'Generating menu...';
+
+  @override
+  String get generateMenuWaitMessage => 'This may take a few seconds...';
+
+  @override
+  String get generateMenuAutoMessage =>
+      'The menu will be generated automatically based on your profile';
+
+  @override
+  String get generateMenuSuccess => 'Menu generated successfully!';
+
+  @override
+  String get generateMenuTotalCalories => 'Total calories';
+
+  @override
+  String get generateMenuAvgCalories => 'Daily average';
+
+  @override
+  String get generateMenuDiscard => 'Discard';
+
+  @override
+  String get generateMenuSave => 'Save Menu';
 
   @override
   String get shoppingTitle => 'Shopping List';
@@ -669,4 +835,94 @@ class AppLocalizationsEn extends AppLocalizations {
   String shoppingSelectedCount(int checked, int total) {
     return '$checked/$total items';
   }
+
+  @override
+  String get shoppingAddTitle => 'Add Item';
+
+  @override
+  String get shoppingEditTitle => 'Edit Item';
+
+  @override
+  String get shoppingProductNameLabel => 'Product Name';
+
+  @override
+  String get shoppingProductNameHint => 'E.g: Basmati Rice';
+
+  @override
+  String get shoppingQuantityLabel => 'Quantity';
+
+  @override
+  String get shoppingQuantityHint => 'E.g: 500g, 1kg, 2 units';
+
+  @override
+  String get shoppingPriceLabel => 'Price (€)';
+
+  @override
+  String get shoppingPriceHint => 'E.g: 3.50';
+
+  @override
+  String get shoppingCategoryLabel => 'Category';
+
+  @override
+  String get shoppingMenusLabel => 'For which menus (optional)';
+
+  @override
+  String get shoppingMenusHint => 'E.g: Curry chicken, Caesar salad';
+
+  @override
+  String get shoppingFormRequiredError => 'Please fill in all required fields';
+
+  @override
+  String get shoppingSaveError => 'Error saving item';
+
+  @override
+  String get shoppingItemAdded => 'Item added to list';
+
+  @override
+  String get shoppingItemUpdated => 'Item updated';
+
+  @override
+  String get shoppingAddItemButton => 'Add to List';
+
+  @override
+  String get shoppingEditItemButton => 'Save Changes';
+
+  @override
+  String get shoppingCategoryFruits => 'Fruits and Vegetables';
+
+  @override
+  String get shoppingCategoryMeat => 'Meat and Fish';
+
+  @override
+  String get shoppingCategoryDairy => 'Dairy';
+
+  @override
+  String get shoppingCategoryBakery => 'Bakery';
+
+  @override
+  String get shoppingCategoryBeverages => 'Beverages';
+
+  @override
+  String get shoppingCategorySnacks => 'Snacks';
+
+  @override
+  String get shoppingCategoryOthers => 'Others';
+
+  @override
+  String get shoppingFor => 'For';
+
+  @override
+  String get shoppingCategory => 'Category';
+
+  @override
+  String get recipeDescription => 'Description';
+
+  @override
+  String get recipeIngredients => 'Ingredients';
+
+  @override
+  String get recipeTotalCalories => 'Total calories';
+
+  @override
+  String get recipeIngredientsPrefix => 'Ingredients';
 }

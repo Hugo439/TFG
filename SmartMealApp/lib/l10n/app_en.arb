@@ -1,5 +1,16 @@
 {
   "@@locale": "en",
+
+  "navMenus": "Menus",
+  "navHome": "Home",
+  "navShopping": "Shopping List",
+
+  "notificationDefaultTitle": "SmartMeal!",
+  "notificationDefaultBody": "You have a new notification",
+  "notificationActionView": "View",
+
+  "logoNotFound": "Logo not found",
+
   "appTitle": "SmartMeal",
   "home": "Home",
   "menu": "Menus",
@@ -23,6 +34,10 @@
   "success": "Success",
   "yes": "Yes",
   "no": "No",
+
+  "errorTitle": "An error occurred",
+  "errorInitializing": "Error initializing",
+  "errorRetry": "Retry",
   
   "supportTitle": "Support",
   "supportFormTitle": "Send Message",
@@ -74,6 +89,33 @@
   "supportStatusPending": "Pending",
   "supportStatusAnswered": "Answered",
   "supportStatusClosed": "Closed",
+  "supportDateToday": "Today at {time}",
+  "@supportDateToday": {
+    "description": "Date format for today",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "supportDateYesterday": "Yesterday at {time}",
+  "@supportDateYesterday": {
+    "description": "Date format for yesterday",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "supportDateDaysAgo": "{days} days ago",
+  "@supportDateDaysAgo": {
+    "description": "X days ago",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
 
   "settingsTitle": "Settings",
   "settingsProfileSection": "Profile",
@@ -132,6 +174,13 @@
   "loginButton": "Sign In",
   "loginNoAccount": "Don't have an account? ",
   "loginRegisterLink": "Sign Up",
+  "loginErrorFieldsRequired": "Please fill in all fields",
+  "loginErrorUserNotFound": "No account found for this email",
+  "loginErrorWrongPassword": "Wrong password",
+  "loginErrorInvalidEmail": "Invalid email",
+  "loginErrorUserDisabled": "This account has been disabled",
+  "loginErrorInvalidCredential": "Invalid credentials",
+  "loginErrorGeneric": "Error signing in",
 
   "registerTitle": "Register",
   "registerHeader": "Create Account",
@@ -167,6 +216,10 @@
   "registerInvalidNumber": "Invalid number",
   "registerHaveAccount": "Already have an account? ",
   "registerLoginLink": "Sign In",
+  "registerErrorEmailInUse": "This email is already registered",
+  "registerErrorInvalidEmail": "Invalid email",
+  "registerErrorWeakPassword": "The password is too weak",
+  "registerErrorGeneric": "Error registering",
 
   "homeTitle": "SmartMeal",
   "homeSubtitle": "Main Panel",
@@ -210,6 +263,14 @@
   "profileChangePasswordButton": "Change Password",
   "profileSignOutButton": "Sign Out",
   "profileDeleteAccountButton": "Delete Account",
+  "goalLoseWeight": "Lose weight",
+  "goalMaintainWeight": "Maintain weight",
+  "goalGainMuscle": "Gain muscle",
+  "goalHealthyEating": "Healthy eating",
+  "profileBmiNormal": "Normal weight",
+  "profileBmiUnderweight": "Underweight",
+  "profileBmiOverweight": "Overweight",
+  "profileBmiObese": "Obese",
 
   "editProfileTitle": "Edit Profile",
   "editProfilePersonalInfo": "Personal Information",
@@ -235,6 +296,28 @@
   "menuTotalCalories": "Total calories",
   "menuAvgDaily": "Daily average",
   "menuGenerateTooltip": "Generate new menu",
+  "menuSaveError": "Error saving",
+  "menuSaveSuccess": "Menu saved successfully",
+  "menuCardComingSoon": "Coming Soon",
+
+  "generateMenuTitle": "Generate Weekly Menu",
+  "generateMenuMainTitle": "Intelligent Menu Generation",
+  "generateMenuDescription": "Create a personalized weekly menu based on your profile, goals and dietary restrictions",
+  "generateMenuFeature1Title": "28 unique recipes",
+  "generateMenuFeature1Desc": "Breakfast, lunch, dinner and snack for each day",
+  "generateMenuFeature2Title": "AI-powered personalization",
+  "generateMenuFeature2Desc": "Adapted to your nutritional goals",
+  "generateMenuFeature3Title": "Respects your allergies",
+  "generateMenuFeature3Desc": "No ingredients you can't consume",
+  "generateMenuButton": "Generate My Weekly Menu",
+  "generateMenuGenerating": "Generating menu...",
+  "generateMenuWaitMessage": "This may take a few seconds...",
+  "generateMenuAutoMessage": "The menu will be generated automatically based on your profile",
+  "generateMenuSuccess": "Menu generated successfully!",
+  "generateMenuTotalCalories": "Total calories",
+  "generateMenuAvgCalories": "Daily average",
+  "generateMenuDiscard": "Discard",
+  "generateMenuSave": "Save Menu",
 
   "shoppingTitle": "Shopping List",
   "shoppingSubtitle": "Items",
@@ -264,5 +347,36 @@
         "type": "int"
       }
     }
-  }
+  },
+  "shoppingAddTitle": "Add Item",
+  "shoppingEditTitle": "Edit Item",
+  "shoppingProductNameLabel": "Product Name",
+  "shoppingProductNameHint": "E.g: Basmati Rice",
+  "shoppingQuantityLabel": "Quantity",
+  "shoppingQuantityHint": "E.g: 500g, 1kg, 2 units",
+  "shoppingPriceLabel": "Price (€)",
+  "shoppingPriceHint": "E.g: 3.50",
+  "shoppingCategoryLabel": "Category",
+  "shoppingMenusLabel": "For which menus (optional)",
+  "shoppingMenusHint": "E.g: Curry chicken, Caesar salad",
+  "shoppingFormRequiredError": "Please fill in all required fields",
+  "shoppingSaveError": "Error saving item",
+  "shoppingItemAdded": "Item added to list",
+  "shoppingItemUpdated": "Item updated",
+  "shoppingAddItemButton": "Add to List",
+  "shoppingEditItemButton": "Save Changes",
+  "shoppingCategoryFruits": "Fruits and Vegetables",
+  "shoppingCategoryMeat": "Meat and Fish",
+  "shoppingCategoryDairy": "Dairy",
+  "shoppingCategoryBakery": "Bakery",
+  "shoppingCategoryBeverages": "Beverages",
+  "shoppingCategorySnacks": "Snacks",
+  "shoppingCategoryOthers": "Others",
+  "shoppingFor": "For",
+  "shoppingCategory": "Category",
+
+  "recipeDescription": "Description",
+  "recipeIngredients": "Ingredients",
+  "recipeTotalCalories": "Total calories",
+  "recipeIngredientsPrefix": "Ingredients"
 }

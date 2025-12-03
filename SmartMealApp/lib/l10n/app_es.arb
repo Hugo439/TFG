@@ -1,6 +1,20 @@
 {
   "@@locale": "es",
   
+  "navMenus": "Menús",
+  "navHome": "Inicio",
+  "navShopping": "Lista de la compra",
+
+  "notificationDefaultTitle": "¡SmartMeal!",
+  "notificationDefaultBody": "Tienes una nueva notificación",
+  "notificationActionView": "Ver",
+
+  "logoNotFound": "Logo no encontrado",
+
+  "errorTitle": "Ha ocurrido un error",
+  "errorInitializing": "Error inicializando",
+  "errorRetry": "Reintentar",
+  
   "commonCancel": "Cancelar",
   "commonAccept": "Aceptar",
   "commonSave": "Guardar",
@@ -21,6 +35,13 @@
   "loginButton": "Iniciar Sesión",
   "loginNoAccount": "¿No tienes cuenta? ",
   "loginRegisterLink": "Regístrate",
+  "loginErrorFieldsRequired": "Por favor completa todos los campos",
+  "loginErrorUserNotFound": "No existe una cuenta con este correo",
+  "loginErrorWrongPassword": "Contraseña incorrecta",
+  "loginErrorInvalidEmail": "Correo electrónico inválido",
+  "loginErrorUserDisabled": "Esta cuenta ha sido deshabilitada",
+  "loginErrorInvalidCredential": "Credenciales inválidas",
+  "loginErrorGeneric": "Error al iniciar sesión",
   
   "registerTitle": "Registro",
   "registerHeader": "Crear Cuenta",
@@ -56,6 +77,10 @@
   "registerInvalidNumber": "Número inválido",
   "registerHaveAccount": "¿Ya tienes cuenta? ",
   "registerLoginLink": "Inicia Sesión",
+  "registerErrorEmailInUse": "Este correo ya está registrado",
+  "registerErrorInvalidEmail": "Correo electrónico inválido",
+  "registerErrorWeakPassword": "La contraseña es muy débil",
+  "registerErrorGeneric": "Error al registrarse",
   
   "supportTitle": "Soporte",
   "supportFormTitle": "Enviar Mensaje",
@@ -114,9 +139,37 @@
   "supportContactTitle": "Contacto Directo",
   "supportContactEmail": "Enviar Email",
   "supportContactWhatsapp": "WhatsApp",
-  
+
   "contactEmail": "Enviar Email",
   "contactWhatsApp": "WhatsApp",
+  
+  "supportDateToday": "Hoy a las {time}",
+  "@supportDateToday": {
+    "description": "Formato de fecha para hoy",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "supportDateYesterday": "Ayer a las {time}",
+  "@supportDateYesterday": {
+    "description": "Formato de fecha para ayer",
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "supportDateDaysAgo": "Hace {days} días",
+  "@supportDateDaysAgo": {
+    "description": "Hace X días",
+    "placeholders": {
+      "days": {
+        "type": "int"
+      }
+    }
+  },
   
   "settingsTitle": "Configuración",
   "settingsProfileSection": "Perfil",
@@ -200,7 +253,15 @@
   "profileChangePasswordButton": "Cambiar Contraseña",
   "profileSignOutButton": "Cerrar Sesión",
   "profileDeleteAccountButton": "Eliminar Cuenta",
-  
+  "goalLoseWeight": "Perder peso",
+  "goalMaintainWeight": "Mantener peso",
+  "goalGainMuscle": "Ganar masa muscular",
+  "goalHealthyEating": "Alimentación saludable",
+  "profileBmiNormal": "Peso normal",
+  "profileBmiUnderweight": "Bajo peso",
+  "profileBmiOverweight": "Sobrepeso",
+  "profileBmiObese": "Obesidad",
+
   "editProfileTitle": "Editar Perfil",
   "editProfilePersonalInfo": "Información Personal",
   "editProfileNameLabel": "Nombre",
@@ -225,6 +286,28 @@
   "menuTotalCalories": "Calorías totales",
   "menuAvgDaily": "Promedio diario",
   "menuGenerateTooltip": "Generar nuevo menú",
+  "menuSaveError": "Error al guardar",
+  "menuSaveSuccess": "Menú guardado correctamente",
+  "menuCardComingSoon": "Próximamente",
+
+  "generateMenuTitle": "Generar Menú Semanal",
+  "generateMenuMainTitle": "Generación Inteligente de Menús",
+  "generateMenuDescription": "Crea un menú semanal personalizado basado en tu perfil, objetivos y restricciones alimentarias",
+  "generateMenuFeature1Title": "28 recetas únicas",
+  "generateMenuFeature1Desc": "Desayuno, comida, cena y snack para cada día",
+  "generateMenuFeature2Title": "Personalizado con IA",
+  "generateMenuFeature2Desc": "Adaptado a tus objetivos nutricionales",
+  "generateMenuFeature3Title": "Respeta tus alergias",
+  "generateMenuFeature3Desc": "Sin ingredientes que no puedas consumir",
+  "generateMenuButton": "Generar Mi Menú Semanal",
+  "generateMenuGenerating": "Generando menú...",
+  "generateMenuWaitMessage": "Esto puede tardar unos segundos...",
+  "generateMenuAutoMessage": "El menú se generará automáticamente según tu perfil",
+  "generateMenuSuccess": "¡Menú generado con éxito!",
+  "generateMenuTotalCalories": "Calorías totales",
+  "generateMenuAvgCalories": "Promedio diario",
+  "generateMenuDiscard": "Descartar",
+  "generateMenuSave": "Guardar Menú",
   
   "shoppingTitle": "Lista de la Compra",
   "shoppingSubtitle": "Productos",
@@ -254,5 +337,36 @@
         "type": "int"
       }
     }
-  }
+  },
+  "shoppingAddTitle": "Añadir Producto",
+  "shoppingEditTitle": "Editar Producto",
+  "shoppingProductNameLabel": "Nombre del Producto",
+  "shoppingProductNameHint": "Ej: Arroz Basmati",
+  "shoppingQuantityLabel": "Cantidad",
+  "shoppingQuantityHint": "Ej: 500g, 1kg, 2 unidades",
+  "shoppingPriceLabel": "Precio (€)",
+  "shoppingPriceHint": "Ej: 3.50",
+  "shoppingCategoryLabel": "Categoría",
+  "shoppingMenusLabel": "Para qué menús (opcional)",
+  "shoppingMenusHint": "Ej: Pollo al curry, Ensalada César",
+  "shoppingFormRequiredError": "Por favor completa todos los campos obligatorios",
+  "shoppingSaveError": "Error al guardar el producto",
+  "shoppingItemAdded": "Producto añadido a la lista",
+  "shoppingItemUpdated": "Producto actualizado",
+  "shoppingAddItemButton": "Añadir a la Lista",
+  "shoppingEditItemButton": "Guardar Cambios",
+  "shoppingCategoryFruits": "Frutas y Verduras",
+  "shoppingCategoryMeat": "Carnes y Pescados",
+  "shoppingCategoryDairy": "Lácteos",
+  "shoppingCategoryBakery": "Panadería",
+  "shoppingCategoryBeverages": "Bebidas",
+  "shoppingCategorySnacks": "Snacks",
+  "shoppingCategoryOthers": "Otros",
+  "shoppingFor": "Para",
+  "shoppingCategory": "Categoría",
+
+  "recipeDescription": "Descripción",
+  "recipeIngredients": "Ingredientes",
+  "recipeTotalCalories": "Calorías totales",
+  "recipeIngredientsPrefix": "Ingredientes"
 }

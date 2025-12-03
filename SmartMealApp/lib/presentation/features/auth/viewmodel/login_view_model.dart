@@ -2,6 +2,16 @@ import 'package:flutter/foundation.dart';
 import 'package:smartmeal/domain/usecases/sign_in_usecase.dart';
 import 'package:smartmeal/data/datasources/local/auth_local_datasource.dart';
 
+enum LoginErrorCode {
+  fieldsRequired,
+  userNotFound,
+  wrongPassword,
+  invalidEmail,
+  userDisabled,
+  invalidCredential,
+  generic,
+}
+
 class LoginViewModel extends ChangeNotifier {
   final SignInUseCase _signIn;
   final AuthLocalDataSource _localDataSource;
@@ -11,14 +21,14 @@ class LoginViewModel extends ChangeNotifier {
   bool _obscurePassword = true;
   bool _rememberMe = false;
   bool _loading = false;
-  String? _error;
+  LoginErrorCode? _errorCode;
 
   String get email => _email;
   String get password => _password;
   bool get obscurePassword => _obscurePassword;
   bool get rememberMe => _rememberMe;
   bool get isLoading => _loading;
-  String? get error => _error;
+  LoginErrorCode? get errorCode => _errorCode;
 
   LoginViewModel(this._signIn, this._localDataSource) {
     _loadSavedCredentials();
@@ -46,13 +56,13 @@ class LoginViewModel extends ChangeNotifier {
 
   Future<bool> signIn(String email, String password) async {
     if (email.trim().isEmpty || password.isEmpty) {
-      _error = 'Por favor completa todos los campos';
+      _errorCode = LoginErrorCode.fieldsRequired;
       notifyListeners();
       return false;
     }
 
     _loading = true;
-    _error = null;
+    _errorCode = null;
     notifyListeners();
 
     try {
@@ -61,7 +71,6 @@ class LoginViewModel extends ChangeNotifier {
         password: password,
       ));
 
-      // Guardar o limpiar credenciales según "Recordarme"
       if (_rememberMe) {
         await _localDataSource.saveCredentials(email, password);
       } else {
@@ -73,31 +82,29 @@ class LoginViewModel extends ChangeNotifier {
       _loading = false;
       notifyListeners();
       return true;
-    } on ArgumentError catch (e) {
-      _error = e.message;
+    } on ArgumentError {
+      _errorCode = LoginErrorCode.generic;
       _loading = false;
       notifyListeners();
       return false;
     } catch (e) {
-      _error = _getErrorMessage(e.toString());
+      final msg = e.toString();
+      if (msg.contains('user-not-found')) {
+        _errorCode = LoginErrorCode.userNotFound;
+      } else if (msg.contains('wrong-password')) {
+        _errorCode = LoginErrorCode.wrongPassword;
+      } else if (msg.contains('invalid-email')) {
+        _errorCode = LoginErrorCode.invalidEmail;
+      } else if (msg.contains('user-disabled')) {
+        _errorCode = LoginErrorCode.userDisabled;
+      } else if (msg.contains('invalid-credential')) {
+        _errorCode = LoginErrorCode.invalidCredential;
+      } else {
+        _errorCode = LoginErrorCode.generic;
+      }
       _loading = false;
       notifyListeners();
       return false;
     }
-  }
-
-  String _getErrorMessage(String error) {
-    if (error.contains('user-not-found')) {
-      return 'No existe una cuenta con este correo';
-    } else if (error.contains('wrong-password')) {
-      return 'Contraseña incorrecta';
-    } else if (error.contains('invalid-email')) {
-      return 'Correo electrónico inválido';
-    } else if (error.contains('user-disabled')) {
-      return 'Esta cuenta ha sido deshabilitada';
-    } else if (error.contains('invalid-credential')) {
-      return 'Credenciales inválidas';
-    }
-    return 'Error al iniciar sesión';
   }
 }

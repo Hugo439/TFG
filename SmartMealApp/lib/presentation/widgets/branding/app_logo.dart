@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smartmeal/l10n/l10n_ext.dart';
 
 class AppLogo extends StatelessWidget {
   final double height;
@@ -13,6 +14,7 @@ class AppLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
 
     return Image.asset(
       assetPath,
@@ -28,7 +30,7 @@ class AppLogo extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
         ),
         child: Text(
-          'Logo no encontrado',
+          l10n.logoNotFound,
           style: TextStyle(
             color: colorScheme.surface,
             fontSize: 14,

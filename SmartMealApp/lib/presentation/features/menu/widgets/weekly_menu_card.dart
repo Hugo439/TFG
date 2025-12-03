@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smartmeal/domain/entities/weekly_menu.dart';
 import 'package:smartmeal/presentation/features/menu/widgets/day_menu_card.dart';
+import 'package:smartmeal/l10n/l10n_ext.dart';
 
 class WeeklyMenuCard extends StatelessWidget {
   final WeeklyMenu menu;
@@ -11,6 +12,8 @@ class WeeklyMenuCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
+    
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       color: colorScheme.surfaceVariant,
@@ -19,7 +22,7 @@ class WeeklyMenuCard extends StatelessWidget {
           'Semana: ${menu.weekStartDate.toLocal().toString().split(' ')[0]}',
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
-        subtitle: Text('Calorías totales: ${menu.totalWeeklyCalories}'),
+        subtitle: Text('${l10n.recipeTotalCalories}: ${menu.totalWeeklyCalories}'),
         children: menu.days.map((dayMenu) {
           return DayMenuCard(
             day: dayMenu,

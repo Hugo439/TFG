@@ -35,6 +35,21 @@ class _RegisterFormState extends State<RegisterForm> {
     super.dispose();
   }
 
+  String? _getErrorText(BuildContext context, RegisterErrorCode? code) {
+    if (code == null) return null;
+    final l10n = context.l10n;
+    switch (code) {
+      case RegisterErrorCode.emailInUse:
+        return l10n.registerErrorEmailInUse;
+      case RegisterErrorCode.invalidEmail:
+        return l10n.registerErrorInvalidEmail;
+      case RegisterErrorCode.weakPassword:
+        return l10n.registerErrorWeakPassword;
+      case RegisterErrorCode.generic:
+        return l10n.registerErrorGeneric;
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<RegisterViewModel>();
@@ -222,9 +237,9 @@ class _RegisterFormState extends State<RegisterForm> {
             maxLines: 2,
           ),
           const SizedBox(height: 24),
-          if (vm.error != null) ...[
+          if (_getErrorText(context, vm.errorCode) != null) ...[
             Text(
-              vm.error!,
+              _getErrorText(context, vm.errorCode)!,
               style: TextStyle(color: colorScheme.error, fontSize: 12),
             ),
             const SizedBox(height: 8),
@@ -289,7 +304,9 @@ class _RegisterFormState extends State<RegisterForm> {
               child: Text(l10n.registerGoalHealthyEating, style: TextStyle(color: colorScheme.onSurface)),
             ),
           ],
-          onChanged: (v) => vm.setGoal(v ?? 'Perder peso'),
+          onChanged: (value) {
+            if (value != null) context.read<RegisterViewModel>().setGoal(value);
+          },
         ),
       ),
     );

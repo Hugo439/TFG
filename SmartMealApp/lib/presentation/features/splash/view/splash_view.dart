@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smartmeal/presentation/theme/colors.dart';
 import 'package:smartmeal/presentation/widgets/branding/animated_logo.dart';
+import 'package:smartmeal/l10n/l10n_ext.dart';
 
 class SplashView extends StatelessWidget {
   final Object? error;
@@ -17,6 +18,8 @@ class SplashView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hasError = error != null;
+    final l10n = context.l10n;
+    
     return Scaffold(
       backgroundColor: AppColors.primaryBackground,
       body: Center(
@@ -31,9 +34,9 @@ class SplashView extends StatelessWidget {
                 children: [
                   const Icon(Icons.error_outline, size: 48, color: AppColors.error),
                   const SizedBox(height: 12),
-                  const Text(
-                    'Error inicializando',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.primaryText),
+                  Text(
+                    l10n.errorInitializing,
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.primaryText),
                   ),
                   const SizedBox(height: 8),
                   Text(
@@ -42,7 +45,10 @@ class SplashView extends StatelessWidget {
                     style: const TextStyle(fontSize: 12, color: AppColors.mutedText),
                   ),
                   const SizedBox(height: 16),
-                  ElevatedButton(onPressed: onRetry, child: const Text('Reintentar')),
+                  ElevatedButton(
+                    onPressed: onRetry,
+                    child: Text(l10n.errorRetry),
+                  ),
                 ],
               )
             else if (showProgress)
@@ -58,7 +64,7 @@ class SplashView extends StatelessWidget {
   }
 
   double _logoHeight(BuildContext context) {
-    final h = MediaQuery.sizeOf(context).height;
-    return (h * 0.24).clamp(140.0, 260.0).toDouble(); // 24% del alto, límites
+    final size = MediaQuery.of(context).size;
+    return size.width < 360 ? 140 : 180;
   }
 }

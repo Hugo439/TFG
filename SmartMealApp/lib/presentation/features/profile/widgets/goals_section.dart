@@ -1,11 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:smartmeal/domain/entities/user_profile.dart';
+import 'package:smartmeal/domain/value_objects/goal.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
 
 class GoalsSection extends StatelessWidget {
   final UserProfile profile;
 
   const GoalsSection({super.key, required this.profile});
+
+  String _getLocalizedGoal(BuildContext context, GoalType goalType) {
+    final l10n = context.l10n;
+    switch (goalType) {
+      case GoalType.loseWeight:
+        return l10n.goalLoseWeight;
+      case GoalType.maintainWeight:
+        return l10n.goalMaintainWeight;
+      case GoalType.gainMuscle:
+        return l10n.goalGainMuscle;
+      case GoalType.healthyEating:
+        return l10n.goalHealthyEating;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +47,11 @@ class GoalsSection extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          _buildDropdown(context, l10n.profileMainGoalLabel, profile.goal.displayName),
+          _buildDropdown(
+            context,
+            l10n.profileMainGoalLabel,
+            _getLocalizedGoal(context, profile.goal.value),
+          ),
           const SizedBox(height: 16),
           _buildAllergies(context, profile.allergies?.value),
         ],
@@ -98,7 +117,11 @@ class GoalsSection extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 4),
-            const Icon(Icons.warning_amber_outlined, color: Colors.orange, size: 16),
+            Icon(
+              Icons.info_outline,
+              size: 16,
+              color: colorScheme.onSurface.withOpacity(0.4),
+            ),
           ],
         ),
         const SizedBox(height: 4),
@@ -110,7 +133,9 @@ class GoalsSection extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
           ),
           child: Text(
-            allergies ?? l10n.profileNoAllergies,
+            allergies == null || allergies.isEmpty 
+                ? l10n.profileNoAllergies 
+                : allergies,
             style: TextStyle(
               color: colorScheme.onSurface,
               fontSize: 14,

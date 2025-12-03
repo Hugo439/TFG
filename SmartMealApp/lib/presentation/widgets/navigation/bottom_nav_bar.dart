@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smartmeal/l10n/l10n_ext.dart';
 
 class BottomNavBar extends StatelessWidget {
   final int selectedIndex;
@@ -13,6 +14,7 @@ class BottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
 
     return Container(
       decoration: BoxDecoration(
@@ -42,18 +44,18 @@ class BottomNavBar extends StatelessWidget {
         unselectedIconTheme: const IconThemeData(size: 22),
         showSelectedLabels: true,
         showUnselectedLabels: false,
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.restaurant_menu),
-            label: 'Menús',
+            icon: const Icon(Icons.restaurant_menu),
+            label: l10n.navMenus,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
+            icon: const Icon(Icons.home),
+            label: l10n.navHome,
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
-            label: 'Lista de la compra',
+            icon: const Icon(Icons.shopping_cart),
+            label: l10n.navShopping,
           ),
         ],
       ),

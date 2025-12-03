@@ -9,6 +9,36 @@ class AppLocalizationsEs extends AppLocalizations {
   AppLocalizationsEs([String locale = 'es']) : super(locale);
 
   @override
+  String get navMenus => 'Menús';
+
+  @override
+  String get navHome => 'Inicio';
+
+  @override
+  String get navShopping => 'Lista de la compra';
+
+  @override
+  String get notificationDefaultTitle => '¡SmartMeal!';
+
+  @override
+  String get notificationDefaultBody => 'Tienes una nueva notificación';
+
+  @override
+  String get notificationActionView => 'Ver';
+
+  @override
+  String get logoNotFound => 'Logo no encontrado';
+
+  @override
+  String get errorTitle => 'Ha ocurrido un error';
+
+  @override
+  String get errorInitializing => 'Error inicializando';
+
+  @override
+  String get errorRetry => 'Reintentar';
+
+  @override
   String get commonCancel => 'Cancelar';
 
   @override
@@ -64,6 +94,27 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get loginRegisterLink => 'Regístrate';
+
+  @override
+  String get loginErrorFieldsRequired => 'Por favor completa todos los campos';
+
+  @override
+  String get loginErrorUserNotFound => 'No existe una cuenta con este correo';
+
+  @override
+  String get loginErrorWrongPassword => 'Contraseña incorrecta';
+
+  @override
+  String get loginErrorInvalidEmail => 'Correo electrónico inválido';
+
+  @override
+  String get loginErrorUserDisabled => 'Esta cuenta ha sido deshabilitada';
+
+  @override
+  String get loginErrorInvalidCredential => 'Credenciales inválidas';
+
+  @override
+  String get loginErrorGeneric => 'Error al iniciar sesión';
 
   @override
   String get registerTitle => 'Registro';
@@ -170,6 +221,18 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get registerLoginLink => 'Inicia Sesión';
+
+  @override
+  String get registerErrorEmailInUse => 'Este correo ya está registrado';
+
+  @override
+  String get registerErrorInvalidEmail => 'Correo electrónico inválido';
+
+  @override
+  String get registerErrorWeakPassword => 'La contraseña es muy débil';
+
+  @override
+  String get registerErrorGeneric => 'Error al registrarse';
 
   @override
   String get supportTitle => 'Soporte';
@@ -327,6 +390,21 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get contactWhatsApp => 'WhatsApp';
+
+  @override
+  String supportDateToday(String time) {
+    return 'Hoy a las $time';
+  }
+
+  @override
+  String supportDateYesterday(String time) {
+    return 'Ayer a las $time';
+  }
+
+  @override
+  String supportDateDaysAgo(int days) {
+    return 'Hace $days días';
+  }
 
   @override
   String get settingsTitle => 'Configuración';
@@ -561,6 +639,30 @@ class AppLocalizationsEs extends AppLocalizations {
   String get profileDeleteAccountButton => 'Eliminar Cuenta';
 
   @override
+  String get goalLoseWeight => 'Perder peso';
+
+  @override
+  String get goalMaintainWeight => 'Mantener peso';
+
+  @override
+  String get goalGainMuscle => 'Ganar masa muscular';
+
+  @override
+  String get goalHealthyEating => 'Alimentación saludable';
+
+  @override
+  String get profileBmiNormal => 'Peso normal';
+
+  @override
+  String get profileBmiUnderweight => 'Bajo peso';
+
+  @override
+  String get profileBmiOverweight => 'Sobrepeso';
+
+  @override
+  String get profileBmiObese => 'Obesidad';
+
+  @override
   String get editProfileTitle => 'Editar Perfil';
 
   @override
@@ -632,6 +734,74 @@ class AppLocalizationsEs extends AppLocalizations {
   String get menuGenerateTooltip => 'Generar nuevo menú';
 
   @override
+  String get menuSaveError => 'Error al guardar';
+
+  @override
+  String get menuSaveSuccess => 'Menú guardado correctamente';
+
+  @override
+  String get menuCardComingSoon => 'Próximamente';
+
+  @override
+  String get generateMenuTitle => 'Generar Menú Semanal';
+
+  @override
+  String get generateMenuMainTitle => 'Generación Inteligente de Menús';
+
+  @override
+  String get generateMenuDescription =>
+      'Crea un menú semanal personalizado basado en tu perfil, objetivos y restricciones alimentarias';
+
+  @override
+  String get generateMenuFeature1Title => '28 recetas únicas';
+
+  @override
+  String get generateMenuFeature1Desc =>
+      'Desayuno, comida, cena y snack para cada día';
+
+  @override
+  String get generateMenuFeature2Title => 'Personalizado con IA';
+
+  @override
+  String get generateMenuFeature2Desc =>
+      'Adaptado a tus objetivos nutricionales';
+
+  @override
+  String get generateMenuFeature3Title => 'Respeta tus alergias';
+
+  @override
+  String get generateMenuFeature3Desc =>
+      'Sin ingredientes que no puedas consumir';
+
+  @override
+  String get generateMenuButton => 'Generar Mi Menú Semanal';
+
+  @override
+  String get generateMenuGenerating => 'Generando menú...';
+
+  @override
+  String get generateMenuWaitMessage => 'Esto puede tardar unos segundos...';
+
+  @override
+  String get generateMenuAutoMessage =>
+      'El menú se generará automáticamente según tu perfil';
+
+  @override
+  String get generateMenuSuccess => '¡Menú generado con éxito!';
+
+  @override
+  String get generateMenuTotalCalories => 'Calorías totales';
+
+  @override
+  String get generateMenuAvgCalories => 'Promedio diario';
+
+  @override
+  String get generateMenuDiscard => 'Descartar';
+
+  @override
+  String get generateMenuSave => 'Guardar Menú';
+
+  @override
   String get shoppingTitle => 'Lista de la Compra';
 
   @override
@@ -671,4 +841,95 @@ class AppLocalizationsEs extends AppLocalizations {
   String shoppingSelectedCount(int checked, int total) {
     return '$checked/$total productos';
   }
+
+  @override
+  String get shoppingAddTitle => 'Añadir Producto';
+
+  @override
+  String get shoppingEditTitle => 'Editar Producto';
+
+  @override
+  String get shoppingProductNameLabel => 'Nombre del Producto';
+
+  @override
+  String get shoppingProductNameHint => 'Ej: Arroz Basmati';
+
+  @override
+  String get shoppingQuantityLabel => 'Cantidad';
+
+  @override
+  String get shoppingQuantityHint => 'Ej: 500g, 1kg, 2 unidades';
+
+  @override
+  String get shoppingPriceLabel => 'Precio (€)';
+
+  @override
+  String get shoppingPriceHint => 'Ej: 3.50';
+
+  @override
+  String get shoppingCategoryLabel => 'Categoría';
+
+  @override
+  String get shoppingMenusLabel => 'Para qué menús (opcional)';
+
+  @override
+  String get shoppingMenusHint => 'Ej: Pollo al curry, Ensalada César';
+
+  @override
+  String get shoppingFormRequiredError =>
+      'Por favor completa todos los campos obligatorios';
+
+  @override
+  String get shoppingSaveError => 'Error al guardar el producto';
+
+  @override
+  String get shoppingItemAdded => 'Producto añadido a la lista';
+
+  @override
+  String get shoppingItemUpdated => 'Producto actualizado';
+
+  @override
+  String get shoppingAddItemButton => 'Añadir a la Lista';
+
+  @override
+  String get shoppingEditItemButton => 'Guardar Cambios';
+
+  @override
+  String get shoppingCategoryFruits => 'Frutas y Verduras';
+
+  @override
+  String get shoppingCategoryMeat => 'Carnes y Pescados';
+
+  @override
+  String get shoppingCategoryDairy => 'Lácteos';
+
+  @override
+  String get shoppingCategoryBakery => 'Panadería';
+
+  @override
+  String get shoppingCategoryBeverages => 'Bebidas';
+
+  @override
+  String get shoppingCategorySnacks => 'Snacks';
+
+  @override
+  String get shoppingCategoryOthers => 'Otros';
+
+  @override
+  String get shoppingFor => 'Para';
+
+  @override
+  String get shoppingCategory => 'Categoría';
+
+  @override
+  String get recipeDescription => 'Descripción';
+
+  @override
+  String get recipeIngredients => 'Ingredientes';
+
+  @override
+  String get recipeTotalCalories => 'Calorías totales';
+
+  @override
+  String get recipeIngredientsPrefix => 'Ingredientes';
 }

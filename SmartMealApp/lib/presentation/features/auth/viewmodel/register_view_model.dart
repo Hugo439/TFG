@@ -1,6 +1,13 @@
 import 'package:flutter/foundation.dart';
 import 'package:smartmeal/domain/usecases/sign_up_usecase.dart';
 
+enum RegisterErrorCode {
+  emailInUse,
+  invalidEmail,
+  weakPassword,
+  generic,
+}
+
 class RegisterViewModel extends ChangeNotifier {
   final SignUpUseCase _signUp;
 
@@ -8,19 +15,19 @@ class RegisterViewModel extends ChangeNotifier {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   bool _loading = false;
-  String? _error;
+  RegisterErrorCode? _errorCode;
 
   String get goal => _goal;
   bool get obscurePassword => _obscurePassword;
   bool get obscureConfirmPassword => _obscureConfirmPassword;
   bool get isLoading => _loading;
-  String? get error => _error;
+  RegisterErrorCode? get errorCode => _errorCode;
 
   RegisterViewModel(this._signUp);
 
   void setGoal(String value) {
     _goal = value;
-    _error = null;
+    _errorCode = null;
     notifyListeners();
   }
 
@@ -44,7 +51,7 @@ class RegisterViewModel extends ChangeNotifier {
     String? allergies,
   ) async {
     _loading = true;
-    _error = null;
+    _errorCode = null;
     notifyListeners();
 
     try {
@@ -61,27 +68,25 @@ class RegisterViewModel extends ChangeNotifier {
       _loading = false;
       notifyListeners();
       return true;
-    } on ArgumentError catch (e) {
-      _error = e.message;
+    } on ArgumentError {
+      _errorCode = RegisterErrorCode.generic;
       _loading = false;
       notifyListeners();
       return false;
     } catch (e) {
-      _error = _getErrorMessage(e.toString());
+      final msg = e.toString();
+      if (msg.contains('email-already-in-use')) {
+        _errorCode = RegisterErrorCode.emailInUse;
+      } else if (msg.contains('invalid-email')) {
+        _errorCode = RegisterErrorCode.invalidEmail;
+      } else if (msg.contains('weak-password')) {
+        _errorCode = RegisterErrorCode.weakPassword;
+      } else {
+        _errorCode = RegisterErrorCode.generic;
+      }
       _loading = false;
       notifyListeners();
       return false;
     }
-  }
-
-  String _getErrorMessage(String error) {
-    if (error.contains('email-already-in-use')) {
-      return 'Este correo ya está registrado';
-    } else if (error.contains('invalid-email')) {
-      return 'Correo electrónico inválido';
-    } else if (error.contains('weak-password')) {
-      return 'La contraseña es muy débil';
-    }
-    return 'Error al registrarse';
   }
 }

@@ -1,11 +1,13 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:smartmeal/domain/entities/support_message.dart';
 import 'package:smartmeal/presentation/theme/theme_helpers.dart';
 import 'package:smartmeal/presentation/theme/colors.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
 import 'package:smartmeal/presentation/l10n/support_localizer.dart';
 
-class SupportHistory extends StatelessWidget {
+class SupportHistory extends StatefulWidget {
   final bool loading;
   final String? error;
   final List<SupportMessage> messages;
@@ -16,6 +18,47 @@ class SupportHistory extends StatelessWidget {
     required this.error,
     required this.messages,
   });
+
+  @override
+  State<SupportHistory> createState() => _SupportHistoryState();
+}
+
+class _SupportHistoryState extends State<SupportHistory> {
+  late DateTime _now;
+  Timer? _ticker;
+
+  @override
+  void initState() {
+    super.initState();
+    _now = DateTime.now();
+    // Actualiza cada minuto para refrescar "Hoy/Ayer/Hace X días"
+    _ticker = Timer.periodic(const Duration(minutes: 1), (_) {
+      if (mounted) {
+        setState(() {
+          _now = DateTime.now();
+        });
+      }
+    });
+  }
+
+  @override
+  void didUpdateWidget(SupportHistory oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Actualizar _now cuando el widget se reconstruya con nuevos datos
+    if (widget.messages != oldWidget.messages ||
+        widget.loading != oldWidget.loading ||
+        widget.error != oldWidget.error) {
+      setState(() {
+        _now = DateTime.now();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _ticker?.cancel();
+    super.dispose();
+  }
 
   // Obtener icono según categoría
   IconData _getCategoryIcon(String? category) {
@@ -42,11 +85,11 @@ class SupportHistory extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final isDark = colorScheme.brightness == Brightness.dark;
 
-    if (loading) {
+    if (widget.loading) {
       return const Center(child: CircularProgressIndicator());
     }
     
-    if (error != null) {
+    if (widget.error != null) {
       return Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -59,7 +102,7 @@ class SupportHistory extends StatelessWidget {
             const SizedBox(width: 12),
             Expanded(
               child: Text(
-                error!,
+                widget.error!,
                 style: TextStyle(color: colorScheme.onErrorContainer),
               ),
             ),
@@ -68,7 +111,7 @@ class SupportHistory extends StatelessWidget {
       );
     }
     
-    if (messages.isEmpty) {
+    if (widget.messages.isEmpty) {
       return Container(
         padding: const EdgeInsets.all(24),
         decoration: BoxDecoration(
@@ -98,9 +141,9 @@ class SupportHistory extends StatelessWidget {
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: messages.length,
+      itemCount: widget.messages.length,
       itemBuilder: (context, index) {
-        final msg = messages[index];
+        final msg = widget.messages[index];
         final categoryColor = ThemeHelpers.getCategoryColor(msg.category, context);
         final categoryIcon = _getCategoryIcon(msg.category);
         final statusColor = ThemeHelpers.getStatusColor(msg.status, context);
@@ -201,7 +244,7 @@ class SupportHistory extends StatelessWidget {
                 
                 // Fecha
                 Text(
-                  _formatDate(msg.sentAt),
+                  _formatDate(context, msg.sentAt),
                   style: TextStyle(
                     fontSize: 12,
                     color: ThemeHelpers.textSecondary(context),
@@ -280,7 +323,7 @@ class SupportHistory extends StatelessWidget {
                         if (msg.responseDate != null) ...[
                           const SizedBox(height: 8),
                           Text(
-                            _formatDate(msg.responseDate!),
+                            _formatDate(context, msg.responseDate!),
                             style: TextStyle(
                               color: ThemeHelpers.textSecondary(context),
                               fontSize: 12,
@@ -299,18 +342,32 @@ class SupportHistory extends StatelessWidget {
     );
   }
 
-  String _formatDate(DateTime date) {
-    final now = DateTime.now();
-    final difference = now.difference(date);
+  String _formatDate(BuildContext context, DateTime date) {
+    final l10n = context.l10n;
+    final locale = Localizations.localeOf(context).toLanguageTag();
+  
+    // Normalizar fechas a medianoche para comparar días del calendario
+    final nowDate = DateTime(_now.year, _now.month, _now.day);
+    final messageDate = DateTime(date.year, date.month, date.day);
+    final daysDifference = nowDate.difference(messageDate).inDays;
 
-    if (difference.inDays == 0) {
-      return 'Hoy a las ${date.hour}:${date.minute.toString().padLeft(2, '0')}';
-    } else if (difference.inDays == 1) {
-      return 'Ayer a las ${date.hour}:${date.minute.toString().padLeft(2, '0')}';
-    } else if (difference.inDays < 7) {
-      return 'Hace ${difference.inDays} días';
+    final hh = date.hour.toString().padLeft(2, '0');
+    final mm = date.minute.toString().padLeft(2, '0');
+    final timeStr = '$hh:$mm';
+
+    if (daysDifference == 0) {
+      // Mismo día calendario
+      return l10n.supportDateToday(timeStr);
+    } else if (daysDifference == 1) {
+      // Ayer
+      return l10n.supportDateYesterday(timeStr);
+    } else if (daysDifference < 7) {
+      // Hace X días
+      return l10n.supportDateDaysAgo(daysDifference);
     } else {
-      return '${date.day}/${date.month}/${date.year}';
+      // Fecha completa localizable con intl
+      final df = DateFormat.yMMMd(locale).add_jm();
+      return df.format(date);
     }
   }
 }

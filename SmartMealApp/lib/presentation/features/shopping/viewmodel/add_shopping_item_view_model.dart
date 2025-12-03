@@ -5,6 +5,11 @@ import 'package:smartmeal/domain/value_objects/shopping_item_name.dart';
 import 'package:smartmeal/domain/value_objects/shopping_item_quantity.dart';
 import 'package:smartmeal/domain/value_objects/price.dart';
 
+enum ShoppingErrorCode {
+  requiredFields,
+  saveError,
+}
+
 class AddShoppingItemViewModel extends ChangeNotifier {
   final AddShoppingItemUseCase _addShoppingItem;
   final ShoppingItem? itemToEdit;
@@ -12,10 +17,11 @@ class AddShoppingItemViewModel extends ChangeNotifier {
   String _name = '';
   String _quantity = '';
   String _price = '';
-  String _category = 'Frutas y Verduras ';
+  String _category = 'Frutas y Verduras';
   String _usedInMenus = '';
   bool _loading = false;
-  String? _error;
+  ShoppingErrorCode? _errorCode;
+  String? _errorDetails;
 
   String get name => _name;
   String get quantity => _quantity;
@@ -23,7 +29,8 @@ class AddShoppingItemViewModel extends ChangeNotifier {
   String get category => _category;
   String get usedInMenus => _usedInMenus;
   bool get loading => _loading;
-  String? get error => _error;
+  ShoppingErrorCode? get errorCode => _errorCode;
+  String? get errorDetails => _errorDetails;
 
   AddShoppingItemViewModel(this._addShoppingItem, this.itemToEdit) {
     if (itemToEdit != null) {
@@ -37,19 +44,22 @@ class AddShoppingItemViewModel extends ChangeNotifier {
 
   void setName(String value) {
     _name = value;
-    _error = null;
+    _errorCode = null;
+    _errorDetails = null;
     notifyListeners();
   }
 
   void setQuantity(String value) {
     _quantity = value;
-    _error = null;
+    _errorCode = null;
+    _errorDetails = null;
     notifyListeners();
   }
 
   void setPrice(String value) {
     _price = value;
-    _error = null;
+    _errorCode = null;
+    _errorDetails = null;
     notifyListeners();
   }
 
@@ -65,13 +75,14 @@ class AddShoppingItemViewModel extends ChangeNotifier {
 
   Future<bool> save() async {
     if (_name.trim().isEmpty || _quantity.trim().isEmpty || _price.trim().isEmpty) {
-      _error = 'Por favor completa todos los campos obligatorios';
+      _errorCode = ShoppingErrorCode.requiredFields;
       notifyListeners();
       return false;
     }
 
     _loading = true;
-    _error = null;
+    _errorCode = null;
+    _errorDetails = null;
     notifyListeners();
 
     try {
@@ -104,12 +115,12 @@ class AddShoppingItemViewModel extends ChangeNotifier {
       notifyListeners();
       return true;
     } on ArgumentError catch (e) {
-      _error = e.message;
+      _errorDetails = e.message;
       _loading = false;
       notifyListeners();
       return false;
-    } catch (e) {
-      _error = 'Error al guardar el producto';
+    } catch (_) {
+      _errorCode = ShoppingErrorCode.saveError;
       _loading = false;
       notifyListeners();
       return false;

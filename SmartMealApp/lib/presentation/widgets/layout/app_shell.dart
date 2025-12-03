@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:smartmeal/presentation/widgets/navigation/bottom_nav_bar.dart';
 import 'package:smartmeal/presentation/widgets/layout/smart_meal_app_bar.dart';
+import 'package:smartmeal/l10n/l10n_ext.dart';
 
 class AppShell extends StatefulWidget {
   final String title;
@@ -40,8 +41,10 @@ class _AppShellState extends State<AppShell> {
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       final theme = Theme.of(context);
       final colorScheme = theme.colorScheme;
-      final title = message.notification?.title ?? '¡SmartMeal!';
-      final body = message.notification?.body ?? 'Tienes una nueva notificación';
+      final l10n = context.l10n;
+      
+      final title = message.notification?.title ?? l10n.notificationDefaultTitle;
+      final body = message.notification?.body ?? l10n.notificationDefaultBody;
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -81,10 +84,9 @@ class _AppShellState extends State<AppShell> {
           ),
           duration: const Duration(seconds: 4),
           action: SnackBarAction(
-            label: 'Ver',
+            label: l10n.notificationActionView,
             textColor: colorScheme.primary,
             onPressed: () {
-              // Ejemplo: navega a la pantalla de soporte
               Navigator.of(context).pushNamed('/support');
             },
           ),
