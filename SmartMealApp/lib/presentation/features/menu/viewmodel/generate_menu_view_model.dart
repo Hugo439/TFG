@@ -3,10 +3,10 @@ import 'package:smartmeal/core/usecases/usecase.dart';
 import 'package:smartmeal/core/utils/calorie_calculator_utils.dart';
 import 'package:smartmeal/domain/entities/weekly_menu.dart';
 import 'package:smartmeal/domain/entities/user_profile.dart';
-import 'package:smartmeal/domain/usecases/get_user_profile_usecase.dart';
-import 'package:smartmeal/domain/usecases/get_current_user_usecase.dart';
-import 'package:smartmeal/domain/usecases/save_menu_recipes_usecase.dart';
-import 'package:smartmeal/domain/usecases/generate_weekly_menu_usecase.dart';
+import 'package:smartmeal/domain/usecases/user/get_user_profile_usecase.dart';
+import 'package:smartmeal/domain/usecases/user/get_current_user_usecase.dart';
+import 'package:smartmeal/domain/usecases/menus/save_menu_recipes_usecase.dart';
+import 'package:smartmeal/domain/usecases/menus/generate_weekly_menu_usecase.dart';
 import 'package:smartmeal/domain/repositories/weekly_menu_repository.dart';
 
 enum GenerateMenuStatus { idle, generating, preview, saving, success, error }

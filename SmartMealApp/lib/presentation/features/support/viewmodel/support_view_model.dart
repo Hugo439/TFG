@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:smartmeal/domain/entities/support_message.dart';
 import 'package:smartmeal/domain/entities/faq.dart';
-import 'package:smartmeal/domain/usecases/get_support_messages_usecase.dart';
+import 'package:smartmeal/domain/usecases/support/get_support_messages_usecase.dart';
 import 'package:smartmeal/domain/repositories/support_message_repository.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smartmeal/core/di/service_locator.dart';
-import 'package:smartmeal/domain/usecases/sign_up_usecase.dart';
+import 'package:smartmeal/domain/usecases/auth/sign_up_usecase.dart';
 import 'package:smartmeal/presentation/features/auth/viewmodel/register_view_model.dart';
 import 'package:smartmeal/presentation/features/auth/widgets/register_header.dart';
 import 'package:smartmeal/presentation/features/auth/widgets/register_form.dart';

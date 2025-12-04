@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:smartmeal/domain/entities/user_profile.dart';
-import 'package:smartmeal/domain/usecases/update_user_profile_usecase.dart';
+import 'package:smartmeal/domain/usecases/profile/update_user_profile_usecase.dart';
 import 'package:smartmeal/domain/value_objects/allergies.dart';
 import 'package:smartmeal/domain/value_objects/display_name.dart';
 import 'package:smartmeal/domain/value_objects/goal.dart';

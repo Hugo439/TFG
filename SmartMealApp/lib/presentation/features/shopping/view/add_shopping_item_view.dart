@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smartmeal/core/di/service_locator.dart';
 import 'package:smartmeal/domain/entities/shopping_item.dart';
-import 'package:smartmeal/domain/usecases/add_shopping_item_usecase.dart';
+import 'package:smartmeal/domain/usecases/shopping/add_shopping_item_usecase.dart';
 import 'package:smartmeal/presentation/features/shopping/viewmodel/add_shopping_item_view_model.dart';
 import 'package:smartmeal/presentation/widgets/inputs/filled_text_field.dart';
 import 'package:smartmeal/presentation/widgets/buttons/primary_button.dart';

@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:smartmeal/domain/usecases/sign_up_usecase.dart';
+import 'package:smartmeal/domain/usecases/auth/sign_up_usecase.dart';
 
 enum RegisterErrorCode {
   emailInUse,

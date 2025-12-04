@@ -1,5 +1,5 @@
-import '../entities/support_message.dart';
-import '../repositories/support_message_repository.dart';
+import '../../entities/support_message.dart';
+import '../../repositories/support_message_repository.dart';
 
 class GetSupportMessagesUseCase {
   final SupportMessageRepository repository;

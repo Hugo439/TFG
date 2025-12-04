@@ -18,3 +18,4 @@ class GetRecommendedMenuItemsUseCase implements UseCase<List<MenuItem>, GetRecom
     return await repository.getRecommendedMenuItems(params.limit);
   }
 }
+//TODO: solo se usa en el service locator, asiq posiblemente sea prescindible

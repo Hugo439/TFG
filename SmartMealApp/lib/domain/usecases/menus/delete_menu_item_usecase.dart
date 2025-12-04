@@ -11,3 +11,4 @@ class DeleteMenuItemUseCase implements UseCase<void, String> {
     return await repository.deleteMenuItem(params);
   }
 }
+//TODO: solo se usa en el service locator, asiq posiblemente sea prescindible

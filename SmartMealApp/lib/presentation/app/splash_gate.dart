@@ -4,7 +4,7 @@ import 'package:smartmeal/presentation/features/splash/view/splash_view.dart';
 import 'package:smartmeal/presentation/features/splash/viewmodel/splash_view_model.dart';
 import 'package:smartmeal/core/di/service_locator.dart';
 import 'package:smartmeal/domain/usecases/initialize_app_usecase.dart';
-import 'package:smartmeal/domain/usecases/check_auth_status_usecase.dart';
+import 'package:smartmeal/domain/usecases/auth/check_auth_status_usecase.dart';
 import 'package:smartmeal/presentation/routes/routes.dart';
 
 class SplashGate extends StatelessWidget {

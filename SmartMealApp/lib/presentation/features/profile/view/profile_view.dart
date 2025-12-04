@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smartmeal/core/di/service_locator.dart';
-import 'package:smartmeal/domain/usecases/get_user_profile_usecase.dart';
-import 'package:smartmeal/domain/usecases/update_user_profile_usecase.dart';
-import 'package:smartmeal/domain/usecases/sign_out_usecase.dart';
-import 'package:smartmeal/domain/usecases/delete_account_usecase.dart';
+import 'package:smartmeal/domain/usecases/user/get_user_profile_usecase.dart';
+import 'package:smartmeal/domain/usecases/profile/update_user_profile_usecase.dart';
+import 'package:smartmeal/domain/usecases/auth/sign_out_usecase.dart';
+import 'package:smartmeal/domain/usecases/auth/delete_account_usecase.dart';
 import 'package:smartmeal/presentation/features/profile/viewmodel/profile_view_model.dart';
 import 'package:smartmeal/presentation/features/profile/widgets/profile_header.dart';
 import 'package:smartmeal/presentation/features/profile/widgets/personal_info_section.dart';

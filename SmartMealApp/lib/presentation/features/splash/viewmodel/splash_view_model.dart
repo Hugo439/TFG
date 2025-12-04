@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:smartmeal/core/usecases/usecase.dart';
 import 'package:smartmeal/domain/usecases/initialize_app_usecase.dart';
-import 'package:smartmeal/domain/usecases/check_auth_status_usecase.dart';
+import 'package:smartmeal/domain/usecases/auth/check_auth_status_usecase.dart';
 
 enum SplashStatus { idle, loading, authenticated, notAuthenticated, error }
 

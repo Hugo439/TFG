@@ -6,7 +6,7 @@ import 'firebase_options.dart';
 import 'presentation/app/smart_meal_app.dart';
 import 'core/di/service_locator.dart';
 import 'package:provider/provider.dart';
-import 'domain/usecases/get_support_messages_usecase.dart';
+import 'domain/usecases/support/get_support_messages_usecase.dart';
 import 'domain/repositories/support_message_repository.dart';
 import 'core/services/fcm_service.dart';
 import 'presentation/features/menu/viewmodel/menu_view_model.dart';

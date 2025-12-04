@@ -12,3 +12,4 @@ class GetWeeklyMenusUseCase implements UseCase<List<WeeklyMenu>, String> {
     return _repository.getUserMenus(userId);
   }
 }
+//TODO: solo se usa en el service locator, asiq posiblemente sea prescindible

@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:smartmeal/core/usecases/usecase.dart';
 import 'package:smartmeal/domain/entities/user_profile.dart';
-import 'package:smartmeal/domain/usecases/get_user_profile_usecase.dart';
-import 'package:smartmeal/domain/usecases/update_user_profile_usecase.dart';
-import 'package:smartmeal/domain/usecases/sign_out_usecase.dart';
-import 'package:smartmeal/domain/usecases/delete_account_usecase.dart';
+import 'package:smartmeal/domain/usecases/user/get_user_profile_usecase.dart';
+import 'package:smartmeal/domain/usecases/profile/update_user_profile_usecase.dart';
+import 'package:smartmeal/domain/usecases/auth/sign_out_usecase.dart';
+import 'package:smartmeal/domain/usecases/auth/delete_account_usecase.dart';
 
 enum ProfileStatus { idle, loading, loaded, error }
 

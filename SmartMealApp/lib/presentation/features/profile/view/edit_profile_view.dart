@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smartmeal/core/di/service_locator.dart';
 import 'package:smartmeal/domain/entities/user_profile.dart';
-import 'package:smartmeal/domain/usecases/update_user_profile_usecase.dart';
+import 'package:smartmeal/domain/usecases/profile/update_user_profile_usecase.dart';
 import 'package:smartmeal/presentation/features/profile/viewmodel/edit_profile_view_model.dart';
 import 'package:smartmeal/presentation/widgets/inputs/filled_text_field.dart';
 import 'package:smartmeal/presentation/widgets/buttons/primary_button.dart';

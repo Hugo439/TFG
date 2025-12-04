@@ -32,43 +32,43 @@ import 'package:smartmeal/data/datasources/remote/firestore_datasource.dart';
 import 'package:smartmeal/data/datasources/remote/menu_datasource.dart';
 import 'package:smartmeal/data/datasources/remote/shopping_datasource.dart';
 import 'package:smartmeal/data/datasources/remote/gemini_menu_datasource.dart'; // ← CAMBIO AQUÍ
-import 'package:smartmeal/domain/usecases/generate_weekly_menu_usecase.dart';
+import 'package:smartmeal/domain/usecases/menus/generate_weekly_menu_usecase.dart';
 
 // Use Cases - App
 import 'package:smartmeal/domain/usecases/initialize_app_usecase.dart';
-import 'package:smartmeal/domain/usecases/check_auth_status_usecase.dart';
+import 'package:smartmeal/domain/usecases/auth/check_auth_status_usecase.dart';
 
 // Use Cases - Auth
-import 'package:smartmeal/domain/usecases/sign_in_usecase.dart';
-import 'package:smartmeal/domain/usecases/sign_up_usecase.dart';
-import 'package:smartmeal/domain/usecases/sign_out_usecase.dart';
-import 'package:smartmeal/domain/usecases/get_current_user_usecase.dart';
+import 'package:smartmeal/domain/usecases/auth/sign_in_usecase.dart';
+import 'package:smartmeal/domain/usecases/auth/sign_up_usecase.dart';
+import 'package:smartmeal/domain/usecases/auth/sign_out_usecase.dart';
+import 'package:smartmeal/domain/usecases/user/get_current_user_usecase.dart';
 
 // Use Cases - Profile
-import 'package:smartmeal/domain/usecases/get_user_profile_usecase.dart';
-import 'package:smartmeal/domain/usecases/update_user_profile_usecase.dart';
-import 'package:smartmeal/domain/usecases/delete_account_usecase.dart';
+import 'package:smartmeal/domain/usecases/user/get_user_profile_usecase.dart';
+import 'package:smartmeal/domain/usecases/profile/update_user_profile_usecase.dart';
+import 'package:smartmeal/domain/usecases/auth/delete_account_usecase.dart';
 
 // Use Cases - Menu
 import 'package:smartmeal/domain/usecases/get_menu_items_usecase.dart';
-import 'package:smartmeal/domain/usecases/get_recommended_menu_items_usecase.dart';
-import 'package:smartmeal/domain/usecases/delete_menu_item_usecase.dart';
+import 'package:smartmeal/domain/usecases/menus/get_recommended_menu_items_usecase.dart';
+import 'package:smartmeal/domain/usecases/menus/delete_menu_item_usecase.dart';
 
 // Use Cases - Shopping
-import 'package:smartmeal/domain/usecases/get_shopping_items_usecase.dart';
-import 'package:smartmeal/domain/usecases/add_shopping_item_usecase.dart';
-import 'package:smartmeal/domain/usecases/toggle_shopping_item_usecase.dart';
-import 'package:smartmeal/domain/usecases/delete_shopping_item_usecase.dart';
-import 'package:smartmeal/domain/usecases/get_total_price_usecase.dart';
+import 'package:smartmeal/domain/usecases/shopping/get_shopping_items_usecase.dart';
+import 'package:smartmeal/domain/usecases/shopping/add_shopping_item_usecase.dart';
+import 'package:smartmeal/domain/usecases/shopping/toggle_shopping_item_usecase.dart';
+import 'package:smartmeal/domain/usecases/shopping/delete_shopping_item_usecase.dart';
+import 'package:smartmeal/domain/usecases/shopping/get_total_price_usecase.dart';
 import 'package:smartmeal/domain/usecases/generate_shopping_from_menus_usecase.dart';
 
 // Use Cases - Recipes & Weekly Menus
 import 'package:smartmeal/domain/usecases/get_recipes_usecase.dart';
 import 'package:smartmeal/domain/usecases/get_recipes_by_meal_type_usecase.dart';
-import 'package:smartmeal/domain/usecases/get_weekly_menus_usecase.dart';
-import 'package:smartmeal/domain/usecases/save_menu_recipes_usecase.dart';
+import 'package:smartmeal/domain/usecases/menus/get_weekly_menus_usecase.dart';
+import 'package:smartmeal/domain/usecases/menus/save_menu_recipes_usecase.dart';
 import 'package:smartmeal/domain/usecases/get_recipe_by_id_usecase.dart';
-import 'package:smartmeal/domain/usecases/get_support_messages_usecase.dart';
+import 'package:smartmeal/domain/usecases/support/get_support_messages_usecase.dart';
 
 // ViewModels
 import 'package:smartmeal/presentation/features/menu/viewmodel/menu_view_model.dart';

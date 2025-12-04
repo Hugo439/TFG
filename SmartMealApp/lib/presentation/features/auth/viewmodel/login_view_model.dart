@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:smartmeal/domain/usecases/sign_in_usecase.dart';
+import 'package:smartmeal/domain/usecases/auth/sign_in_usecase.dart';
 import 'package:smartmeal/data/datasources/local/auth_local_datasource.dart';
 
 enum LoginErrorCode {

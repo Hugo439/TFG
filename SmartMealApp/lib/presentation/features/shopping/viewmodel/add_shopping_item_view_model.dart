@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:smartmeal/domain/entities/shopping_item.dart';
-import 'package:smartmeal/domain/usecases/add_shopping_item_usecase.dart';
+import 'package:smartmeal/domain/usecases/shopping/add_shopping_item_usecase.dart';
 import 'package:smartmeal/domain/value_objects/shopping_item_name.dart';
 import 'package:smartmeal/domain/value_objects/shopping_item_quantity.dart';
 import 'package:smartmeal/domain/value_objects/price.dart';

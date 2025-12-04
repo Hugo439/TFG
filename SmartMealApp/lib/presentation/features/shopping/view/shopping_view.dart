@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smartmeal/core/di/service_locator.dart';
-import 'package:smartmeal/domain/usecases/get_shopping_items_usecase.dart';
-import 'package:smartmeal/domain/usecases/add_shopping_item_usecase.dart';
-import 'package:smartmeal/domain/usecases/toggle_shopping_item_usecase.dart';
-import 'package:smartmeal/domain/usecases/delete_shopping_item_usecase.dart';
-import 'package:smartmeal/domain/usecases/get_total_price_usecase.dart';
+import 'package:smartmeal/domain/usecases/shopping/get_shopping_items_usecase.dart';
+import 'package:smartmeal/domain/usecases/shopping/add_shopping_item_usecase.dart';
+import 'package:smartmeal/domain/usecases/shopping/toggle_shopping_item_usecase.dart';
+import 'package:smartmeal/domain/usecases/shopping/delete_shopping_item_usecase.dart';
+import 'package:smartmeal/domain/usecases/shopping/get_total_price_usecase.dart';
 import 'package:smartmeal/domain/usecases/generate_shopping_from_menus_usecase.dart';
 import 'package:smartmeal/presentation/features/shopping/viewmodel/shopping_view_model.dart';
 import 'package:smartmeal/presentation/features/shopping/view/add_shopping_item_view.dart';
