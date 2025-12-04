@@ -7,6 +7,8 @@ import 'package:smartmeal/domain/value_objects/goal.dart';
 import 'package:smartmeal/domain/value_objects/height.dart';
 import 'package:smartmeal/domain/value_objects/phone_number.dart';
 import 'package:smartmeal/domain/value_objects/weight.dart';
+import 'package:smartmeal/domain/value_objects/age.dart';
+import 'package:smartmeal/domain/value_objects/gender.dart';
 
 enum EditProfileStatus { idle, loading, success, error }
 
@@ -14,6 +16,7 @@ enum EditProfileErrorCode {
   nameRequired,
   heightInvalid,
   weightInvalid,
+  ageInvalid,
   validationError,
   generic,
 }
@@ -21,7 +24,7 @@ enum EditProfileErrorCode {
 class EditProfileState {
   final EditProfileStatus status;
   final EditProfileErrorCode? errorCode;
-  final String? errorMessage; // Para errores de Value Objects
+  final String? errorMessage;
 
   const EditProfileState({
     this.status = EditProfileStatus.idle,
@@ -56,6 +59,8 @@ class EditProfileViewModel extends ChangeNotifier {
   late String weightKg;
   late String goal;
   late String allergies;
+  late String age;
+  late String gender;
 
   EditProfileViewModel(this._updateProfile, this.initialProfile) {
     // Inicializar con los valores actuales del perfil
@@ -65,6 +70,8 @@ class EditProfileViewModel extends ChangeNotifier {
     weightKg = initialProfile.weight.value.toString();
     goal = initialProfile.goal.displayName;
     allergies = initialProfile.allergies?.value ?? '';
+    age = initialProfile.age?.value.toString() ?? '';
+    gender = initialProfile.gender?.value ?? '';
   }
 
   void setDisplayName(String value) {
@@ -94,6 +101,16 @@ class EditProfileViewModel extends ChangeNotifier {
 
   void setAllergies(String value) {
     allergies = value;
+    notifyListeners();
+  }
+
+  void setAge(String value) {
+    age = value;
+    notifyListeners();
+  }
+
+  void setGender(String value) {
+    gender = value;
     notifyListeners();
   }
 
@@ -132,6 +149,20 @@ class EditProfileViewModel extends ChangeNotifier {
         return false;
       }
 
+      // Validar edad si se proporciona
+      Age? ageVO;
+      if (age.trim().isNotEmpty) {
+        final ageValue = int.tryParse(age);
+        if (ageValue == null) {
+          _update(_state.copyWith(
+            status: EditProfileStatus.error,
+            errorCode: EditProfileErrorCode.ageInvalid,
+          ));
+          return false;
+        }
+        ageVO = Age(ageValue);
+      }
+
       // Crear Value Objects
       final displayNameVO = DisplayName(displayName.trim());
       final phoneVO = PhoneNumber.tryParse(phone.trim());
@@ -139,6 +170,7 @@ class EditProfileViewModel extends ChangeNotifier {
       final weightVO = Weight(weight);
       final goalVO = Goal.fromString(goal);
       final allergiesVO = Allergies.tryParse(allergies.trim());
+      final genderVO = gender.trim().isEmpty ? null : Gender(gender.trim());
 
       // Crear perfil actualizado con Value Objects
       final updatedProfile = UserProfile(
@@ -151,6 +183,8 @@ class EditProfileViewModel extends ChangeNotifier {
         weight: weightVO,
         goal: goalVO,
         allergies: allergiesVO,
+        age: ageVO,
+        gender: genderVO,
       );
 
       await _updateProfile(updatedProfile);

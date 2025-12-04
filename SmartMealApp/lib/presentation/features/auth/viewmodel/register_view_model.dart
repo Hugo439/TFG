@@ -49,6 +49,8 @@ class RegisterViewModel extends ChangeNotifier {
     double weightKg,
     String goal,
     String? allergies,
+    int? age,
+    String? gender,
   ) async {
     _loading = true;
     _errorCode = null;
@@ -63,6 +65,8 @@ class RegisterViewModel extends ChangeNotifier {
         weightKg: weightKg,
         goal: goal,
         allergies: allergies,
+        age: age,
+        gender: gender,
       ));
 
       _loading = false;

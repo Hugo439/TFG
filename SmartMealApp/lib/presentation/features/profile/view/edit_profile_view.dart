@@ -7,6 +7,8 @@ import 'package:smartmeal/presentation/features/profile/viewmodel/edit_profile_v
 import 'package:smartmeal/presentation/widgets/inputs/filled_text_field.dart';
 import 'package:smartmeal/presentation/widgets/buttons/primary_button.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
+import 'package:smartmeal/presentation/widgets/inputs/age_field.dart';
+import 'package:smartmeal/presentation/widgets/inputs/gender_dropdown.dart';
 
 class EditProfileView extends StatelessWidget {
   final UserProfile profile;
@@ -39,6 +41,8 @@ class _EditProfileContent extends StatelessWidget {
           return l10n.editProfileErrorHeightInvalid;
         case EditProfileErrorCode.weightInvalid:
           return l10n.editProfileErrorWeightInvalid;
+        case EditProfileErrorCode.ageInvalid:
+          return l10n.editProfileErrorAgeInvalid;
         case EditProfileErrorCode.validationError:
           return state.errorMessage ?? l10n.editProfileErrorGeneric;
         case EditProfileErrorCode.generic:
@@ -141,6 +145,27 @@ class _EditProfileContent extends StatelessWidget {
               onChanged: vm.setPhone,
               prefixIcon: Icons.phone_outlined,
               keyboardType: TextInputType.phone,
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Expanded(
+                  child: AgeField(
+                    initialValue: vm.age,
+                    onChanged: vm.setAge,
+                    isOptional: true,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: GenderDropdown(
+                    value: vm.gender,
+                    onChanged: vm.setGender,
+                    isOptional: true,
+                    showLabel: true,
+                  ),
+                ),
+              ],
             ),
             const SizedBox(height: 24),
 

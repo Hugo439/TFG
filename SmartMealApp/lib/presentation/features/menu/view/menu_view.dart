@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:smartmeal/core/di/service_locator.dart';
 import 'package:smartmeal/presentation/features/menu/viewmodel/menu_view_model.dart';
 import 'package:smartmeal/presentation/routes/navigation_controller.dart';
 import 'package:smartmeal/presentation/widgets/layout/app_shell.dart';
@@ -13,16 +14,21 @@ class MenuView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<MenuViewModel>(
-      create: (_) => MenuViewModel(),
+    return ChangeNotifierProvider.value(
+      value: sl<MenuViewModel>(),
       child: const _MenuContent(),
     );
   }
 }
 
-class _MenuContent extends StatelessWidget {
+class _MenuContent extends StatefulWidget {
   const _MenuContent();
 
+  @override
+  State<_MenuContent> createState() => _MenuContentState();
+}
+
+class _MenuContentState extends State<_MenuContent> {
   @override
   Widget build(BuildContext context) {
     final vm = Provider.of<MenuViewModel>(context);
@@ -42,26 +48,104 @@ class _MenuContent extends StatelessWidget {
           }
           if (vm.state == MenuState.error) {
             return Center(
-              child: Text(
-                vm.errorMessage ?? l10n.menuLoadError,
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.error_outline,
+                    size: 64,
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                  const SizedBox(height: 16),
+                  Text(
+                    vm.errorMessage ?? l10n.menuLoadError,
+                    style: TextStyle(color: Theme.of(context).colorScheme.error),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
               ),
             );
           }
           if (lastMenu == null) {
             return Center(
-              child: Text(
-                l10n.menuEmpty,
-                style: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.restaurant_menu,
+                      size: 64,
+                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                    ),
+                    const SizedBox(height: 16),
+                    Text(
+                      l10n.menuEmpty,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface,
+                        fontSize: 18,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      l10n.menuEmptyHint,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                        fontSize: 14,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
               ),
             );
           }
 
           final colorScheme = Theme.of(context).colorScheme;
 
+          // AppShell ya tiene SingleChildScrollView, solo devolvemos Column
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            lastMenu.name,
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: colorScheme.onSurface,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '${l10n.menuCreated}: ${_formatDate(lastMenu.createdAt)}',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: colorScheme.onSurface.withOpacity(0.6),
+                            ),
+                          ),
+                          if (lastMenu.updatedAt != null)
+                            Text(
+                              '${l10n.menuUpdated}: ${_formatDate(lastMenu.updatedAt!)}',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: colorScheme.onSurface.withOpacity(0.6),
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               Row(
                 children: [
                   Expanded(
@@ -88,6 +172,7 @@ class _MenuContent extends StatelessWidget {
                 menu: lastMenu,
                 onRecipeTap: (id) => Navigator.of(context).pushNamed('/recipe-detail', arguments: id),
               ),
+              const SizedBox(height: 80), // Espacio extra al final
             ],
           );
         },
@@ -108,5 +193,9 @@ class _MenuContent extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  String _formatDate(DateTime date) {
+    return '${date.day}/${date.month}/${date.year}';
   }
 }

@@ -27,7 +27,7 @@ class WeeklyMenuRepositoryImpl implements WeeklyMenuRepository {
   @override
   Future<List<WeeklyMenu>> getUserMenus(String userId) async {
     final snapshot = await _userMenusRef(userId)
-        .orderBy('weekStart', descending: true)
+        .orderBy('updatedAt', descending: true)  // Primero por updatedAt
         .get();
 
     final menus = <WeeklyMenu>[];
@@ -36,12 +36,20 @@ class WeeklyMenuRepositoryImpl implements WeeklyMenuRepository {
       final menu = await WeeklyMenuMapper.toEntity(model, (id) => _getRecipeById(userId, id));
       menus.add(menu);
     }
+    
+    // Si updatedAt es null, ordenar por createdAt
+    menus.sort((a, b) {
+      final dateA = a.updatedAt ?? a.createdAt;
+      final dateB = b.updatedAt ?? b.createdAt;
+      return dateB.compareTo(dateA); // Descendente
+    });
+    
     return menus;
   }
 
   @override
   Future<List<WeeklyMenu>> getWeeklyMenus(String userId) async {
-    return getUserMenus(userId);
+    return getUserMenus(userId); // Ya ordena correctamente
   }
 
   @override

@@ -235,6 +235,30 @@ class AppLocalizationsEs extends AppLocalizations {
   String get registerErrorGeneric => 'Error al registrarse';
 
   @override
+  String get registerAgeLabel => 'Edad';
+
+  @override
+  String get registerAgeHint => 'Ej: 25';
+
+  @override
+  String get registerGenderLabel => 'Género';
+
+  @override
+  String get registerGenderHint => 'Seleccionar';
+
+  @override
+  String get registerGenderMale => 'Masculino';
+
+  @override
+  String get registerGenderFemale => 'Femenino';
+
+  @override
+  String get registerGenderOther => 'Otro';
+
+  @override
+  String get registerOptional => '(Opcional)';
+
+  @override
   String get supportTitle => 'Soporte';
 
   @override
@@ -713,6 +737,27 @@ class AppLocalizationsEs extends AppLocalizations {
   String get editProfileErrorGeneric => 'Error al actualizar el perfil';
 
   @override
+  String get editProfileAgeLabel => 'Edad (años)';
+
+  @override
+  String get editProfileAgeOptional => 'Opcional';
+
+  @override
+  String get editProfileGenderLabel => 'Género';
+
+  @override
+  String get editProfileGenderMale => 'Masculino';
+
+  @override
+  String get editProfileGenderFemale => 'Femenino';
+
+  @override
+  String get editProfileGenderOther => 'Otro';
+
+  @override
+  String get editProfileErrorAgeInvalid => 'La edad debe ser un número válido';
+
+  @override
   String get menuTitle => 'Menú semanal';
 
   @override
@@ -741,6 +786,15 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get menuCardComingSoon => 'Próximamente';
+
+  @override
+  String get menuEmptyHint => 'Toca el botón + para generar tu primer menú';
+
+  @override
+  String get menuCreated => 'Creado';
+
+  @override
+  String get menuUpdated => 'Actualizado';
 
   @override
   String get generateMenuTitle => 'Generar Menú Semanal';
@@ -800,6 +854,15 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get generateMenuSave => 'Guardar Menú';
+
+  @override
+  String get generateMenuPreviewTitle => 'Vista previa del menú';
+
+  @override
+  String get generateMenuRegenerate => 'Regenerar';
+
+  @override
+  String get generateMenuAccept => 'Aceptar y guardar';
 
   @override
   String get shoppingTitle => 'Lista de la Compra';

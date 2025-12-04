@@ -10,6 +10,8 @@ abstract class AuthRepository {
     required double weightKg,
     required String goal,
     String? allergies,
+    int? age,
+    String? gender,
   });
   Future<bool> checkAuthStatus();
   Future<void> signOut();

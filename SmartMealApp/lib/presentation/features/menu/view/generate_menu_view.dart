@@ -4,6 +4,7 @@ import 'package:smartmeal/core/di/service_locator.dart';
 import 'package:smartmeal/domain/usecases/get_user_profile_usecase.dart';
 import 'package:smartmeal/domain/usecases/get_current_user_usecase.dart';
 import 'package:smartmeal/domain/usecases/save_menu_recipes_usecase.dart';
+import 'package:smartmeal/domain/usecases/generate_weekly_menu_usecase.dart';
 import 'package:smartmeal/presentation/features/menu/viewmodel/generate_menu_view_model.dart';
 import 'package:smartmeal/presentation/features/menu/widgets/weekly_menu_calendar.dart';
 import 'package:smartmeal/domain/repositories/weekly_menu_repository.dart';
@@ -18,6 +19,7 @@ class GenerateMenuView extends StatelessWidget {
       create: (_) => GenerateMenuViewModel(
         sl<GetUserProfileUseCase>(),
         sl<GetCurrentUserUseCase>(),
+        sl<GenerateWeeklyMenuUseCase>(),
         sl<WeeklyMenuRepository>(),
         sl<SaveMenuRecipesUseCase>(),
       ),
@@ -54,16 +56,25 @@ class _GenerateMenuContent extends StatelessWidget {
           ),
         ),
       ),
-      body: state.status == GenerateMenuStatus.success && state.generatedMenu != null
-          ? _buildSuccessView(context, vm)
-          : _buildMainView(context, vm),
+      body: _buildBody(context, vm),
     );
+  }
+
+  Widget _buildBody(BuildContext context, GenerateMenuViewModel vm) {
+    switch (vm.state.status) {
+      case GenerateMenuStatus.preview:
+        return _buildPreviewView(context, vm);
+      case GenerateMenuStatus.success:
+        return _buildSuccessMessage(context);
+      default:
+        return _buildMainView(context, vm);
+    }
   }
 
   Widget _buildMainView(BuildContext context, GenerateMenuViewModel vm) {
     final colorScheme = Theme.of(context).colorScheme;
     final state = vm.state;
-    final isLoading = state.status == GenerateMenuStatus.loading;
+    final isGenerating = state.status == GenerateMenuStatus.generating;
     final l10n = context.l10n;
 
     return Center(
@@ -134,6 +145,16 @@ class _GenerateMenuContent extends StatelessWidget {
             ),
             const SizedBox(height: 48),
 
+            // Barra de progreso
+            if (isGenerating && state.progress != null) ...[
+              LinearProgressIndicator(
+                value: state.progress,
+                backgroundColor: colorScheme.surfaceContainerHighest,
+                valueColor: AlwaysStoppedAnimation<Color>(colorScheme.primary),
+              ),
+              const SizedBox(height: 16),
+            ],
+
             // Error message
             if (state.error != null) ...[
               Container(
@@ -166,7 +187,7 @@ class _GenerateMenuContent extends StatelessWidget {
               width: double.infinity,
               height: 56,
               child: ElevatedButton(
-                onPressed: isLoading ? null : vm.generateMenu,
+                onPressed: isGenerating ? null : vm.generateMenu,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: colorScheme.primary,
                   foregroundColor: colorScheme.onPrimary,
@@ -176,7 +197,7 @@ class _GenerateMenuContent extends StatelessWidget {
                     borderRadius: BorderRadius.circular(16),
                   ),
                 ),
-                child: isLoading
+                child: isGenerating
                     ? Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -219,7 +240,7 @@ class _GenerateMenuContent extends StatelessWidget {
             const SizedBox(height: 16),
 
             // Texto informativo
-            if (isLoading)
+            if (isGenerating)
               Text(
                 l10n.generateMenuWaitMessage,
                 style: TextStyle(
@@ -237,6 +258,223 @@ class _GenerateMenuContent extends StatelessWidget {
                 ),
                 textAlign: TextAlign.center,
               ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildPreviewView(BuildContext context, GenerateMenuViewModel vm) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final menu = vm.state.generatedMenu!;
+    final isSaving = vm.state.status == GenerateMenuStatus.saving;
+    final l10n = context.l10n;
+
+    return Column(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Preview header
+                Container(
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        colorScheme.primary.withOpacity(0.1),
+                        colorScheme.primary.withOpacity(0.05),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: colorScheme.primary.withOpacity(0.3),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.preview,
+                        color: colorScheme.primary,
+                        size: 40,
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              l10n.generateMenuPreviewTitle,
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: colorScheme.onSurface,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              menu.name,
+                              style: TextStyle(
+                                color: colorScheme.onSurface.withOpacity(0.7),
+                                fontSize: 14,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                // Estadísticas
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildStatCard(
+                        context,
+                        l10n.generateMenuTotalCalories,
+                        '${menu.totalWeeklyCalories} kcal',
+                        Icons.local_fire_department,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: _buildStatCard(
+                        context,
+                        l10n.generateMenuAvgCalories,
+                        '${menu.avgDailyCalories.toInt()} kcal',
+                        Icons.trending_up,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+
+                // Calendario semanal
+                WeeklyMenuCalendar(menu: menu),
+              ],
+            ),
+          ),
+        ),
+
+        // Botones de acción en preview
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: colorScheme.surfaceContainerHighest,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 4,
+                offset: const Offset(0, -2),
+              ),
+            ],
+          ),
+          child: SafeArea(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (isSaving && vm.state.progress != null) ...[
+                  LinearProgressIndicator(
+                    value: vm.state.progress,
+                    backgroundColor: colorScheme.surfaceContainerHighest,
+                    valueColor: AlwaysStoppedAnimation<Color>(colorScheme.primary),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: isSaving ? null : vm.discardMenu,
+                        icon: const Icon(Icons.refresh),
+                        label: Text(l10n.generateMenuRegenerate),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: colorScheme.primary,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          side: BorderSide(color: colorScheme.primary),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      flex: 2,
+                      child: ElevatedButton.icon(
+                        onPressed: isSaving ? null : () async {
+                          try {
+                            await vm.saveGeneratedMenu();
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(l10n.menuSaveSuccess),
+                                  backgroundColor: Colors.green,
+                                ),
+                              );
+                              Navigator.of(context).pop(true);
+                            }
+                          } catch (e) {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('${l10n.menuSaveError}: $e'),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+                          }
+                        },
+                        icon: const Icon(Icons.check),
+                        label: Text(l10n.generateMenuAccept),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: colorScheme.primary,
+                          foregroundColor: colorScheme.onPrimary,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSuccessMessage(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final l10n = context.l10n;
+
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.check_circle,
+              color: Colors.green,
+              size: 100,
+            ),
+            const SizedBox(height: 24),
+            Text(
+              l10n.menuSaveSuccess,
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: colorScheme.onSurface,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 48),
+            ElevatedButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text(l10n.commonClose),
+            ),
           ],
         ),
       ),
@@ -297,171 +535,6 @@ class _GenerateMenuContent extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildSuccessView(BuildContext context, GenerateMenuViewModel vm) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final menu = vm.state.generatedMenu!;
-    final l10n = context.l10n;
-
-    return Column(
-      children: [
-        Expanded(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Success message
-                Container(
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        colorScheme.primary.withOpacity(0.1),
-                        colorScheme.primary.withOpacity(0.05),
-                      ],
-                    ),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: colorScheme.primary.withOpacity(0.3),
-                    ),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.check_circle,
-                        color: colorScheme.primary,
-                        size: 40,
-                      ),
-                      const SizedBox(width: 16),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              l10n.generateMenuSuccess,
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                color: colorScheme.onSurface,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              menu.name,
-                              style: TextStyle(
-                                color: colorScheme.onSurface.withOpacity(0.7),
-                                fontSize: 14,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 24),
-
-                // Estadísticas
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildStatCard(
-                        context,
-                        l10n.generateMenuTotalCalories,
-                        '${menu.totalWeeklyCalories} kcal',
-                        Icons.local_fire_department,
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: _buildStatCard(
-                        context,
-                        l10n.generateMenuAvgCalories,
-                        '${menu.avgDailyCalories.toInt()} kcal',
-                        Icons.trending_up,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24),
-
-                // Calendario semanal
-                WeeklyMenuCalendar(menu: menu),
-              ],
-            ),
-          ),
-        ),
-
-        // Botones de acción
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: colorScheme.surfaceContainerHighest,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 4,
-                offset: const Offset(0, -2),
-              ),
-            ],
-          ),
-          child: SafeArea(
-            child: Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () => Navigator.of(context).pop(false),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: colorScheme.primary,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      side: BorderSide(color: colorScheme.primary),
-                    ),
-                    child: Text(l10n.generateMenuDiscard),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  flex: 2,
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      try {
-                        await vm.saveGeneratedMenu();
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(l10n.menuSaveSuccess),
-                              backgroundColor: Colors.green,
-                            ),
-                          );
-                          Navigator.of(context).pop(true);
-                        }
-                      } catch (e) {
-                        if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text('${l10n.menuSaveError}: $e'),
-                              backgroundColor: Colors.red,
-                            ),
-                          );
-                        }
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: colorScheme.primary,
-                      foregroundColor: colorScheme.onPrimary,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                    ),
-                    child: Text(l10n.generateMenuSave),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
     );
   }
 

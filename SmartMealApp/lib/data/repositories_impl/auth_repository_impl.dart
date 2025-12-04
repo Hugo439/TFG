@@ -10,6 +10,8 @@ import 'package:smartmeal/domain/value_objects/height.dart';
 import 'package:smartmeal/domain/value_objects/weight.dart';
 import 'package:smartmeal/domain/value_objects/goal.dart';
 import 'package:smartmeal/domain/value_objects/allergies.dart';
+import 'package:smartmeal/domain/value_objects/age.dart';
+import 'package:smartmeal/domain/value_objects/gender.dart';
 import 'package:smartmeal/data/mappers/user_profile_mapper.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
@@ -42,6 +44,8 @@ class AuthRepositoryImpl implements AuthRepository {
     required double weightKg,
     required String goal,
     String? allergies,
+    int? age,
+    String? gender,
   }) async {
     final emailVO = Email(email);
     final passwordVO = Password(password);
@@ -50,6 +54,8 @@ class AuthRepositoryImpl implements AuthRepository {
     final weightVO = Weight(weightKg);
     final goalVO = Goal.fromString(goal);
     final allergiesVO = Allergies.tryParse(allergies);
+    final ageVO = age != null ? Age(age) : null;
+    final genderVO = gender != null ? Gender(gender) : null;
 
     final credential = await _authDataSource.signUp(
       email: emailVO.value,
@@ -69,6 +75,8 @@ class AuthRepositoryImpl implements AuthRepository {
       weight: weightVO,
       goal: goalVO,
       allergies: allergiesVO,
+      age: ageVO,
+      gender: genderVO,
     );
 
     await _firestoreDataSource.createUserProfile(

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smartmeal/presentation/features/auth/viewmodel/register_view_model.dart';
 import 'package:smartmeal/presentation/widgets/inputs/filled_text_field.dart';
+import 'package:smartmeal/presentation/widgets/inputs/age_field.dart';
+import 'package:smartmeal/presentation/widgets/inputs/gender_dropdown.dart';
 import 'package:smartmeal/presentation/widgets/buttons/primary_button.dart';
 import 'package:smartmeal/presentation/routes/routes.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
@@ -21,7 +23,9 @@ class _RegisterFormState extends State<RegisterForm> {
   final _confirmPassCtrl = TextEditingController();
   final _heightCtrl = TextEditingController();
   final _weightCtrl = TextEditingController();
+  final _ageCtrl = TextEditingController();
   final _allergiesCtrl = TextEditingController();
+  String _selectedGender = '';
 
   @override
   void dispose() {
@@ -31,6 +35,7 @@ class _RegisterFormState extends State<RegisterForm> {
     _confirmPassCtrl.dispose();
     _heightCtrl.dispose();
     _weightCtrl.dispose();
+    _ageCtrl.dispose();
     _allergiesCtrl.dispose();
     super.dispose();
   }
@@ -211,6 +216,30 @@ class _RegisterFormState extends State<RegisterForm> {
             ],
           ),
           const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                child: AgeField(
+                  controller: _ageCtrl,
+                  isOptional: true,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: GenderDropdown(
+                  value: _selectedGender,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedGender = value;
+                    });
+                  },
+                  isOptional: true,
+                  showLabel: true,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
           Text(
             l10n.registerGoalLabel, 
             style: TextStyle(
@@ -249,6 +278,9 @@ class _RegisterFormState extends State<RegisterForm> {
             isLoading: vm.isLoading,
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
+                final ageValue = _ageCtrl.text.trim().isEmpty ? null : int.tryParse(_ageCtrl.text);
+                final genderValue = _selectedGender.isEmpty ? null : _selectedGender;
+
                 final success = await vm.signUp(
                   _nameCtrl.text.trim(),
                   _emailCtrl.text.trim(),
@@ -257,6 +289,8 @@ class _RegisterFormState extends State<RegisterForm> {
                   double.parse(_weightCtrl.text),
                   vm.goal,
                   _allergiesCtrl.text.trim().isEmpty ? null : _allergiesCtrl.text.trim(),
+                  ageValue,
+                  genderValue,
                 );
                 if (success && mounted) {
                   Navigator.of(context).pushReplacementNamed(

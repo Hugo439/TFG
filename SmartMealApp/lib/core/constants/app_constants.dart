@@ -26,4 +26,8 @@ class AppConstants {
   static const String errorNoAuth = 'Usuario no autenticado';
   static const String errorProfileNotFound = 'Perfil no encontrado';
   static const String errorGeneric = 'Ha ocurrido un error';
+
+  // Restricciones de edad
+  static const int minAge = 13;
+  static const int maxAge = 120;
 }

@@ -220,6 +220,14 @@
   "registerErrorInvalidEmail": "Invalid email",
   "registerErrorWeakPassword": "The password is too weak",
   "registerErrorGeneric": "Error registering",
+  "registerAgeLabel": "Age",
+  "registerAgeHint": "E.g: 25",
+  "registerGenderLabel": "Gender",
+  "registerGenderHint": "Select",
+  "registerGenderMale": "Male",
+  "registerGenderFemale": "Female",
+  "registerGenderOther": "Other",
+  "registerOptional": "(Optional)",
 
   "homeTitle": "SmartMeal",
   "homeSubtitle": "Main Panel",
@@ -288,6 +296,13 @@
   "editProfileErrorHeightInvalid": "Height must be a valid number",
   "editProfileErrorWeightInvalid": "Weight must be a valid number",
   "editProfileErrorGeneric": "Error updating profile",
+  "editProfileAgeLabel": "Age (years)",
+  "editProfileAgeOptional": "Optional",
+  "editProfileGenderLabel": "Gender",
+  "editProfileGenderMale": "Male",
+  "editProfileGenderFemale": "Female",
+  "editProfileGenderOther": "Other",
+  "editProfileErrorAgeInvalid": "Age must be a valid number",
 
   "menuTitle": "Weekly Menu",
   "menuSubtitle": "Your personalized menu",
@@ -299,6 +314,20 @@
   "menuSaveError": "Error saving",
   "menuSaveSuccess": "Menu saved successfully",
   "menuCardComingSoon": "Coming Soon",
+  "menuEmptyHint": "Tap the + button to generate your first menu",
+  "@menuEmptyHint": {
+    "description": "Help text when there are no menus"
+  },
+
+  "menuCreated": "Created",
+  "@menuCreated": {
+    "description": "Label for creation date"
+  },
+
+  "menuUpdated": "Updated",
+  "@menuUpdated": {
+    "description": "Label for update date"
+  },
 
   "generateMenuTitle": "Generate Weekly Menu",
   "generateMenuMainTitle": "Intelligent Menu Generation",
@@ -318,6 +347,20 @@
   "generateMenuAvgCalories": "Daily average",
   "generateMenuDiscard": "Discard",
   "generateMenuSave": "Save Menu",
+  "generateMenuPreviewTitle": "Menu preview",
+  "@generateMenuPreviewTitle": {
+    "description": "Title for the generated menu preview"
+  },
+
+  "generateMenuRegenerate": "Regenerate",
+  "@generateMenuRegenerate": {
+    "description": "Button to generate a new menu"
+  },
+
+  "generateMenuAccept": "Accept and save",
+  "@generateMenuAccept": {
+    "description": "Button to accept and save the menu"
+  },
 
   "shoppingTitle": "Shopping List",
   "shoppingSubtitle": "Items",

@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'domain/usecases/get_support_messages_usecase.dart';
 import 'domain/repositories/support_message_repository.dart';
 import 'core/services/fcm_service.dart';
+import 'presentation/features/menu/viewmodel/menu_view_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,10 +20,12 @@ void main() async {
 
   await FirebaseMessaging.instance.requestPermission();
 
-  // Inicializar FCM cuando hay un usuario autenticado
+  // Inicializar FCM y cargar menús cuando hay un usuario autenticado
   FirebaseAuth.instance.authStateChanges().listen((User? user) {
     if (user != null) {
       sl<FCMService>().initialize();
+      // Cargar menús automáticamente al autenticarse
+      sl<MenuViewModel>().loadWeeklyMenus(user.uid);
     }
   });
 

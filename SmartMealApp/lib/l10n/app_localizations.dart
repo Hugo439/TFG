@@ -542,6 +542,54 @@ abstract class AppLocalizations {
   /// **'Error al registrarse'**
   String get registerErrorGeneric;
 
+  /// No description provided for @registerAgeLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Edad'**
+  String get registerAgeLabel;
+
+  /// No description provided for @registerAgeHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej: 25'**
+  String get registerAgeHint;
+
+  /// No description provided for @registerGenderLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Género'**
+  String get registerGenderLabel;
+
+  /// No description provided for @registerGenderHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Seleccionar'**
+  String get registerGenderHint;
+
+  /// No description provided for @registerGenderMale.
+  ///
+  /// In es, this message translates to:
+  /// **'Masculino'**
+  String get registerGenderMale;
+
+  /// No description provided for @registerGenderFemale.
+  ///
+  /// In es, this message translates to:
+  /// **'Femenino'**
+  String get registerGenderFemale;
+
+  /// No description provided for @registerGenderOther.
+  ///
+  /// In es, this message translates to:
+  /// **'Otro'**
+  String get registerGenderOther;
+
+  /// No description provided for @registerOptional.
+  ///
+  /// In es, this message translates to:
+  /// **'(Opcional)'**
+  String get registerOptional;
+
   /// No description provided for @supportTitle.
   ///
   /// In es, this message translates to:
@@ -1466,6 +1514,48 @@ abstract class AppLocalizations {
   /// **'Error al actualizar el perfil'**
   String get editProfileErrorGeneric;
 
+  /// No description provided for @editProfileAgeLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Edad (años)'**
+  String get editProfileAgeLabel;
+
+  /// No description provided for @editProfileAgeOptional.
+  ///
+  /// In es, this message translates to:
+  /// **'Opcional'**
+  String get editProfileAgeOptional;
+
+  /// No description provided for @editProfileGenderLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Género'**
+  String get editProfileGenderLabel;
+
+  /// No description provided for @editProfileGenderMale.
+  ///
+  /// In es, this message translates to:
+  /// **'Masculino'**
+  String get editProfileGenderMale;
+
+  /// No description provided for @editProfileGenderFemale.
+  ///
+  /// In es, this message translates to:
+  /// **'Femenino'**
+  String get editProfileGenderFemale;
+
+  /// No description provided for @editProfileGenderOther.
+  ///
+  /// In es, this message translates to:
+  /// **'Otro'**
+  String get editProfileGenderOther;
+
+  /// No description provided for @editProfileErrorAgeInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'La edad debe ser un número válido'**
+  String get editProfileErrorAgeInvalid;
+
   /// No description provided for @menuTitle.
   ///
   /// In es, this message translates to:
@@ -1525,6 +1615,24 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Próximamente'**
   String get menuCardComingSoon;
+
+  /// Texto de ayuda cuando no hay menús
+  ///
+  /// In es, this message translates to:
+  /// **'Toca el botón + para generar tu primer menú'**
+  String get menuEmptyHint;
+
+  /// Etiqueta para fecha de creación
+  ///
+  /// In es, this message translates to:
+  /// **'Creado'**
+  String get menuCreated;
+
+  /// Etiqueta para fecha de actualización
+  ///
+  /// In es, this message translates to:
+  /// **'Actualizado'**
+  String get menuUpdated;
 
   /// No description provided for @generateMenuTitle.
   ///
@@ -1633,6 +1741,24 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Guardar Menú'**
   String get generateMenuSave;
+
+  /// Título de la vista previa del menú generado
+  ///
+  /// In es, this message translates to:
+  /// **'Vista previa del menú'**
+  String get generateMenuPreviewTitle;
+
+  /// Botón para generar un nuevo menú
+  ///
+  /// In es, this message translates to:
+  /// **'Regenerar'**
+  String get generateMenuRegenerate;
+
+  /// Botón para aceptar y guardar el menú
+  ///
+  /// In es, this message translates to:
+  /// **'Aceptar y guardar'**
+  String get generateMenuAccept;
 
   /// No description provided for @shoppingTitle.
   ///

@@ -81,6 +81,14 @@
   "registerErrorInvalidEmail": "Correo electrónico inválido",
   "registerErrorWeakPassword": "La contraseña es muy débil",
   "registerErrorGeneric": "Error al registrarse",
+  "registerAgeLabel": "Edad",
+  "registerAgeHint": "Ej: 25",
+  "registerGenderLabel": "Género",
+  "registerGenderHint": "Seleccionar",
+  "registerGenderMale": "Masculino",
+  "registerGenderFemale": "Femenino",
+  "registerGenderOther": "Otro",
+  "registerOptional": "(Opcional)",
   
   "supportTitle": "Soporte",
   "supportFormTitle": "Enviar Mensaje",
@@ -278,6 +286,13 @@
   "editProfileErrorHeightInvalid": "La altura debe ser un número válido",
   "editProfileErrorWeightInvalid": "El peso debe ser un número válido",
   "editProfileErrorGeneric": "Error al actualizar el perfil",
+  "editProfileAgeLabel": "Edad (años)",
+  "editProfileAgeOptional": "Opcional",
+  "editProfileGenderLabel": "Género",
+  "editProfileGenderMale": "Masculino",
+  "editProfileGenderFemale": "Femenino",
+  "editProfileGenderOther": "Otro",
+  "editProfileErrorAgeInvalid": "La edad debe ser un número válido",
 
   "menuTitle": "Menú semanal",
   "menuSubtitle": "Tu menú personalizado",
@@ -289,6 +304,20 @@
   "menuSaveError": "Error al guardar",
   "menuSaveSuccess": "Menú guardado correctamente",
   "menuCardComingSoon": "Próximamente",
+  "menuEmptyHint": "Toca el botón + para generar tu primer menú",
+  "@menuEmptyHint": {
+    "description": "Texto de ayuda cuando no hay menús"
+  },
+
+  "menuCreated": "Creado",
+  "@menuCreated": {
+    "description": "Etiqueta para fecha de creación"
+  },
+
+  "menuUpdated": "Actualizado",
+  "@menuUpdated": {
+    "description": "Etiqueta para fecha de actualización"
+  },
 
   "generateMenuTitle": "Generar Menú Semanal",
   "generateMenuMainTitle": "Generación Inteligente de Menús",
@@ -308,6 +337,20 @@
   "generateMenuAvgCalories": "Promedio diario",
   "generateMenuDiscard": "Descartar",
   "generateMenuSave": "Guardar Menú",
+  "generateMenuPreviewTitle": "Vista previa del menú",
+  "@generateMenuPreviewTitle": {
+    "description": "Título de la vista previa del menú generado"
+  },
+
+  "generateMenuRegenerate": "Regenerar",
+  "@generateMenuRegenerate": {
+    "description": "Botón para generar un nuevo menú"
+  },
+
+  "generateMenuAccept": "Aceptar y guardar",
+  "@generateMenuAccept": {
+    "description": "Botón para aceptar y guardar el menú"
+  },
   
   "shoppingTitle": "Lista de la Compra",
   "shoppingSubtitle": "Productos",

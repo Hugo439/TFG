@@ -12,6 +12,7 @@ import 'package:smartmeal/domain/repositories/shopping_repository.dart';
 import 'package:smartmeal/domain/repositories/recipe_repository.dart';
 import 'package:smartmeal/domain/repositories/weekly_menu_repository.dart';
 import 'package:smartmeal/domain/repositories/support_message_repository.dart';
+import 'package:smartmeal/domain/repositories/menu_generation_repository.dart';
 
 // Repository Implementations
 import 'package:smartmeal/data/repositories_impl/app_repository_impl.dart';
@@ -22,6 +23,7 @@ import 'package:smartmeal/data/repositories_impl/shopping_repository_impl.dart';
 import 'package:smartmeal/data/repositories_impl/recipe_repository_impl.dart';
 import 'package:smartmeal/data/repositories_impl/weekly_menu_repository_impl.dart';
 import 'package:smartmeal/data/repositories_impl/support_message_repository_impl.dart';
+import 'package:smartmeal/data/repositories_impl/menu_generation_repository_impl.dart';
 
 // Data Sources
 import 'package:smartmeal/data/datasources/local/auth_local_datasource.dart';
@@ -29,7 +31,8 @@ import 'package:smartmeal/data/datasources/remote/firebase_auth_datasource.dart'
 import 'package:smartmeal/data/datasources/remote/firestore_datasource.dart';
 import 'package:smartmeal/data/datasources/remote/menu_datasource.dart';
 import 'package:smartmeal/data/datasources/remote/shopping_datasource.dart';
-import 'package:smartmeal/data/datasources/remote/groq_menu_datasource.dart';
+import 'package:smartmeal/data/datasources/remote/gemini_menu_datasource.dart'; // ← CAMBIO AQUÍ
+import 'package:smartmeal/domain/usecases/generate_weekly_menu_usecase.dart';
 
 // Use Cases - App
 import 'package:smartmeal/domain/usecases/initialize_app_usecase.dart';
@@ -69,6 +72,7 @@ import 'package:smartmeal/domain/usecases/get_support_messages_usecase.dart';
 
 // ViewModels
 import 'package:smartmeal/presentation/features/menu/viewmodel/menu_view_model.dart';
+import 'package:smartmeal/presentation/features/menu/viewmodel/generate_menu_view_model.dart';
 import 'package:smartmeal/core/services/fcm_service.dart';
 
 final sl = GetIt.instance;
@@ -86,7 +90,7 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => FirestoreDataSource(firestore: sl()));
   sl.registerLazySingleton(() => MenuDataSource(firestore: sl(), auth: sl()));
   sl.registerLazySingleton(() => ShoppingDataSource(firestore: sl(), auth: sl()));
-  sl.registerLazySingleton(() => GroqMenuDatasource());
+  sl.registerLazySingleton(() => GeminiMenuDatasource()); // ← CAMBIO AQUÍ
 
   // Services
   sl.registerLazySingleton<FCMService>(
@@ -100,6 +104,10 @@ Future<void> setupServiceLocator() async {
     () => AppRepositoryImpl(),
   );
 
+  sl.registerLazySingleton<MenuGenerationRepository>(
+    () => MenuGenerationRepositoryImpl(sl<GeminiMenuDatasource>()), // ← CAMBIO AQUÍ
+  );
+  
   sl.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(
       authDataSource: sl(),
@@ -158,6 +166,7 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => GetRecommendedMenuItemsUseCase(sl()));
   sl.registerLazySingleton(() => DeleteMenuItemUseCase(sl()));
   sl.registerLazySingleton(() => SaveMenuRecipesUseCase(sl()));
+  sl.registerLazySingleton(() => GenerateWeeklyMenuUseCase(sl<MenuGenerationRepository>()));
 
   // Use Cases - Shopping
   sl.registerLazySingleton(() => GetShoppingItemsUseCase(sl()));
@@ -182,5 +191,12 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => GetSupportMessagesUseCase(sl()));
 
   // ViewModels
-  sl.registerFactory<MenuViewModel>(() => MenuViewModel());
+  sl.registerLazySingleton<MenuViewModel>(() => MenuViewModel());
+  sl.registerLazySingleton(() => GenerateMenuViewModel(
+    sl<GetUserProfileUseCase>(),
+    sl<GetCurrentUserUseCase>(),
+    sl<GenerateWeeklyMenuUseCase>(),
+    sl<WeeklyMenuRepository>(),
+    sl<SaveMenuRecipesUseCase>(),
+  ));
 }
