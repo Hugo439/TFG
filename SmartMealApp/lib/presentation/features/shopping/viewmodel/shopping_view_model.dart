@@ -6,8 +6,9 @@ import 'package:smartmeal/domain/usecases/shopping/add_shopping_item_usecase.dar
 import 'package:smartmeal/domain/usecases/shopping/toggle_shopping_item_usecase.dart';
 import 'package:smartmeal/domain/usecases/shopping/delete_shopping_item_usecase.dart';
 import 'package:smartmeal/domain/usecases/shopping/get_total_price_usecase.dart';
-import 'package:smartmeal/domain/usecases/generate_shopping_from_menus_usecase.dart';
+import 'package:smartmeal/domain/usecases/shopping/generate_shopping_from_menus_usecase.dart';
 import 'package:smartmeal/domain/usecases/shopping/delete_checked_shopping_items_usecase.dart';
+import 'package:smartmeal/domain/usecases/shopping/set_all_shopping_items_checked_usecase.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 enum ShoppingStatus { idle, loading, loaded, error }
@@ -53,11 +54,9 @@ class ShoppingViewModel extends ChangeNotifier {
   final DeleteShoppingItemUseCase _deleteShoppingItem;
   final GetTotalPriceUseCase _getTotalPrice;
   final GenerateShoppingFromMenusUseCase _generateFromMenus;
-  final DeleteCheckedShoppingItemsUseCase _deleteCheckedUseCase;
+  final DeleteCheckedShoppingItemsUseCase _deleteCheckedItems;
+  final SetAllShoppingItemsCheckedUseCase _setAllChecked;
   final FirebaseAuth _auth;
-
-  ShoppingState _state = const ShoppingState();
-  ShoppingState get state => _state;
 
   ShoppingViewModel(
     this._getShoppingItems,
@@ -66,9 +65,13 @@ class ShoppingViewModel extends ChangeNotifier {
     this._deleteShoppingItem,
     this._getTotalPrice,
     this._generateFromMenus,
-    this._deleteCheckedUseCase,
+    this._deleteCheckedItems,
+    this._setAllChecked,
     this._auth,
   );
+
+  ShoppingState _state = const ShoppingState();
+  ShoppingState get state => _state;
 
   Future<void> loadShoppingItems() async {
     _update(_state.copyWith(status: ShoppingStatus.loading, error: null));
@@ -148,7 +151,7 @@ class ShoppingViewModel extends ChangeNotifier {
     if (currentUser == null) return;
     
     try {
-      await _deleteCheckedUseCase.call(currentUser.uid);
+      await _deleteCheckedItems.call(currentUser.uid);
       // Recargar la lista
       await loadShoppingItems();
     } catch (e) {
@@ -156,6 +159,11 @@ class ShoppingViewModel extends ChangeNotifier {
         print('Error eliminando ítems marcados: $e');
       }
     }
+  }
+
+  Future<void> setAllChecked(bool checked) async {
+    await _setAllChecked(checked);
+    await loadShoppingItems();
   }
 
   void _update(ShoppingState s) {

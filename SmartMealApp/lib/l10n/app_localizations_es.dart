@@ -1013,6 +1013,12 @@ class AppLocalizationsEs extends AppLocalizations {
   String get shoppingDeleteCheckedTooltip => 'Eliminar marcados';
 
   @override
+  String get shoppingCheckAllTooltip => 'Marcar todos';
+
+  @override
+  String get shoppingUncheckAllTooltip => 'Desmarcar todos';
+
+  @override
   String get recipeDescription => 'Descripción';
 
   @override

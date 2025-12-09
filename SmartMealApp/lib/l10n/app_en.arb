@@ -426,6 +426,8 @@
   "shoppingDeleteCheckedTitle": "Delete checked items",
   "shoppingDeleteCheckedMessage": "Are you sure you want to delete all items marked as purchased?",
   "shoppingDeleteCheckedTooltip": "Delete checked items",
+  "shoppingCheckAllTooltip": "Check all",
+  "shoppingUncheckAllTooltip": "Uncheck all",
 
   "recipeDescription": "Description",
   "recipeIngredients": "Ingredients",

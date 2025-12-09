@@ -416,6 +416,8 @@
   "shoppingDeleteCheckedTitle": "Eliminar productos marcados",
   "shoppingDeleteCheckedMessage": "¿Estás seguro de que deseas eliminar todos los productos marcados como comprados?",
   "shoppingDeleteCheckedTooltip": "Eliminar marcados",
+  "shoppingCheckAllTooltip": "Marcar todos",
+  "shoppingUncheckAllTooltip": "Desmarcar todos",
 
   "recipeDescription": "Descripción",
   "recipeIngredients": "Ingredientes",

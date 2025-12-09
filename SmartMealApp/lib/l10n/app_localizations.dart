@@ -2030,6 +2030,18 @@ abstract class AppLocalizations {
   /// **'Eliminar marcados'**
   String get shoppingDeleteCheckedTooltip;
 
+  /// No description provided for @shoppingCheckAllTooltip.
+  ///
+  /// In es, this message translates to:
+  /// **'Marcar todos'**
+  String get shoppingCheckAllTooltip;
+
+  /// No description provided for @shoppingUncheckAllTooltip.
+  ///
+  /// In es, this message translates to:
+  /// **'Desmarcar todos'**
+  String get shoppingUncheckAllTooltip;
+
   /// No description provided for @recipeDescription.
   ///
   /// In es, this message translates to:

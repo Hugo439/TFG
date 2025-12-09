@@ -8,4 +8,5 @@ abstract class ShoppingRepository {
   Future<void> deleteShoppingItem(String itemId);
   Future<void> deleteCheckedItems(String userId);
   Future<double> getTotalPrice();
+  Future<void> setAllChecked(bool checked);
 }

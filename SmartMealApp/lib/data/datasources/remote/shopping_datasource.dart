@@ -123,4 +123,27 @@ class ShoppingDataSource {
     final items = await getShoppingItems();
     return items.fold<double>(0.0, (sum, item) => sum + item.price);
   }
+
+  Future<void> setAllChecked(bool checked) async {
+    final userId = auth.currentUser?.uid;
+    if (userId == null) throw Exception('Usuario no autenticado');
+
+    final snap = await firestore
+        .collection('users')
+        .doc(userId)
+        .collection('shoppingItems')
+        .get();
+
+    if (snap.docs.isEmpty) return;
+
+    final batch = firestore.batch();
+    for (final doc in snap.docs) {
+      batch.update(doc.reference, {'isChecked': checked});
+    }
+    await batch.commit();
+
+    if (kDebugMode) {
+      print('✅ [ShoppingDS] setAllChecked -> $checked en ${snap.docs.length} items');
+    }
+  }
 }

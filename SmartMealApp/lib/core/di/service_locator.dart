@@ -60,8 +60,9 @@ import 'package:smartmeal/domain/usecases/shopping/add_shopping_item_usecase.dar
 import 'package:smartmeal/domain/usecases/shopping/toggle_shopping_item_usecase.dart';
 import 'package:smartmeal/domain/usecases/shopping/delete_shopping_item_usecase.dart';
 import 'package:smartmeal/domain/usecases/shopping/get_total_price_usecase.dart';
-import 'package:smartmeal/domain/usecases/generate_shopping_from_menus_usecase.dart';
+import 'package:smartmeal/domain/usecases/shopping/generate_shopping_from_menus_usecase.dart';
 import 'package:smartmeal/domain/usecases/shopping/delete_checked_shopping_items_usecase.dart';
+import 'package:smartmeal/domain/usecases/shopping/set_all_shopping_items_checked_usecase.dart';
 
 // Use Cases - Recipes & Weekly Menus
 import 'package:smartmeal/domain/usecases/get_recipes_usecase.dart';
@@ -180,6 +181,7 @@ Future<void> setupServiceLocator() async {
     shoppingRepository: sl(),
   ));
   sl.registerLazySingleton(() => DeleteCheckedShoppingItemsUseCase(sl()));
+  sl.registerLazySingleton(() => SetAllShoppingItemsCheckedUseCase(sl()));
 
   // Use Cases - Recipes & Weekly Menus
   sl.registerLazySingleton(() => GetRecipesUseCase(sl()));

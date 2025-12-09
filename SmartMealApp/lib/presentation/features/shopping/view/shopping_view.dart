@@ -6,8 +6,9 @@ import 'package:smartmeal/domain/usecases/shopping/add_shopping_item_usecase.dar
 import 'package:smartmeal/domain/usecases/shopping/toggle_shopping_item_usecase.dart';
 import 'package:smartmeal/domain/usecases/shopping/delete_shopping_item_usecase.dart';
 import 'package:smartmeal/domain/usecases/shopping/get_total_price_usecase.dart';
-import 'package:smartmeal/domain/usecases/generate_shopping_from_menus_usecase.dart';
+import 'package:smartmeal/domain/usecases/shopping/generate_shopping_from_menus_usecase.dart';
 import 'package:smartmeal/domain/usecases/shopping/delete_checked_shopping_items_usecase.dart';
+import 'package:smartmeal/domain/usecases/shopping/set_all_shopping_items_checked_usecase.dart';
 import 'package:smartmeal/presentation/features/shopping/viewmodel/shopping_view_model.dart';
 import 'package:smartmeal/presentation/features/shopping/view/add_shopping_item_view.dart';
 import 'package:smartmeal/presentation/features/shopping/widgets/shopping_header_card.dart';
@@ -33,6 +34,7 @@ class ShoppingView extends StatelessWidget {
         sl<GetTotalPriceUseCase>(),
         sl<GenerateShoppingFromMenusUseCase>(),
         sl<DeleteCheckedShoppingItemsUseCase>(),
+        sl<SetAllShoppingItemsCheckedUseCase>(),
         FirebaseAuth.instance,
       )..loadShoppingItems(),
       child: const _ShoppingContent(),
@@ -56,20 +58,35 @@ class _ShoppingContent extends StatelessWidget {
       selectedIndex: 2,
       onNavChange: (index) => NavigationController.navigateToIndex(context, index, 2),
       actions: [
-        // Botón eliminar marcados
+        Builder(
+          builder: (context) {
+            final allChecked = state.items.isNotEmpty && state.items.every((i) => i.isChecked);
+            return IconButton(
+              icon: Icon(allChecked ? Icons.remove_done : Icons.done_all),
+              tooltip: allChecked ? l10n.shoppingUncheckAllTooltip : l10n.shoppingCheckAllTooltip,
+              onPressed: state.items.isEmpty
+                  ? null
+                  : () async {
+                      await vm.setAllChecked(!allChecked);
+                    },
+            );
+          },
+        ),
         IconButton(
           icon: const Icon(Icons.delete_sweep),
           tooltip: l10n.shoppingDeleteCheckedTooltip,
-          onPressed: state.items.isEmpty || state.checkedItems == 0 ? null : () {
-            showDialog(
-              context: context,
-              builder: (_) => DeleteCheckedDialog(
-                onConfirm: () {
-                  vm.deleteCheckedItems();
+          onPressed: state.items.isEmpty || state.checkedItems == 0
+              ? null
+              : () {
+                  showDialog(
+                    context: context,
+                    builder: (_) => DeleteCheckedDialog(
+                      onConfirm: () {
+                        vm.deleteCheckedItems();
+                      },
+                    ),
+                  );
                 },
-              ),
-            );
-          },
         ),
       ],
       body: Column(

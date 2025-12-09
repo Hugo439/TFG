@@ -1006,6 +1006,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shoppingDeleteCheckedTooltip => 'Delete checked items';
 
   @override
+  String get shoppingCheckAllTooltip => 'Check all';
+
+  @override
+  String get shoppingUncheckAllTooltip => 'Uncheck all';
+
+  @override
   String get recipeDescription => 'Description';
 
   @override

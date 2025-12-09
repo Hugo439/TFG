@@ -46,4 +46,9 @@ class ShoppingRepositoryImpl implements ShoppingRepository {
   Future<void> deleteCheckedItems(String userId) {
     return dataSource.deleteCheckedItems(userId);
   }
+
+  @override
+  Future<void> setAllChecked(bool checked) {
+    return dataSource.setAllChecked(checked);
+  }
 }
