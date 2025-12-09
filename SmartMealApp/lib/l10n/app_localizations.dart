@@ -1418,6 +1418,42 @@ abstract class AppLocalizations {
   /// **'Obesidad'**
   String get profileBmiObese;
 
+  /// No description provided for @profileAgeLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Edad'**
+  String get profileAgeLabel;
+
+  /// No description provided for @profileYearsOld.
+  ///
+  /// In es, this message translates to:
+  /// **'años'**
+  String get profileYearsOld;
+
+  /// No description provided for @profileGenderLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Género'**
+  String get profileGenderLabel;
+
+  /// No description provided for @profileGenderMale.
+  ///
+  /// In es, this message translates to:
+  /// **'Masculino'**
+  String get profileGenderMale;
+
+  /// No description provided for @profileGenderFemale.
+  ///
+  /// In es, this message translates to:
+  /// **'Femenino'**
+  String get profileGenderFemale;
+
+  /// No description provided for @profileGenderOther.
+  ///
+  /// In es, this message translates to:
+  /// **'Otro'**
+  String get profileGenderOther;
+
   /// No description provided for @editProfileTitle.
   ///
   /// In es, this message translates to:
@@ -1975,6 +2011,24 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Categoría'**
   String get shoppingCategory;
+
+  /// No description provided for @shoppingDeleteCheckedTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar productos marcados'**
+  String get shoppingDeleteCheckedTitle;
+
+  /// No description provided for @shoppingDeleteCheckedMessage.
+  ///
+  /// In es, this message translates to:
+  /// **'¿Estás seguro de que deseas eliminar todos los productos marcados como comprados?'**
+  String get shoppingDeleteCheckedMessage;
+
+  /// No description provided for @shoppingDeleteCheckedTooltip.
+  ///
+  /// In es, this message translates to:
+  /// **'Eliminar marcados'**
+  String get shoppingDeleteCheckedTooltip;
 
   /// No description provided for @recipeDescription.
   ///

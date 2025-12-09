@@ -269,6 +269,12 @@
   "profileBmiUnderweight": "Bajo peso",
   "profileBmiOverweight": "Sobrepeso",
   "profileBmiObese": "Obesidad",
+  "profileAgeLabel": "Edad",
+  "profileYearsOld": "años",
+  "profileGenderLabel": "Género",
+  "profileGenderMale": "Masculino",
+  "profileGenderFemale": "Femenino",
+  "profileGenderOther": "Otro",
 
   "editProfileTitle": "Editar Perfil",
   "editProfilePersonalInfo": "Información Personal",
@@ -407,6 +413,9 @@
   "shoppingCategoryOthers": "Otros",
   "shoppingFor": "Para",
   "shoppingCategory": "Categoría",
+  "shoppingDeleteCheckedTitle": "Eliminar productos marcados",
+  "shoppingDeleteCheckedMessage": "¿Estás seguro de que deseas eliminar todos los productos marcados como comprados?",
+  "shoppingDeleteCheckedTooltip": "Eliminar marcados",
 
   "recipeDescription": "Descripción",
   "recipeIngredients": "Ingredientes",

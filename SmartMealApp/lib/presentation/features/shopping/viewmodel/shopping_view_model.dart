@@ -7,6 +7,8 @@ import 'package:smartmeal/domain/usecases/shopping/toggle_shopping_item_usecase.
 import 'package:smartmeal/domain/usecases/shopping/delete_shopping_item_usecase.dart';
 import 'package:smartmeal/domain/usecases/shopping/get_total_price_usecase.dart';
 import 'package:smartmeal/domain/usecases/generate_shopping_from_menus_usecase.dart';
+import 'package:smartmeal/domain/usecases/shopping/delete_checked_shopping_items_usecase.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 enum ShoppingStatus { idle, loading, loaded, error }
 
@@ -51,6 +53,8 @@ class ShoppingViewModel extends ChangeNotifier {
   final DeleteShoppingItemUseCase _deleteShoppingItem;
   final GetTotalPriceUseCase _getTotalPrice;
   final GenerateShoppingFromMenusUseCase _generateFromMenus;
+  final DeleteCheckedShoppingItemsUseCase _deleteCheckedUseCase;
+  final FirebaseAuth _auth;
 
   ShoppingState _state = const ShoppingState();
   ShoppingState get state => _state;
@@ -62,6 +66,8 @@ class ShoppingViewModel extends ChangeNotifier {
     this._deleteShoppingItem,
     this._getTotalPrice,
     this._generateFromMenus,
+    this._deleteCheckedUseCase,
+    this._auth,
   );
 
   Future<void> loadShoppingItems() async {
@@ -136,19 +142,19 @@ class ShoppingViewModel extends ChangeNotifier {
     }
   }
 
-  Future<bool> clearCheckedItems() async {
+  /// Elimina todos los ítems marcados como comprados
+  Future<void> deleteCheckedItems() async {
+    final currentUser = _auth.currentUser;
+    if (currentUser == null) return;
+    
     try {
-      final checkedItems = _state.items.where((item) => item.isChecked).toList();
-      
-      for (var item in checkedItems) {
-        await _deleteShoppingItem(item.id);
-      }
-      
+      await _deleteCheckedUseCase.call(currentUser.uid);
+      // Recargar la lista
       await loadShoppingItems();
-      return true;
     } catch (e) {
-      _update(_state.copyWith(error: e.toString()));
-      return false;
+      if (kDebugMode) {
+        print('Error eliminando ítems marcados: $e');
+      }
     }
   }
 

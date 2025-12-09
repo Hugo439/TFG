@@ -2,37 +2,34 @@ import 'package:smartmeal/domain/entities/shopping_item.dart';
 import 'package:smartmeal/domain/value_objects/shopping_item_name.dart';
 import 'package:smartmeal/domain/value_objects/shopping_item_quantity.dart';
 import 'package:smartmeal/domain/value_objects/price.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:smartmeal/data/models/shopping_item_model.dart';
 
 class ShoppingItemMapper {
-  static ShoppingItem fromFirestore(Map<String, dynamic> data) {
+  /// Convertir de Model (Firestore) a Entity (Dominio)
+  static ShoppingItem fromModel(ShoppingItemModel model) {
     return ShoppingItem(
-      id: data['id'] ?? '',
-      name: ShoppingItemName(data['name'] ?? ''),
-      quantity: ShoppingItemQuantity(data['quantity'] ?? ''),
-      price: Price(data['price']?.toDouble() ?? 0.0),
-      category: data['category'] ?? 'Supermercado',
-      usedInMenus: List<String>.from(data['usedInMenus'] ?? []),
-      isChecked: data['isChecked'] ?? false,
-      createdAt: (data['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
+      id: model.id,
+      name: ShoppingItemName(model.name),
+      quantity: ShoppingItemQuantity(model.quantity),
+      price: Price(model.price),
+      category: model.category,
+      usedInMenus: model.usedInMenus,
+      isChecked: model.isChecked,
+      createdAt: model.createdAt,
     );
   }
 
-  static Map<String, dynamic> toFirestore(ShoppingItem item) {
-    return {
-      'name': item.name.value,
-      'quantity': item.quantity.value,
-      'price': item.price.value,
-      'category': item.category,
-      'usedInMenus': item.usedInMenus,
-      'isChecked': item.isChecked,
-    };
-  }
-
-  static Map<String, dynamic> toFirestoreCreate(ShoppingItem item) {
-    return {
-      ...toFirestore(item),
-      'createdAt': FieldValue.serverTimestamp(),
-    };
+  /// Convertir de Entity (Dominio) a Model (Firestore)
+  static ShoppingItemModel toModel(ShoppingItem item) {
+    return ShoppingItemModel(
+      id: item.id,
+      name: item.name.value,
+      quantity: item.quantity.value,
+      price: item.price.value,
+      category: item.category,
+      usedInMenus: item.usedInMenus,
+      isChecked: item.isChecked,
+      createdAt: item.createdAt,
+    );
   }
 }

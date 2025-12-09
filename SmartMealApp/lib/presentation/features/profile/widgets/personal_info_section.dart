@@ -1,28 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:smartmeal/domain/entities/user_profile.dart';
+import 'package:smartmeal/domain/value_objects/gender.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
 
 class PersonalInfoSection extends StatelessWidget {
   final UserProfile profile;
 
   const PersonalInfoSection({super.key, required this.profile});
-
-  String _getLocalizedBmiCategory(BuildContext context, String category) {
-    final l10n = context.l10n;
-    // El bmiCategory viene en español desde el dominio
-    switch (category) {
-      case 'Bajo peso':
-        return l10n.profileBmiUnderweight;
-      case 'Peso normal':
-        return l10n.profileBmiNormal;
-      case 'Sobrepeso':
-        return l10n.profileBmiOverweight;
-      case 'Obesidad':
-        return l10n.profileBmiObese;
-      default:
-        return category;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +44,22 @@ class PersonalInfoSection extends StatelessWidget {
               label: l10n.profilePhoneLabel,
               value: profile.phone!.formatted,
               icon: Icons.phone_outlined,
+            ),
+          ],
+          if (profile.age != null) ...[
+            const SizedBox(height: 12),
+            _InfoRow(
+              label: l10n.profileAgeLabel,
+              value: '${profile.age} ${l10n.profileYearsOld}',
+              icon: Icons.cake_outlined,
+            ),
+          ],
+          if (profile.gender != null) ...[
+            const SizedBox(height: 12),
+            _InfoRow(
+              label: l10n.profileGenderLabel,
+              value: _getLocalizedGender(context, profile.gender!),
+              icon: Icons.person_outline,
             ),
           ],
           const SizedBox(height: 12),
@@ -129,5 +129,42 @@ class _InfoRow extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+String _getLocalizedBmiCategory(BuildContext context, String category) {
+  final l10n = context.l10n;
+  // El bmiCategory viene en español desde el dominio
+  switch (category) {
+    case 'Bajo peso':
+      return l10n.profileBmiUnderweight;
+    case 'Peso normal':
+      return l10n.profileBmiNormal;
+    case 'Sobrepeso':
+      return l10n.profileBmiOverweight;
+    case 'Obesidad':
+      return l10n.profileBmiObese;
+    default:
+      return category;
+  }
+}
+
+String _getLocalizedGender(BuildContext context, Gender gender) {
+  final l10n = context.l10n;
+  // Usar .value para obtener el string del Gender
+  switch (gender.value.toLowerCase()) {
+    case 'male':
+    case 'masculino':
+    case 'm':
+      return l10n.profileGenderMale;
+    case 'female':
+    case 'femenino':
+    case 'f':
+      return l10n.profileGenderFemale;
+    case 'other':
+    case 'otro':
+      return l10n.profileGenderOther;
+    default:
+      return gender.value;
   }
 }

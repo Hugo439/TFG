@@ -685,6 +685,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileBmiObese => 'Obese';
 
   @override
+  String get profileAgeLabel => 'Age';
+
+  @override
+  String get profileYearsOld => 'years old';
+
+  @override
+  String get profileGenderLabel => 'Gender';
+
+  @override
+  String get profileGenderMale => 'Male';
+
+  @override
+  String get profileGenderFemale => 'Female';
+
+  @override
+  String get profileGenderOther => 'Other';
+
+  @override
   String get editProfileTitle => 'Edit Profile';
 
   @override
@@ -976,6 +994,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shoppingCategory => 'Category';
+
+  @override
+  String get shoppingDeleteCheckedTitle => 'Delete checked items';
+
+  @override
+  String get shoppingDeleteCheckedMessage =>
+      'Are you sure you want to delete all items marked as purchased?';
+
+  @override
+  String get shoppingDeleteCheckedTooltip => 'Delete checked items';
 
   @override
   String get recipeDescription => 'Description';

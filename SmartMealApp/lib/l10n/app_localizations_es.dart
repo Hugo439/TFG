@@ -687,6 +687,24 @@ class AppLocalizationsEs extends AppLocalizations {
   String get profileBmiObese => 'Obesidad';
 
   @override
+  String get profileAgeLabel => 'Edad';
+
+  @override
+  String get profileYearsOld => 'años';
+
+  @override
+  String get profileGenderLabel => 'Género';
+
+  @override
+  String get profileGenderMale => 'Masculino';
+
+  @override
+  String get profileGenderFemale => 'Femenino';
+
+  @override
+  String get profileGenderOther => 'Otro';
+
+  @override
   String get editProfileTitle => 'Editar Perfil';
 
   @override
@@ -983,6 +1001,16 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get shoppingCategory => 'Categoría';
+
+  @override
+  String get shoppingDeleteCheckedTitle => 'Eliminar productos marcados';
+
+  @override
+  String get shoppingDeleteCheckedMessage =>
+      '¿Estás seguro de que deseas eliminar todos los productos marcados como comprados?';
+
+  @override
+  String get shoppingDeleteCheckedTooltip => 'Eliminar marcados';
 
   @override
   String get recipeDescription => 'Descripción';

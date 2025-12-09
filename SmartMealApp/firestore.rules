@@ -41,5 +41,14 @@ service cloud.firestore {
     match /faqs/{docId} {
       allow read: if true;
     }
+    
+    match /users/{userId} {
+      allow read, write: if request.auth.uid == userId;
+      
+      // Colecciones dentro de users/{userId}
+      match /{document=**} {
+        allow read, write: if request.auth.uid == userId;
+      }
+    }
   }
 }
