@@ -49,20 +49,21 @@ class SmartCategoryHelper {
     double bestScore = 0;
     ShoppingItemCategory bestCategory = ShoppingItemCategory.otros;
 
-    // Para cada categoría, busca la mejor coincidencia
-    _categoryKeywords.forEach((category, keywords) {
-      for (final keyword in keywords) {
-        // Usa token_set_ratio para matching flexible
+    for (final entry in _categoryKeywords.entries) {
+      for (final keyword in entry.value) {
         final score = tokenSetRatio(n, keyword).toDouble();
         
         if (score > bestScore) {
           bestScore = score;
-          bestCategory = category;
+          bestCategory = entry.key;
+
+          if (score >= 100) {
+            return bestCategory;
+          }
         }
       }
-    });
+    }
 
-    // Si la similitud es muy baja, devolver "Otros"
     return bestScore > 50 ? bestCategory : ShoppingItemCategory.otros;
   }
 }

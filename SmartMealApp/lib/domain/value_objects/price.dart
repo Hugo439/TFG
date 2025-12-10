@@ -33,4 +33,17 @@ class Price extends ValueObject<double> {
       return null;
     }
   }
+
+  @override
+  String toString() => '€${value.toStringAsFixed(2)}';
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Price &&
+          runtimeType == other.runtimeType &&
+          value == other.value;
+
+  @override
+  int get hashCode => value.hashCode;
 }

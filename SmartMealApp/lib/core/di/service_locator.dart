@@ -2,10 +2,13 @@ import 'package:get_it/get_it.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smartmeal/data/datasources/remote/price_datasource.dart';
+import 'package:smartmeal/data/repositories_impl/price_repository_impl.dart';
 
 // Repositories
 import 'package:smartmeal/domain/repositories/app_repository.dart';
 import 'package:smartmeal/domain/repositories/auth_repository.dart';
+import 'package:smartmeal/domain/repositories/price_repository.dart';
 import 'package:smartmeal/domain/repositories/user_repository.dart';
 import 'package:smartmeal/domain/repositories/menu_repository.dart';
 import 'package:smartmeal/domain/repositories/shopping_repository.dart';
@@ -32,6 +35,10 @@ import 'package:smartmeal/data/datasources/remote/firestore_datasource.dart';
 import 'package:smartmeal/data/datasources/remote/menu_datasource.dart';
 import 'package:smartmeal/data/datasources/remote/shopping_datasource.dart';
 import 'package:smartmeal/data/datasources/remote/gemini_menu_datasource.dart';
+import 'package:smartmeal/domain/services/shopping/ingredient_aggregator.dart';
+import 'package:smartmeal/domain/services/shopping/ingredient_parser.dart';
+import 'package:smartmeal/domain/services/shopping/smart_category_helper.dart';
+import 'package:smartmeal/domain/services/shopping/smart_ingredient_normalizer.dart';
 import 'package:smartmeal/domain/usecases/auth/load_saved_credentials_usecase.dart';
 import 'package:smartmeal/domain/usecases/auth/save_credentials_usecase.dart';
 import 'package:smartmeal/domain/usecases/menus/generate_weekly_menu_usecase.dart';
@@ -59,6 +66,9 @@ import 'package:smartmeal/domain/usecases/shopping/get_total_price_usecase.dart'
 import 'package:smartmeal/domain/usecases/shopping/generate_shopping_from_menus_usecase.dart';
 import 'package:smartmeal/domain/usecases/shopping/delete_checked_shopping_items_usecase.dart';
 import 'package:smartmeal/domain/usecases/shopping/set_all_shopping_items_checked_usecase.dart';
+import 'package:smartmeal/domain/usecases/shopping/get_prices_by_category_usecase.dart';
+import 'package:smartmeal/domain/usecases/shopping/estimate_ingredient_price_usecase.dart';
+import 'package:smartmeal/domain/usecases/shopping/initialize_price_database_usecase.dart';
 
 // Use Cases - Recipes & Weekly Menus
 import 'package:smartmeal/domain/usecases/menus/save_menu_recipes_usecase.dart';
@@ -80,22 +90,29 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton(() => FirebaseAuth.instance);
   sl.registerLazySingleton(() => FirebaseFirestore.instance);
 
-  // Data sources
+  // ===== DATA SOURCES =====
   sl.registerLazySingleton(() => AuthLocalDataSource());
   sl.registerLazySingleton(() => FirebaseAuthDataSource(auth: sl()));
   sl.registerLazySingleton(() => FirestoreDataSource(firestore: sl()));
   sl.registerLazySingleton(() => MenuDataSource(firestore: sl(), auth: sl()));
   sl.registerLazySingleton(() => ShoppingDataSource(firestore: sl(), auth: sl()));
   sl.registerLazySingleton(() => GeminiMenuDatasource());
+  sl.registerLazySingleton<PriceDatasource>(
+    () => FirestorePriceDatasource(sl<FirebaseFirestore>()),
+  );
 
-  // Services
+  // ===== SERVICES =====
   sl.registerLazySingleton<FCMService>(
     () => FCMService(
       firestoreDataSource: sl<FirestoreDataSource>(),
     ),
   );
 
-  // Repositories
+  sl.registerLazySingleton(() => SmartCategoryHelper());
+  sl.registerLazySingleton(() => SmartIngredientNormalizer());
+  sl.registerLazySingleton(() => PriceEstimator(priceRepository: sl()));
+
+  // ===== REPOSITORIES =====
   sl.registerLazySingleton<AppRepository>(
     () => AppRepositoryImpl(),
   );
@@ -103,23 +120,16 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<MenuGenerationRepository>(
     () => MenuGenerationRepositoryImpl(sl<GeminiMenuDatasource>()),
   );
-  
+
   sl.registerLazySingleton<AuthRepository>(() => AuthRepositoryImpl(
     authDataSource: sl(),
     authLocalDataSource: sl(),
     firestoreDataSource: sl(),
   ));
 
-// ...use cases...
-sl.registerLazySingleton(() => LoadSavedCredentialsUseCase(sl()));
-sl.registerLazySingleton(() => SaveCredentialsUseCase(sl()));
-
-// ...viewmodels...
-sl.registerLazySingleton(() => LoginViewModel(
-  sl<SignInUseCase>(),
-  sl<LoadSavedCredentialsUseCase>(),
-  sl<SaveCredentialsUseCase>(),
-));
+  sl.registerLazySingleton<PriceRepository>(
+    () => PriceRepositoryImpl(sl<PriceDatasource>()),
+  );
 
   sl.registerLazySingleton<UserRepository>(
     () => UserRepositoryImpl(
@@ -133,17 +143,17 @@ sl.registerLazySingleton(() => LoginViewModel(
       dataSource: sl(),
     ),
   );
-  
+
   sl.registerLazySingleton<ShoppingRepository>(
     () => ShoppingRepositoryImpl(
       dataSource: sl(),
     ),
   );
-  
+
   sl.registerLazySingleton<RecipeRepository>(
     () => RecipeRepositoryImpl(sl()),
   );
-  
+
   sl.registerLazySingleton<WeeklyMenuRepository>(
     () => WeeklyMenuRepositoryImpl(sl(), sl()),
   );
@@ -152,47 +162,64 @@ sl.registerLazySingleton(() => LoginViewModel(
     () => SupportMessageRepositoryImpl(),
   );
 
-  // Use Cases - App
+  // ===== USE CASES - APP =====
   sl.registerLazySingleton(() => InitializeAppUseCase(sl()));
   sl.registerLazySingleton(() => CheckAuthStatusUseCase(sl()));
+  sl.registerLazySingleton(() => InitializePriceDatabaseUseCase());
 
-  // Use Cases - Auth
+  // ===== USE CASES - AUTH =====
   sl.registerLazySingleton(() => SignInUseCase(sl()));
   sl.registerLazySingleton(() => SignUpUseCase(sl()));
   sl.registerLazySingleton(() => SignOutUseCase(sl()));
   sl.registerLazySingleton(() => GetCurrentUserUseCase(sl()));
+  sl.registerLazySingleton(() => LoadSavedCredentialsUseCase(sl()));
+  sl.registerLazySingleton(() => SaveCredentialsUseCase(sl()));
 
-  // Use Cases - Profile
+  // ===== USE CASES - PROFILE =====
   sl.registerLazySingleton(() => GetUserProfileUseCase(sl()));
   sl.registerLazySingleton(() => UpdateUserProfileUseCase(sl()));
   sl.registerLazySingleton(() => DeleteAccountUseCase(sl()));
 
-  // Use Cases - Menu
+  // ===== USE CASES - MENU =====
   sl.registerLazySingleton(() => SaveMenuRecipesUseCase(sl()));
   sl.registerLazySingleton(() => GenerateWeeklyMenuUseCase(sl<MenuGenerationRepository>()));
 
-  // Use Cases - Shopping
+  // ===== USE CASES - SHOPPING =====
   sl.registerLazySingleton(() => GetShoppingItemsUseCase(sl()));
   sl.registerLazySingleton(() => AddShoppingItemUseCase(sl()));
   sl.registerLazySingleton(() => ToggleShoppingItemUseCase(sl()));
   sl.registerLazySingleton(() => GetTotalPriceUseCase(sl()));
+  sl.registerLazySingleton(() => DeleteCheckedShoppingItemsUseCase(sl()));
+  sl.registerLazySingleton(() => SetAllShoppingItemsCheckedUseCase(sl()));
+  sl.registerLazySingleton(() => GetPricesByCategoryUseCase(sl()));
+  sl.registerLazySingleton(() => EstimateIngredientPriceUseCase(sl()));
   sl.registerLazySingleton(() => GenerateShoppingFromMenusUseCase(
     menuRepository: sl(),
     shoppingRepository: sl(),
+    parser: IngredientParser(),
+    aggregator: IngredientAggregator(),
+    priceEstimator: sl<PriceEstimator>(),
+    categoryHelper: sl<SmartCategoryHelper>(),
+    normalizer: sl<SmartIngredientNormalizer>(),
   ));
-  sl.registerLazySingleton(() => DeleteCheckedShoppingItemsUseCase(sl()));
-  sl.registerLazySingleton(() => SetAllShoppingItemsCheckedUseCase(sl()));
 
-  // Use Cases - Recipes & Weekly Menus
+  // ===== USE CASES - RECIPES & WEEKLY MENUS =====
   sl.registerLazySingleton<GetRecipeByIdUseCase>(
     () => GetRecipeByIdUseCase(sl<RecipeRepository>())
   );
 
-  // Use Cases - Support Messages
+  // ===== USE CASES - SUPPORT =====
   sl.registerLazySingleton(() => GetSupportMessagesUseCase(sl()));
 
-  // ViewModels
+  // ===== VIEW MODELS =====
+  sl.registerLazySingleton(() => LoginViewModel(
+    sl<SignInUseCase>(),
+    sl<LoadSavedCredentialsUseCase>(),
+    sl<SaveCredentialsUseCase>(),
+  ));
+
   sl.registerLazySingleton<MenuViewModel>(() => MenuViewModel());
+  
   sl.registerLazySingleton(() => GenerateMenuViewModel(
     sl<GetUserProfileUseCase>(),
     sl<GetCurrentUserUseCase>(),

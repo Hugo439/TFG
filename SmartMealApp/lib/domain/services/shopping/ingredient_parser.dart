@@ -1,4 +1,4 @@
-enum UnitKind { weight, volume, unit }
+import 'package:smartmeal/domain/value_objects/shopping_item_unit_kind.dart';
 
 class IngredientPortion {
   final String name;

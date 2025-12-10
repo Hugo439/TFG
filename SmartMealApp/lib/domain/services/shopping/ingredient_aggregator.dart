@@ -1,4 +1,6 @@
-import 'ingredient_parser.dart';
+import 'ingredient_parser.dart' as parser;
+import 'package:smartmeal/domain/repositories/price_repository.dart';
+import 'package:smartmeal/domain/value_objects/shopping_item_unit_kind.dart';
 
 class AggregatedIngredient {
   final String name;
@@ -19,7 +21,7 @@ class AggregatedIngredient {
 class IngredientAggregator {
   final Map<String, _IngredientAgg> _acc = {};
 
-  void addPortion(IngredientPortion portion, String menuName) {
+  void addPortion(parser.IngredientPortion portion, String menuName) {
     if (portion.name.trim().isEmpty) return;
     
     // Normalizar el nombre ANTES de agregar
@@ -55,16 +57,26 @@ class IngredientAggregator {
 }
 
 class PriceEstimator {
-  double estimatePrice(UnitKind kind, double base) {
-    if (kind == UnitKind.weight) {
-      final kg = base / 1000.0;
-      return (kg * 8.0).clamp(0.5, 20.0);
-    }
-    if (kind == UnitKind.volume) {
-      final liters = base / 1000.0;
-      return (liters * 3.0).clamp(0.3, 15.0);
-    }
-    return (base * 1.0).clamp(0.2, 10.0);
+  final PriceRepository priceRepository;
+
+  PriceEstimator({required this.priceRepository});
+
+  Future<double> estimatePrice({
+    required String ingredientName,
+    required String category,
+    required UnitKind kind,
+    required double base,
+  }) async {
+    return await priceRepository.estimatePrice(
+      ingredientName: ingredientName,
+      category: category,
+      quantityBase: base,
+      unitKind: kind == UnitKind.weight
+          ? 'weight'
+          : kind == UnitKind.volume
+              ? 'volume'
+              : 'unit',
+    );
   }
 }
 
