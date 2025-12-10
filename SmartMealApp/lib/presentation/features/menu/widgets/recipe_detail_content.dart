@@ -4,7 +4,7 @@ import 'package:smartmeal/l10n/l10n_ext.dart';
 
 class RecipeDetailContent extends StatelessWidget {
   final Recipe recipe;
-  const RecipeDetailContent({Key? key, required this.recipe}) : super(key: key);
+  const RecipeDetailContent({super.key, required this.recipe});
 
   @override
   Widget build(BuildContext context) {

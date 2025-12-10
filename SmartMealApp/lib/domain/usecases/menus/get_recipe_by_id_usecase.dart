@@ -19,3 +19,5 @@ class GetRecipeByIdParams {
 
   GetRecipeByIdParams({required this.id, required this.userId});
 }
+
+//Se usa en el recipe detail view model

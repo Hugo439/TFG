@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
-import 'package:smartmeal/data/models/groq_menu_response_model.dart';
+import 'package:smartmeal/data/models/ai_menu_response_model.dart';
 import 'package:smartmeal/core/utils/calorie_distribution_utils.dart';
 
 class GroqMenuDatasource {
@@ -12,7 +12,7 @@ class GroqMenuDatasource {
   GroqMenuDatasource();
 
   /// Genera recetas + menú semanal completo
-  Future<GroqMenuResponseModel> generateWeeklyMenu({
+  Future<AiMenuResponseModel> generateWeeklyMenu({
     required int targetCaloriesPerMeal,
     required List<String> excludedTags,
     required String userGoal,
@@ -225,7 +225,7 @@ Genera el menú semanal ahora:
           debugPrint('[GroqMenu] ✓ Generación exitosa en intento #$attempt');
         }
 
-        return GroqMenuResponseModel.fromJson(result);
+        return AiMenuResponseModel.fromJson(result);
 
       } catch (e) {
         lastError = Exception('Error en intento #$attempt: $e');

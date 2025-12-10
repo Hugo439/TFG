@@ -4,7 +4,6 @@ import 'package:smartmeal/core/di/service_locator.dart';
 import 'package:smartmeal/domain/usecases/shopping/get_shopping_items_usecase.dart';
 import 'package:smartmeal/domain/usecases/shopping/add_shopping_item_usecase.dart';
 import 'package:smartmeal/domain/usecases/shopping/toggle_shopping_item_usecase.dart';
-import 'package:smartmeal/domain/usecases/shopping/delete_shopping_item_usecase.dart';
 import 'package:smartmeal/domain/usecases/shopping/get_total_price_usecase.dart';
 import 'package:smartmeal/domain/usecases/shopping/generate_shopping_from_menus_usecase.dart';
 import 'package:smartmeal/domain/usecases/shopping/delete_checked_shopping_items_usecase.dart';
@@ -30,7 +29,6 @@ class ShoppingView extends StatelessWidget {
         sl<GetShoppingItemsUseCase>(),
         sl<AddShoppingItemUseCase>(),
         sl<ToggleShoppingItemUseCase>(),
-        sl<DeleteShoppingItemUseCase>(),
         sl<GetTotalPriceUseCase>(),
         sl<GenerateShoppingFromMenusUseCase>(),
         sl<DeleteCheckedShoppingItemsUseCase>(),

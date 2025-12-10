@@ -1,17 +1,17 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
-import 'package:smartmeal/data/models/groq_menu_response_model.dart';
+import 'package:smartmeal/data/models/ai_menu_response_model.dart';
 import 'package:smartmeal/core/utils/calorie_distribution_utils.dart';
 
 class GeminiMenuDatasource {
-  static const String _workerUrl = 'https://groq-worker.smartmealgroq.workers.dev'; // ← Tu URL del worker
+  static const String _workerUrl = 'https://groq-worker.smartmealgroq.workers.dev';
   static const int _maxRetries = 3;
   static const Duration _retryDelay = Duration(seconds: 2);
 
   GeminiMenuDatasource();
 
-  Future<GroqMenuResponseModel> generateWeeklyMenu({
+  Future<AiMenuResponseModel> generateWeeklyMenu({
     required int targetCaloriesPerMeal,
     required List<String> excludedTags,
     required String userGoal,
@@ -38,11 +38,53 @@ CALORÍAS POR TIPO DE COMIDA:
 - Snack: ${distribution.snack.min}-${distribution.snack.max} kcal
 - Dinner: ${distribution.dinner.min}-${distribution.dinner.max} kcal
 
-INSTRUCCIONES:
+INSTRUCCIONES GENERALES:
 1. Crea 28 recetas DIFERENTES y REALISTAS
 2. Calcula calorías reales según ingredientes y cantidades
-3. Incluye cantidades en ingredientes (ej: "200g pollo", "100g arroz")
-4. Varía proteínas, métodos de cocción, ingredientes mediterráneos
+3. Varía proteínas, métodos de cocción, ingredientes mediterráneos
+
+INSTRUCCIONES PARA INGREDIENTES (CRÍTICO):
+Los ingredientes DEBEN estar en formato: "[cantidad] [unidad] [nombre base]"
+
+UNIDADES OBLIGATORIAS:
+- Peso: "g" o "kg"
+- Volumen: "ml" o "l"
+- Conteo: "ud"
+- PROHIBIDO: "taza", "cucharada", "puñado", "al gusto"
+
+NOMBRES DE INGREDIENTES - REGLAS ESTRICTAS:
+✓ USA SOLO el nombre base del ingrediente
+✓ NO incluyas: colores (rojo, verde), estados (fresco, cocido, asado), marcas
+✓ Si hay variedad, especifica solo lo esencial: "pollo pechuga", "arroz integral", "lentejas rojas"
+
+EJEMPLOS DE FORMATO CORRECTO:
+- "200 g pollo pechuga"
+- "250 ml leche almendras"
+- "100 g tomate"
+- "2 ud huevo"
+- "150 g brocoli"
+- "40 ml aceite oliva"
+- "150 g arroz integral"
+- "100 g lentejas rojas"
+
+EJEMPLOS DE CONVERSIONES OBLIGATORIAS:
+- ❌ "aceite de oliva virgen extra" → ✅ "40 ml aceite oliva"
+- ❌ "pechuga de pollo asada" → ✅ "200 g pollo pechuga"
+- ❌ "tomate cherry fresco" → ✅ "100 g tomate"
+- ❌ "brócoli al vapor" → ✅ "150 g brocoli"
+- ❌ "espinacas frescas" → ✅ "100 g espinacas"
+- ❌ "yogur griego natural (10% grasa)" → ✅ "300 g yogur griego"
+- ❌ "pan sin gluten" → ✅ "2 ud pan"
+- ❌ "pico de gallo (tomate, cebolla, cilantro)" → ✅ "100 g tomate", "30 g cebolla", "5 g cilantro" (ingredientes separados)
+- ❌ "jugo de medio limón" → ✅ "30 ml limon"
+- ❌ "carne picada de res magra" → ✅ "150 g carne res"
+
+PROHIBIDO EN NOMBRES DE INGREDIENTES:
+- Adjetivos: "virgen", "extra", "fresco", "natural", "ligero", "bajo en sodio"
+- Estados de cocción: "cocido", "asado", "al vapor", "desmenuzado", "ahumado"
+- Tamaños: "mediano", "grande", "pequeño"
+- Especificaciones entre paréntesis: "(con piel)", "(sin vaina)", "(colores varios)", "(10% grasa)"
+- Artículos al final: NO "de pollo", sino "pollo"
 
 ESTRUCTURA DE ÍNDICES (CRÍTICO):
 - Índices 0-6: "mealType": "breakfast"
@@ -61,7 +103,7 @@ Responde ÚNICAMENTE con este JSON (sin markdown, sin comentarios):
 
 {
   "recipes": [
-    {"name": "...", "description": "...", "ingredients": ["cantidad + ingrediente", ...], "calories": numero, "mealType": "breakfast"},
+    {"name": "...", "description": "...", "ingredients": ["200 g pollo pechuga", "100 g tomate", ...], "calories": numero, "mealType": "breakfast"},
     ... (28 recetas totales)
   ],
   "weeklyMenu": {
@@ -172,7 +214,7 @@ Responde ÚNICAMENTE con este JSON (sin markdown, sin comentarios):
           debugPrint('[GeminiWorker] ✓ Éxito en intento #$attempt');
         }
 
-        return GroqMenuResponseModel.fromJson(result);
+        return AiMenuResponseModel.fromJson(result);
 
       } catch (e) {
         lastError = Exception('Intento #$attempt falló: $e');

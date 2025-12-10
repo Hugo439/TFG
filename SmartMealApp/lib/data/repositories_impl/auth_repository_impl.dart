@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:smartmeal/data/datasources/local/auth_local_datasource.dart';
 import 'package:smartmeal/domain/repositories/auth_repository.dart';
 import 'package:smartmeal/data/datasources/remote/firebase_auth_datasource.dart';
 import 'package:smartmeal/data/datasources/remote/firestore_datasource.dart';
@@ -13,15 +14,19 @@ import 'package:smartmeal/domain/value_objects/allergies.dart';
 import 'package:smartmeal/domain/value_objects/age.dart';
 import 'package:smartmeal/domain/value_objects/gender.dart';
 import 'package:smartmeal/data/mappers/user_profile_mapper.dart';
+import 'package:flutter/foundation.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final FirebaseAuthDataSource _authDataSource;
+  final AuthLocalDataSource _authLocalDataSource;
   final FirestoreDataSource _firestoreDataSource;
 
   AuthRepositoryImpl({
     required FirebaseAuthDataSource authDataSource,
+    required AuthLocalDataSource authLocalDataSource,
     required FirestoreDataSource firestoreDataSource,
   })  : _authDataSource = authDataSource,
+        _authLocalDataSource = authLocalDataSource,
         _firestoreDataSource = firestoreDataSource;
 
   @override
@@ -107,5 +112,50 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   User? getCurrentUser() {
     return _authDataSource.getCurrentUser();
+  }
+
+  @override
+  Future<void> saveCredentials(String email, String password) async {
+    try {
+      if (kDebugMode) {
+        print('💾 [AuthRepository] Guardando credenciales...');
+      }
+      await _authLocalDataSource.saveCredentials(email, password);
+    } catch (e) {
+      if (kDebugMode) {
+        print('❌ [AuthRepository] Error guardando credenciales: $e');
+      }
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> clearCredentials() async {
+    try {
+      if (kDebugMode) {
+        print('🗑️ [AuthRepository] Limpiando credenciales...');
+      }
+      await _authLocalDataSource.clearCredentials();
+    } catch (e) {
+      if (kDebugMode) {
+        print('❌ [AuthRepository] Error limpiando credenciales: $e');
+      }
+      rethrow;
+    }
+  }
+
+  @override
+  Future<Map<String, String>?> getSavedCredentials() async {
+    try {
+      if (kDebugMode) {
+        print('🔓 [AuthRepository] Obteniendo credenciales guardadas...');
+      }
+      return await _authLocalDataSource.getSavedCredentials();
+    } catch (e) {
+      if (kDebugMode) {
+        print('❌ [AuthRepository] Error obteniendo credenciales: $e');
+      }
+      rethrow;
+    }
   }
 }

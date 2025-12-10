@@ -3,7 +3,7 @@ import 'ingredient_parser.dart';
 class AggregatedIngredient {
   final String name;
   final UnitKind unitKind;
-  final double totalBase; // g, ml, uds según unitKind
+  final double totalBase;
   final List<String> usedInMenus;
   final String quantityLabel;
 
@@ -20,8 +20,13 @@ class IngredientAggregator {
   final Map<String, _IngredientAgg> _acc = {};
 
   void addPortion(IngredientPortion portion, String menuName) {
-    final key = _normalizeName(portion.name);
-    _acc.putIfAbsent(key, () => _IngredientAgg(name: portion.name));
+    if (portion.name.trim().isEmpty) return;
+    
+    // Normalizar el nombre ANTES de agregar
+    final normalizedName = _normalizeName(portion.name);
+    final key = normalizedName;
+    
+    _acc.putIfAbsent(key, () => _IngredientAgg(name: normalizedName));
 
     final group = _acc[key]!;
     if (!group.usedInMenus.contains(menuName)) {
@@ -44,20 +49,12 @@ class IngredientAggregator {
     }).toList();
   }
 
-  String _normalizeName(String name) => name.trim().toLowerCase();
+  String _normalizeName(String name) {
+    return name.trim().toLowerCase();
+  }
 }
 
-class PriceCategoryHelper {
-  String guessCategory(String name) {
-    final n = name.toLowerCase();
-    if (n.contains('pollo') || n.contains('carne') || n.contains('cerdo') || n.contains('vacuno')) return 'Carnicería';
-    if (n.contains('pesc') || n.contains('salmón') || n.contains('atún')) return 'Pescadería';
-    if (n.contains('queso') || n.contains('leche') || n.contains('yogur')) return 'Lácteos';
-    if (n.contains('pan')) return 'Panadería';
-    if (n.contains('tomate') || n.contains('cebolla') || n.contains('lechuga') || n.contains('fruta') || n.contains('verdura')) return 'Frutería';
-    return 'Supermercado';
-  }
-
+class PriceEstimator {
   double estimatePrice(UnitKind kind, double base) {
     if (kind == UnitKind.weight) {
       final kg = base / 1000.0;

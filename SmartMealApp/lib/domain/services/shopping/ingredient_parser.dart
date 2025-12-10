@@ -10,6 +10,14 @@ class IngredientPortion {
     required this.quantityBase,
     required this.unitKind,
   });
+
+  IngredientPortion copyWith({String? name, double? quantityBase, UnitKind? unitKind}) {
+    return IngredientPortion(
+      name: name ?? this.name,
+      quantityBase: quantityBase ?? this.quantityBase,
+      unitKind: unitKind ?? this.unitKind,
+    );
+  }
 }
 
 class IngredientParser {

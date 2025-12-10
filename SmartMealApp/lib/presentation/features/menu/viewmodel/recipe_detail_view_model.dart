@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smartmeal/domain/entities/recipe.dart';
-import 'package:smartmeal/domain/usecases/get_recipe_by_id_usecase.dart';
+import 'package:smartmeal/domain/usecases/menus/get_recipe_by_id_usecase.dart';
 import 'package:smartmeal/core/di/service_locator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 

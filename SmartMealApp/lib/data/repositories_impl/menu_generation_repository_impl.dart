@@ -2,10 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:smartmeal/domain/entities/weekly_menu.dart';
 import 'package:smartmeal/domain/repositories/menu_generation_repository.dart';
 import 'package:smartmeal/data/datasources/remote/gemini_menu_datasource.dart';
-import 'package:smartmeal/data/mappers/groq_menu_mapper.dart';
+import 'package:smartmeal/data/mappers/ai_menu_mapper.dart';
 
 // Modelos Groq para validar la respuesta cruda
-import 'package:smartmeal/data/models/groq_menu_response_model.dart';
+import 'package:smartmeal/data/models/ai_menu_response_model.dart';
 import 'package:smartmeal/data/models/recipe_data_model.dart';
 import 'package:smartmeal/data/models/day_menu_data_model.dart';
 
@@ -24,7 +24,7 @@ class MenuGenerationRepositoryImpl implements MenuGenerationRepository {
     final caloriesPerMeal = (targetCaloriesPerDay / 4).round();
 
     const maxRetries = 2;
-    GroqMenuResponseModel response;
+    AiMenuResponseModel response;
     int attempt = 0;
 
     while (true) {
@@ -55,7 +55,7 @@ class MenuGenerationRepositoryImpl implements MenuGenerationRepository {
     final weekStart = DateTime(startOfWeek.year, startOfWeek.month, startOfWeek.day);
     final menuName = 'Menú Semanal ${weekStart.day}/${weekStart.month}/${weekStart.year}';
 
-    return GroqMenuMapper.toEntity(
+    return AiMenuMapper.toEntity(
       model: sanitizedResponse,
       userId: userId,
       menuName: menuName,
@@ -63,7 +63,7 @@ class MenuGenerationRepositoryImpl implements MenuGenerationRepository {
     );
   }
 
-  GroqMenuResponseModel _sanitizeWeeklyMenu(GroqMenuResponseModel model) {
+  AiMenuResponseModel _sanitizeWeeklyMenu(AiMenuResponseModel model) {
     final recipes = model.recipes;
     final mealTypeToIndices = <String, List<int>>{
       'breakfast': [],
@@ -145,10 +145,10 @@ class MenuGenerationRepositoryImpl implements MenuGenerationRepository {
       );
     }
 
-    return GroqMenuResponseModel(recipes: recipes, weeklyMenu: sanitized);
+    return AiMenuResponseModel(recipes: recipes, weeklyMenu: sanitized);
   }
 
-  bool _isValidWeeklyMenu(GroqMenuResponseModel model) {
+  bool _isValidWeeklyMenu(AiMenuResponseModel model) {
     final recipes = model.recipes;
     final days = model.weeklyMenu;
     final expectedDays = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'];
@@ -179,7 +179,7 @@ class MenuGenerationRepositoryImpl implements MenuGenerationRepository {
     return true;
   }
 
-  void _logInvalidWeeklyMenu(GroqMenuResponseModel model) {
+  void _logInvalidWeeklyMenu(AiMenuResponseModel model) {
     final recipes = model.recipes;
     final days = model.weeklyMenu;
     final expectedDays = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'];

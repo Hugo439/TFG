@@ -4,7 +4,6 @@ import 'package:smartmeal/domain/entities/shopping_item.dart';
 import 'package:smartmeal/domain/usecases/shopping/get_shopping_items_usecase.dart';
 import 'package:smartmeal/domain/usecases/shopping/add_shopping_item_usecase.dart';
 import 'package:smartmeal/domain/usecases/shopping/toggle_shopping_item_usecase.dart';
-import 'package:smartmeal/domain/usecases/shopping/delete_shopping_item_usecase.dart';
 import 'package:smartmeal/domain/usecases/shopping/get_total_price_usecase.dart';
 import 'package:smartmeal/domain/usecases/shopping/generate_shopping_from_menus_usecase.dart';
 import 'package:smartmeal/domain/usecases/shopping/delete_checked_shopping_items_usecase.dart';
@@ -51,7 +50,6 @@ class ShoppingViewModel extends ChangeNotifier {
   final GetShoppingItemsUseCase _getShoppingItems;
   final AddShoppingItemUseCase _addShoppingItem;
   final ToggleShoppingItemUseCase _toggleShoppingItem;
-  final DeleteShoppingItemUseCase _deleteShoppingItem;
   final GetTotalPriceUseCase _getTotalPrice;
   final GenerateShoppingFromMenusUseCase _generateFromMenus;
   final DeleteCheckedShoppingItemsUseCase _deleteCheckedItems;
@@ -62,7 +60,6 @@ class ShoppingViewModel extends ChangeNotifier {
     this._getShoppingItems,
     this._addShoppingItem,
     this._toggleShoppingItem,
-    this._deleteShoppingItem,
     this._getTotalPrice,
     this._generateFromMenus,
     this._deleteCheckedItems,
@@ -118,16 +115,7 @@ class ShoppingViewModel extends ChangeNotifier {
     }
   }
 
-  Future<bool> deleteItem(String id) async {
-    try {
-      await _deleteShoppingItem(id);
-      await loadShoppingItems();
-      return true;
-    } catch (e) {
-      _update(_state.copyWith(error: e.toString()));
-      return false;
-    }
-  }
+
 
   Future<bool> generateFromMenus() async {
     _update(_state.copyWith(status: ShoppingStatus.loading, error: null));

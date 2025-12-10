@@ -16,7 +16,7 @@ class WeeklyMenuCard extends StatelessWidget {
     
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      color: colorScheme.surfaceVariant,
+      color: colorScheme.surfaceContainerHighest,
       child: ExpansionTile(
         title: Text(
           'Semana: ${menu.weekStartDate.toLocal().toString().split(' ')[0]}',

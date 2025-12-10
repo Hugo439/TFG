@@ -48,4 +48,12 @@ class MenuRepositoryImpl implements MenuRepository {
   Future<void> deleteMenuItem(String id) async {
     await _dataSource.deleteMenuItem(id);
   }
+
+  @override
+  Future<List<MenuItem>> getLatestWeeklyMenu() async {
+    final rawData = await _dataSource.getLatestWeeklyMenu();
+    return rawData
+        .map((data) => MenuItemMapper.fromFirestore(data))
+        .toList();
+  }
 }

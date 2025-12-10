@@ -1,4 +1,4 @@
-import 'package:smartmeal/data/models/groq_menu_response_model.dart';
+import 'package:smartmeal/data/models/ai_menu_response_model.dart';
 import 'package:smartmeal/data/models/recipe_data_model.dart';
 import 'package:smartmeal/data/models/day_menu_data_model.dart';
 import 'package:smartmeal/domain/entities/weekly_menu.dart';
@@ -7,9 +7,9 @@ import 'package:smartmeal/domain/entities/day_menu.dart';
 import 'package:smartmeal/domain/value_objects/recipe_name.dart';
 import 'package:smartmeal/domain/value_objects/recipe_description.dart';
 
-class GroqMenuMapper {
+class AiMenuMapper {
   static WeeklyMenu toEntity({
-    required GroqMenuResponseModel model,
+    required AiMenuResponseModel model,
     required String userId,
     required String menuName,
     required DateTime weekStart,

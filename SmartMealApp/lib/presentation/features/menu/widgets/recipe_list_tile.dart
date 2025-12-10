@@ -7,7 +7,7 @@ class RecipeListTile extends StatelessWidget {
   final Recipe recipe;
   final VoidCallback? onTap;
 
-  const RecipeListTile({Key? key, required this.recipe, this.onTap}) : super(key: key);
+  const RecipeListTile({super.key, required this.recipe, this.onTap});
 
   @override
   Widget build(BuildContext context) {

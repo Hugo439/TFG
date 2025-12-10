@@ -12,6 +12,7 @@ class MenuDataSource {
   })  : _firestore = firestore ?? FirebaseFirestore.instance,
         _auth = auth ?? FirebaseAuth.instance;
 
+//TODO: borrar este metodo, no me sirve  de nada que me coja todas las recetas de todos los menus del usuario
   /// Obtiene todas las recetas de todos los menús semanales
   Future<List<Map<String, dynamic>>> getMenuItems() async {
     final user = _auth.currentUser;
@@ -159,5 +160,94 @@ class MenuDataSource {
         .collection('recipes')
         .doc(id)
         .delete();
+  }
+
+  /// Obtiene solo el último menú semanal generado
+  Future<List<Map<String, dynamic>>> getLatestWeeklyMenu() async {
+    final user = _auth.currentUser;
+    if (user == null) throw Exception('Usuario no autenticado');
+
+    if (kDebugMode) {
+      print('📋 [MenuDS] Buscando último weekly_menu para userId: ${user.uid}');
+    }
+
+    final snapshot = await _firestore
+        .collection('users')
+        .doc(user.uid)
+        .collection('weekly_menus')
+        .orderBy('createdAt', descending: true)
+        .limit(1)
+        .get();
+
+    if (snapshot.docs.isEmpty) {
+      if (kDebugMode) {
+        print('📋 [MenuDS] No hay menús semanales');
+      }
+      return [];
+    }
+
+    final menuDoc = snapshot.docs.first;
+    final menuData = menuDoc.data();
+    final days = menuData['days'] as List<dynamic>? ?? [];
+
+    if (kDebugMode) {
+      print('📋 [MenuDS] Menú "${menuData['name']}": ${days.length} días');
+    }
+
+    final List<Map<String, dynamic>> allRecipes = [];
+
+    for (final dayData in days) {
+      final day = dayData as Map<String, dynamic>;
+      final recipes = day['recipes'] as List<dynamic>? ?? [];
+
+      for (final recipeId in recipes) {
+        final recipeIdStr = recipeId.toString();
+
+        var recipeDoc = await _firestore
+            .collection('users')
+            .doc(user.uid)
+            .collection('recipes')
+            .doc(recipeIdStr)
+            .get();
+
+        if (!recipeDoc.exists) {
+          final trimmed = recipeIdStr.replaceFirst('${user.uid}_recipe_', '');
+          recipeDoc = await _firestore
+              .collection('users')
+              .doc(user.uid)
+              .collection('recipes')
+              .doc(trimmed)
+              .get();
+        }
+
+        if (!recipeDoc.exists) {
+          if (kDebugMode) {
+            print('⚠️ [MenuDS] Receta no encontrada: $recipeIdStr');
+          }
+          continue;
+        }
+
+        final data = recipeDoc.data();
+        if (data == null) continue;
+
+        final recipeData = {
+          'id': recipeDoc.id,
+          ...data,
+          'menuName': menuData['name'],
+          'dayName': day['day'],
+        };
+        allRecipes.add(recipeData);
+
+        if (kDebugMode) {
+          print('✅ Receta encontrada: ${recipeData['name']} (ingredientes: ${(recipeData['ingredients'] as List?)?.length ?? 0})');
+        }
+      }
+    }
+
+    if (kDebugMode) {
+      print('📋 [MenuDS] Total recetas extraídas: ${allRecipes.length}');
+    }
+
+    return allRecipes;
   }
 }

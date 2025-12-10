@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:smartmeal/domain/usecases/auth/sign_in_usecase.dart';
-import 'package:smartmeal/data/datasources/local/auth_local_datasource.dart';
+import 'package:smartmeal/domain/usecases/auth/load_saved_credentials_usecase.dart';
+import 'package:smartmeal/domain/usecases/auth/save_credentials_usecase.dart';
+import 'package:smartmeal/core/usecases/usecase.dart';
 
 enum LoginErrorCode {
   fieldsRequired,
@@ -14,7 +16,8 @@ enum LoginErrorCode {
 
 class LoginViewModel extends ChangeNotifier {
   final SignInUseCase _signIn;
-  final AuthLocalDataSource _localDataSource;
+  final LoadSavedCredentialsUseCase _loadCreds;
+  final SaveCredentialsUseCase _saveCreds;
 
   String _email = '';
   String _password = '';
@@ -30,12 +33,12 @@ class LoginViewModel extends ChangeNotifier {
   bool get isLoading => _loading;
   LoginErrorCode? get errorCode => _errorCode;
 
-  LoginViewModel(this._signIn, this._localDataSource) {
+  LoginViewModel(this._signIn, this._loadCreds, this._saveCreds) {
     _loadSavedCredentials();
   }
 
   Future<void> _loadSavedCredentials() async {
-    final credentials = await _localDataSource.getSavedCredentials();
+    final credentials = await _loadCreds(NoParams());
     if (credentials != null) {
       _email = credentials['email'] ?? '';
       _password = credentials['password'] ?? '';
@@ -70,12 +73,11 @@ class LoginViewModel extends ChangeNotifier {
         email: email,
         password: password,
       ));
-
-      if (_rememberMe) {
-        await _localDataSource.saveCredentials(email, password);
-      } else {
-        await _localDataSource.clearCredentials();
-      }
+      await _saveCreds(SaveCredentialsParams(
+        email: email,
+        password: password,
+        remember: _rememberMe,
+      ));
 
       _email = email;
       _password = password;

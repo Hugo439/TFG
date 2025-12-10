@@ -43,7 +43,7 @@ class SupportForm extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         DropdownButtonFormField<String>(
-          value: selectedCategory,
+          initialValue: selectedCategory,
           items: categories
               .map((cat) => DropdownMenuItem(
                     value: cat,

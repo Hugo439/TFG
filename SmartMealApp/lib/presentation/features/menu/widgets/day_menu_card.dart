@@ -7,7 +7,7 @@ class DayMenuCard extends StatelessWidget {
   final DayMenu day;
   final void Function(String recipeId)? onRecipeTap;
 
-  const DayMenuCard({Key? key, required this.day, this.onRecipeTap}) : super(key: key);
+  const DayMenuCard({super.key, required this.day, this.onRecipeTap});
 
   @override
   Widget build(BuildContext context) {

@@ -55,6 +55,7 @@ dependencies:
   image_picker: ^1.0.0
   url_launcher: ^6.2.5
   firebase_core: ^3.15.2
+  characters: ^1.4.0
 
 dev_dependencies:
   flutter_test:

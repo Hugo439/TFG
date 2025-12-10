@@ -7,4 +7,5 @@ abstract class MenuRepository {
   Future<void> createMenuItem(MenuItem menuItem);
   Future<void> updateMenuItem(MenuItem menuItem);
   Future<void> deleteMenuItem(String id);
+  Future<List<MenuItem>> getLatestWeeklyMenu();
 }
