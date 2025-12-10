@@ -159,16 +159,47 @@ class SmartIngredientNormalizer {
     'pasta curry': ['pasta curry', 'pasta de curry'],
   };
 
+  /// Mapa de plural a singular 
+  static const _pluralSingularMap = {
+    'huevos': 'huevo',
+    'tomates': 'tomate',
+    'patatas': 'patata',
+    'cebollas': 'cebolla',
+    'pimientos': 'pimiento',
+    'zanahorias': 'zanahoria',
+    'aguacates': 'aguacate',
+    'platanos': 'platano',
+    'manzanas': 'manzana',
+    'naranjas': 'naranja',
+    'lentejas': 'lentejas',
+    'garbanzos': 'garbanzos',
+    'espinacas': 'espinaca',
+    'champiñones': 'champiñon',
+    'esparragos': 'espárrago',
+    'fresas': 'fresa',
+    'frambuesas': 'frambuesa',
+    'arandanos': 'arandano',
+  };
+
   /// Normaliza un ingrediente
   String normalize(String raw) {
     var s = raw.toLowerCase().trim();
     s = _stripAccents(s);
     s = _removeStopWords(s);
+    s = _convertPluralToSingular(s);
     s = s.trim();
 
     // Buscar coincidencia fuzzy en la base de datos
     final normalized = _findBestMatch(s);
     return normalized.isEmpty ? raw.toLowerCase().trim() : normalized;
+  }
+
+  /// Convierte plural a singular
+  String _convertPluralToSingular(String text) {
+    for (final entry in _pluralSingularMap.entries) {
+      text = text.replaceAll(RegExp('\\b${entry.key}\\b'), entry.value);
+    }
+    return text;
   }
 
   /// Encuentra la mejor coincidencia usando fuzzy matching
@@ -211,5 +242,37 @@ class SmartIngredientNormalizer {
       result = result.replaceAll(withAccent[i], without[i]);
     }
     return result;
+  }
+
+  /// Encuentra el mejor match en una lista de candidatos
+  static String? findBestMatch(
+    String input,
+    List<String> candidates, {
+    int minScore = 70,
+  }) {
+    final normalizer = SmartIngredientNormalizer();
+    final normalizedInput = normalizer.normalize(input);
+
+    int bestScore = 0;
+    String? bestMatch;
+
+    for (final candidate in candidates) {
+      final normalizedCandidate = normalizer.normalize(candidate);
+      
+      final score = tokenSetRatio(normalizedInput, normalizedCandidate);
+
+      if (score > bestScore && score >= minScore) {
+        bestScore = score;
+        bestMatch = candidate;
+      }
+    }
+
+    return bestMatch;
+  }
+
+  /// Calcula similitud entre dos ingredientes (0-100)
+  static int similarity(String a, String b) {
+    final normalizer = SmartIngredientNormalizer();
+    return tokenSetRatio(normalizer.normalize(a), normalizer.normalize(b));
   }
 }
