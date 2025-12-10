@@ -413,3 +413,5 @@ class IngredientNormalizer {
     return out.toString();
   }
 }
+
+//TODO: AHORA MISMO SE USA EL SMART, SI FUNCIONA BIEN ESTE SE PUEDE BORRAR

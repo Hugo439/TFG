@@ -9,6 +9,8 @@ import 'package:smartmeal/domain/services/shopping/ingredient_parser.dart';
 import 'package:smartmeal/domain/services/shopping/ingredient_aggregator.dart';
 import 'package:smartmeal/domain/services/shopping/ingredient_normalizer.dart';
 import 'package:smartmeal/domain/services/shopping/category_helper.dart';
+import 'package:smartmeal/domain/services/shopping/smart_ingredient_normalizer.dart';
+import 'package:smartmeal/domain/services/shopping/smart_category_helper.dart';
 import 'package:flutter/foundation.dart';
 
 class GenerateShoppingFromMenusUseCase implements UseCase<List<ShoppingItem>, NoParams> {
@@ -17,8 +19,8 @@ class GenerateShoppingFromMenusUseCase implements UseCase<List<ShoppingItem>, No
   final IngredientParser parser;
   final IngredientAggregator aggregator;
   final PriceEstimator priceEstimator;
-  final CategoryHelper categoryHelper;
-  final IngredientNormalizer normalizer;
+  final SmartCategoryHelper categoryHelper;
+  final SmartIngredientNormalizer normalizer;
 
   GenerateShoppingFromMenusUseCase({
     required this.menuRepository,
@@ -26,13 +28,13 @@ class GenerateShoppingFromMenusUseCase implements UseCase<List<ShoppingItem>, No
     IngredientParser? parser,
     IngredientAggregator? aggregator,
     PriceEstimator? priceEstimator,
-    CategoryHelper? categoryHelper,
-    IngredientNormalizer? normalizer,
+    SmartCategoryHelper? categoryHelper,
+    SmartIngredientNormalizer? normalizer,
   })  : parser = parser ?? IngredientParser(),
         aggregator = aggregator ?? IngredientAggregator(),
         priceEstimator = priceEstimator ?? PriceEstimator(),
-        categoryHelper = categoryHelper ?? CategoryHelper(),
-        normalizer = normalizer ?? IngredientNormalizer();
+        categoryHelper = categoryHelper ?? SmartCategoryHelper(),
+        normalizer = normalizer ?? SmartIngredientNormalizer();
 
   @override
   Future<List<ShoppingItem>> call(NoParams params) async {

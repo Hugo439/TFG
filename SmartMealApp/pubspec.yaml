@@ -57,6 +57,8 @@ dependencies:
   firebase_core: ^3.15.2
   characters: ^1.4.0
 
+  fuzzywuzzy: ^0.1.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -189,3 +189,5 @@ class CategoryHelper {
     return ShoppingItemCategory.otros;
   }
 }
+
+//TODO: AHORA MISMO SE USA EL SMART, SI FUNCIONA BIEN ESTE SE PUEDE BORRAR
