@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:smartmeal/domain/entities/shopping_item.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
+import 'package:smartmeal/presentation/features/shopping/widgets/edit_price_dialog.dart';
 
 class ShoppingItemCard extends StatelessWidget {
   final ShoppingItem item;
   final ValueChanged<bool?>? onCheckChanged;
   final VoidCallback? onTap;
+  final VoidCallback? onPriceEdited;
 
   const ShoppingItemCard({
     super.key,
     required this.item,
     this.onCheckChanged,
     this.onTap,
+    this.onPriceEdited,
   });
 
   String _getLocalizedCategory(BuildContext context, String category) {
@@ -111,18 +114,42 @@ class ShoppingItemCard extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(
-                  item.price.formatted,
-                  style: TextStyle(
-                    color: item.isChecked
-                        ? colorScheme.onSurface.withOpacity(0.6)
-                        : colorScheme.onSurface,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    decoration: item.isChecked
-                        ? TextDecoration.lineThrough
-                        : null,
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      item.price.formatted,
+                      style: TextStyle(
+                        color: item.isChecked
+                            ? colorScheme.onSurface.withOpacity(0.6)
+                            : colorScheme.onSurface,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        decoration: item.isChecked
+                            ? TextDecoration.lineThrough
+                            : null,
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    IconButton(
+                      icon: Icon(
+                        Icons.edit,
+                        size: 18,
+                        color: colorScheme.primary,
+                      ),
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (_) => EditPriceDialog(
+                            item: item,
+                            onPriceSaved: onPriceEdited,
+                          ),
+                        );
+                      },
+                      tooltip: l10n.shoppingEditPriceTooltip,
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 2),
                 Text(

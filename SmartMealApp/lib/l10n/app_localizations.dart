@@ -2042,6 +2042,84 @@ abstract class AppLocalizations {
   /// **'Desmarcar todos'**
   String get shoppingUncheckAllTooltip;
 
+  /// No description provided for @shoppingEditPriceTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar precio'**
+  String get shoppingEditPriceTitle;
+
+  /// Muestra el precio actual del producto
+  ///
+  /// In es, this message translates to:
+  /// **'Precio actual: {price}€'**
+  String shoppingEditPriceCurrentPrice(String price);
+
+  /// No description provided for @shoppingEditPriceNewPriceLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Nuevo precio (€)'**
+  String get shoppingEditPriceNewPriceLabel;
+
+  /// No description provided for @shoppingEditPriceNewPriceHint.
+  ///
+  /// In es, this message translates to:
+  /// **'1.50'**
+  String get shoppingEditPriceNewPriceHint;
+
+  /// No description provided for @shoppingEditPriceReasonLabel.
+  ///
+  /// In es, this message translates to:
+  /// **'Razón (opcional)'**
+  String get shoppingEditPriceReasonLabel;
+
+  /// No description provided for @shoppingEditPriceReasonHint.
+  ///
+  /// In es, this message translates to:
+  /// **'Ej: Oferta en mi supermercado'**
+  String get shoppingEditPriceReasonHint;
+
+  /// No description provided for @shoppingEditPriceReasonDefault.
+  ///
+  /// In es, this message translates to:
+  /// **'Ajuste manual'**
+  String get shoppingEditPriceReasonDefault;
+
+  /// No description provided for @shoppingEditPriceInfo.
+  ///
+  /// In es, this message translates to:
+  /// **'Este precio solo se aplicará a tu cuenta'**
+  String get shoppingEditPriceInfo;
+
+  /// No description provided for @shoppingEditPriceErrorInvalid.
+  ///
+  /// In es, this message translates to:
+  /// **'Por favor, introduce un precio válido mayor a 0'**
+  String get shoppingEditPriceErrorInvalid;
+
+  /// Error al guardar el precio personalizado
+  ///
+  /// In es, this message translates to:
+  /// **'Error al guardar: {error}'**
+  String shoppingEditPriceErrorSaving(String error);
+
+  /// Error inesperado al guardar
+  ///
+  /// In es, this message translates to:
+  /// **'Error inesperado: {error}'**
+  String shoppingEditPriceErrorUnexpected(String error);
+
+  /// No description provided for @shoppingEditPriceSuccess.
+  ///
+  /// In es, this message translates to:
+  /// **'✅ Precio personalizado guardado'**
+  String get shoppingEditPriceSuccess;
+
+  /// No description provided for @shoppingEditPriceTooltip.
+  ///
+  /// In es, this message translates to:
+  /// **'Editar precio'**
+  String get shoppingEditPriceTooltip;
+
   /// No description provided for @recipeDescription.
   ///
   /// In es, this message translates to:

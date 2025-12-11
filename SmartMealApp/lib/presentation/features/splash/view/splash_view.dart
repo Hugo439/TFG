@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:smartmeal/presentation/theme/colors.dart';
 import 'package:smartmeal/presentation/widgets/branding/animated_logo.dart';
-import 'package:smartmeal/l10n/l10n_ext.dart';
+import 'package:smartmeal/l10n/app_localizations.dart';
 
 class SplashView extends StatelessWidget {
   final Object? error;
@@ -18,7 +18,7 @@ class SplashView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hasError = error != null;
-    final l10n = context.l10n;
+    final l10n = AppLocalizations.of(context);
     
     return Scaffold(
       backgroundColor: AppColors.primaryBackground,
@@ -35,7 +35,7 @@ class SplashView extends StatelessWidget {
                   const Icon(Icons.error_outline, size: 48, color: AppColors.error),
                   const SizedBox(height: 12),
                   Text(
-                    l10n.errorInitializing,
+                    l10n?.errorInitializing ?? 'Error inicializando',
                     style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.primaryText),
                   ),
                   const SizedBox(height: 8),
@@ -47,7 +47,7 @@ class SplashView extends StatelessWidget {
                   const SizedBox(height: 16),
                   ElevatedButton(
                     onPressed: onRetry,
-                    child: Text(l10n.errorRetry),
+                    child: Text(l10n?.errorRetry ?? 'Reintentar'),
                   ),
                 ],
               )

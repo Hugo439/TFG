@@ -428,6 +428,43 @@
   "shoppingDeleteCheckedTooltip": "Delete checked items",
   "shoppingCheckAllTooltip": "Check all",
   "shoppingUncheckAllTooltip": "Uncheck all",
+  "shoppingEditPriceTitle": "Edit price",
+  "shoppingEditPriceCurrentPrice": "Current price: €{price}",
+  "@shoppingEditPriceCurrentPrice": {
+    "description": "Shows the current price of the product",
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "shoppingEditPriceNewPriceLabel": "New price (€)",
+  "shoppingEditPriceNewPriceHint": "1.50",
+  "shoppingEditPriceReasonLabel": "Reason (optional)",
+  "shoppingEditPriceReasonHint": "E.g: Sale at my supermarket",
+  "shoppingEditPriceReasonDefault": "Manual adjustment",
+  "shoppingEditPriceInfo": "This price will only apply to your account",
+  "shoppingEditPriceErrorInvalid": "Please enter a valid price greater than 0",
+  "shoppingEditPriceErrorSaving": "Error saving: {error}",
+  "@shoppingEditPriceErrorSaving": {
+    "description": "Error saving custom price",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "shoppingEditPriceErrorUnexpected": "Unexpected error: {error}",
+  "@shoppingEditPriceErrorUnexpected": {
+    "description": "Unexpected error while saving",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "shoppingEditPriceSuccess": "✅ Custom price saved",
+  "shoppingEditPriceTooltip": "Edit price",
 
   "recipeDescription": "Description",
   "recipeIngredients": "Ingredients",

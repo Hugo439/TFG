@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smartmeal/l10n/l10n_ext.dart';
+import 'package:smartmeal/l10n/app_localizations.dart';
 
 class AppLogo extends StatelessWidget {
   final double height;
@@ -14,7 +14,7 @@ class AppLogo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final l10n = context.l10n;
+    final l10n = AppLocalizations.of(context);
 
     return Image.asset(
       assetPath,
@@ -30,7 +30,7 @@ class AppLogo extends StatelessWidget {
           borderRadius: BorderRadius.circular(8),
         ),
         child: Text(
-          l10n.logoNotFound,
+          l10n?.logoNotFound ?? 'Logo no encontrado',
           style: TextStyle(
             color: colorScheme.surface,
             fontSize: 14,

@@ -70,13 +70,13 @@ class PriceDatabase {
 
   /// Precios promedio por categoría como fallback (€/kg o €/L)
   static const Map<String, double> pricesByCategory = {
-    'frutas_y_verduras': 3.50,  // €/kg (antes: 2.5)
-    'carnes_y_pescados': 15.00, // €/kg (antes: 12.0)
-    'lacteos': 4.50,            // €/kg (antes: 8.0) - ajustado porque leche es €/L
-    'panaderia': 5.00,          // €/kg (antes: 3.0)
-    'bebidas': 1.20,            // €/L (antes: 1.5)
-    'snacks': 12.00,            // €/kg (antes: 10.0)
-    'otros': 5.50,              // €/kg (antes: 4.0)
+    'frutas_y_verduras': 3.50,
+    'carnes_y_pescados': 15.00,
+    'lacteos': 4.50,
+    'panaderia': 5.00,
+    'bebidas': 1.20,
+    'snacks': 12.00,
+    'otros': 5.50,
   };
 
   /// Precios específicos por ingrediente (€ por unidad o €/kg)

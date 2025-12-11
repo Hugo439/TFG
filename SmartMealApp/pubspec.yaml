@@ -58,6 +58,7 @@ dependencies:
   characters: ^1.4.0
 
   fuzzywuzzy: ^0.1.0
+  dartz: ^0.10.1
 
 dev_dependencies:
   flutter_test:

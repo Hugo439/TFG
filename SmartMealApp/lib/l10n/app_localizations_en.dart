@@ -1012,6 +1012,53 @@ class AppLocalizationsEn extends AppLocalizations {
   String get shoppingUncheckAllTooltip => 'Uncheck all';
 
   @override
+  String get shoppingEditPriceTitle => 'Edit price';
+
+  @override
+  String shoppingEditPriceCurrentPrice(String price) {
+    return 'Current price: €$price';
+  }
+
+  @override
+  String get shoppingEditPriceNewPriceLabel => 'New price (€)';
+
+  @override
+  String get shoppingEditPriceNewPriceHint => '1.50';
+
+  @override
+  String get shoppingEditPriceReasonLabel => 'Reason (optional)';
+
+  @override
+  String get shoppingEditPriceReasonHint => 'E.g: Sale at my supermarket';
+
+  @override
+  String get shoppingEditPriceReasonDefault => 'Manual adjustment';
+
+  @override
+  String get shoppingEditPriceInfo =>
+      'This price will only apply to your account';
+
+  @override
+  String get shoppingEditPriceErrorInvalid =>
+      'Please enter a valid price greater than 0';
+
+  @override
+  String shoppingEditPriceErrorSaving(String error) {
+    return 'Error saving: $error';
+  }
+
+  @override
+  String shoppingEditPriceErrorUnexpected(String error) {
+    return 'Unexpected error: $error';
+  }
+
+  @override
+  String get shoppingEditPriceSuccess => '✅ Custom price saved';
+
+  @override
+  String get shoppingEditPriceTooltip => 'Edit price';
+
+  @override
   String get recipeDescription => 'Description';
 
   @override

@@ -418,6 +418,43 @@
   "shoppingDeleteCheckedTooltip": "Eliminar marcados",
   "shoppingCheckAllTooltip": "Marcar todos",
   "shoppingUncheckAllTooltip": "Desmarcar todos",
+  "shoppingEditPriceTitle": "Editar precio",
+  "shoppingEditPriceCurrentPrice": "Precio actual: {price}€",
+  "@shoppingEditPriceCurrentPrice": {
+    "description": "Muestra el precio actual del producto",
+    "placeholders": {
+      "price": {
+        "type": "String"
+      }
+    }
+  },
+  "shoppingEditPriceNewPriceLabel": "Nuevo precio (€)",
+  "shoppingEditPriceNewPriceHint": "1.50",
+  "shoppingEditPriceReasonLabel": "Razón (opcional)",
+  "shoppingEditPriceReasonHint": "Ej: Oferta en mi supermercado",
+  "shoppingEditPriceReasonDefault": "Ajuste manual",
+  "shoppingEditPriceInfo": "Este precio solo se aplicará a tu cuenta",
+  "shoppingEditPriceErrorInvalid": "Por favor, introduce un precio válido mayor a 0",
+  "shoppingEditPriceErrorSaving": "Error al guardar: {error}",
+  "@shoppingEditPriceErrorSaving": {
+    "description": "Error al guardar el precio personalizado",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "shoppingEditPriceErrorUnexpected": "Error inesperado: {error}",
+  "@shoppingEditPriceErrorUnexpected": {
+    "description": "Error inesperado al guardar",
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
+  "shoppingEditPriceSuccess": "✅ Precio personalizado guardado",
+  "shoppingEditPriceTooltip": "Editar precio",
 
   "recipeDescription": "Descripción",
   "recipeIngredients": "Ingredientes",

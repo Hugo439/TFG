@@ -1,11 +1,6 @@
 import 'package:smartmeal/domain/services/shopping/smart_ingredient_normalizer.dart';
 
-enum Season {
-  spring,  // Primavera: marzo-mayo
-  summer,  // Verano: junio-agosto
-  autumn,  // Otoño: septiembre-noviembre
-  winter,  // Invierno: diciembre-febrero
-}
+enum Season { spring, summer, autumn, winter }
 
 class SeasonalPricingService {
   /// Mapa de ingredientes estacionales y sus multiplicadores
@@ -61,7 +56,7 @@ class SeasonalPricingService {
       Season.autumn: 0.7,
       Season.winter: 0.9,
     },
-    'espárrago': {
+    'esparrago': {
       Season.spring: 0.7,
       Season.summer: 1.4,
       Season.autumn: 1.5,
@@ -89,12 +84,10 @@ class SeasonalPricingService {
 
   /// Obtiene la estación actual
   static Season getCurrentSeason([DateTime? date]) {
-    final now = date ?? DateTime.now();
-    final month = now.month;
-
-    if (month >= 3 && month <= 5) return Season.spring;
-    if (month >= 6 && month <= 8) return Season.summer;
-    if (month >= 9 && month <= 11) return Season.autumn;
+    final m = (date ?? DateTime.now()).month;
+    if (m >= 3 && m <= 5) return Season.spring;
+    if (m >= 6 && m <= 8) return Season.summer;
+    if (m >= 9 && m <= 11) return Season.autumn;
     return Season.winter;
   }
 
@@ -129,26 +122,6 @@ class SeasonalPricingService {
     String ingredientName, [
     DateTime? date,
   ]) {
-    final multiplier = getSeasonalMultiplier(ingredientName, date);
-    return basePrice * multiplier;
-  }
-
-  /// Indica si un ingrediente está en temporada
-  static bool isInSeason(String ingredientName, [DateTime? date]) {
-    return getSeasonalMultiplier(ingredientName, date) <= 0.9;
-  }
-
-  /// Obtiene emoji de temporada
-  static String getSeasonEmoji(Season season) {
-    switch (season) {
-      case Season.spring:
-        return '🌸';
-      case Season.summer:
-        return '☀️';
-      case Season.autumn:
-        return '🍂';
-      case Season.winter:
-        return '❄️';
-    }
+    return basePrice * getSeasonalMultiplier(ingredientName, date);
   }
 }

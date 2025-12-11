@@ -27,20 +27,13 @@ class FirestorePriceDatasource implements PriceDatasource {
         return _cache[category]!;
       }
 
-      // Obtener de Firestore
-      final doc = await _firestore.collection('prices').doc('ingredients').get();
+      // Obtener de price_catalog en Firestore
+      final query = await _firestore
+          .collection('price_catalog')
+          .where('category', isEqualTo: category)
+          .get();
       
-      if (!doc.exists) {
-        if (kDebugMode) {
-          print('⚠️ [PriceDatasource] No hay documento de precios en Firestore');
-        }
-        return {};
-      }
-
-      final data = doc.data() as Map<String, dynamic>;
-      final categoryData = data[category] as Map<String, dynamic>?;
-      
-      if (categoryData == null) {
+      if (query.docs.isEmpty) {
         if (kDebugMode) {
           print('⚠️ [PriceDatasource] Categoría no encontrada: $category');
         }
@@ -49,16 +42,16 @@ class FirestorePriceDatasource implements PriceDatasource {
 
       // Convertir a PriceRange
       final prices = <String, PriceRange>{};
-      categoryData.forEach((ingredient, priceData) {
-        if (priceData is Map<String, dynamic>) {
-          prices[ingredient] = PriceRange(
-            min: (priceData['min'] as num).toDouble(),
-            max: (priceData['max'] as num).toDouble(),
-            avg: (priceData['avg'] as num).toDouble(),
-            unit: _parseUnitType(priceData['unit'] as String?),
-          );
-        }
-      });
+      for (final doc in query.docs) {
+        final data = doc.data();
+        final displayName = data['displayName'] as String? ?? doc.id;
+        prices[displayName.toLowerCase()] = PriceRange(
+          min: (data['priceRef'] as num).toDouble() * 0.8,
+          max: (data['priceRef'] as num).toDouble() * 1.2,
+          avg: (data['priceRef'] as num).toDouble(),
+          unit: _parseUnitType(data['unitKind'] as String?),
+        );
+      }
 
       // Guardar en caché
       _cache[category] = prices;

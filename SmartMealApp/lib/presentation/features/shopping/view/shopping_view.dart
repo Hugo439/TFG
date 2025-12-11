@@ -206,6 +206,15 @@ class _ShoppingContent extends StatelessWidget {
                           vm.loadShoppingItems();
                         }
                       },
+                      onPriceEdited: () {
+                        vm.loadShoppingItems();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(l10n.shoppingEditPriceSuccess),
+                            backgroundColor: colorScheme.primary,
+                          ),
+                        );
+                      },
                     );
                   },
                 ),

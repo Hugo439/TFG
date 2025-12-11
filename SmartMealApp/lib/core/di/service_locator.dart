@@ -2,6 +2,7 @@ import 'package:get_it/get_it.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smartmeal/core/di/price_system_di.dart';
 import 'package:smartmeal/data/datasources/remote/price_datasource.dart';
 import 'package:smartmeal/data/repositories_impl/price_repository_impl.dart';
 
@@ -35,6 +36,7 @@ import 'package:smartmeal/data/datasources/remote/firestore_datasource.dart';
 import 'package:smartmeal/data/datasources/remote/menu_datasource.dart';
 import 'package:smartmeal/data/datasources/remote/shopping_datasource.dart';
 import 'package:smartmeal/data/datasources/remote/gemini_menu_datasource.dart';
+import 'package:smartmeal/data/datasources/remote/user_price_firestore_datasource.dart';
 import 'package:smartmeal/domain/services/shopping/ingredient_aggregator.dart';
 import 'package:smartmeal/domain/services/shopping/ingredient_parser.dart';
 import 'package:smartmeal/domain/services/shopping/smart_category_helper.dart';
@@ -100,6 +102,8 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<PriceDatasource>(
     () => FirestorePriceDatasource(sl<FirebaseFirestore>()),
   );
+  // Registro movido a setupPriceSystemDI(sl) para evitar duplicados
+  // de UserPriceFirestoreDatasource.
 
   // ===== SERVICES =====
   sl.registerLazySingleton<FCMService>(
@@ -110,7 +114,7 @@ Future<void> setupServiceLocator() async {
 
   sl.registerLazySingleton(() => SmartCategoryHelper());
   sl.registerLazySingleton(() => SmartIngredientNormalizer());
-  sl.registerLazySingleton(() => PriceEstimator(priceRepository: sl()));
+  sl.registerLazySingleton(() => PriceEstimator(getIngredientPriceUseCase: sl()));
 
   // ===== REPOSITORIES =====
   sl.registerLazySingleton<AppRepository>(
@@ -147,6 +151,8 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<ShoppingRepository>(
     () => ShoppingRepositoryImpl(
       dataSource: sl(),
+      userPriceDatasource: sl(),
+      auth: sl(),
     ),
   );
 
@@ -210,6 +216,9 @@ Future<void> setupServiceLocator() async {
 
   // ===== USE CASES - SUPPORT =====
   sl.registerLazySingleton(() => GetSupportMessagesUseCase(sl()));
+
+  // ===== PRICE SYSTEM =====
+  setupPriceSystemDI(sl);
 
   // ===== VIEW MODELS =====
   sl.registerLazySingleton(() => LoginViewModel(

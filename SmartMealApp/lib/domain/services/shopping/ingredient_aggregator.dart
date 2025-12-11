@@ -1,5 +1,6 @@
 import 'ingredient_parser.dart' as parser;
-import 'package:smartmeal/domain/repositories/price_repository.dart';
+import 'package:smartmeal/domain/usecases/shopping/get_ingredient_price_usecase.dart';
+import 'package:smartmeal/domain/value_objects/unit_kind.dart' as price_unit;
 import 'package:smartmeal/domain/value_objects/shopping_item_unit_kind.dart';
 
 class AggregatedIngredient {
@@ -57,9 +58,13 @@ class IngredientAggregator {
 }
 
 class PriceEstimator {
-  final PriceRepository priceRepository;
+  final GetIngredientPriceUseCase getIngredientPriceUseCase;
+  final String? userId;
 
-  PriceEstimator({required this.priceRepository});
+  PriceEstimator({
+    required this.getIngredientPriceUseCase,
+    this.userId,
+  });
 
   Future<double> estimatePrice({
     required String ingredientName,
@@ -67,16 +72,28 @@ class PriceEstimator {
     required UnitKind kind,
     required double base,
   }) async {
-    return await priceRepository.estimatePrice(
-      ingredientName: ingredientName,
-      category: category,
-      quantityBase: base,
-      unitKind: kind == UnitKind.weight
-          ? 'weight'
-          : kind == UnitKind.volume
-              ? 'volume'
-              : 'unit',
+    final result = await getIngredientPriceUseCase(
+      GetIngredientPriceParams(
+        ingredientName: ingredientName,
+        category: category,
+        quantityBase: base,
+        unitKind: _mapUnitKind(kind),
+        userId: userId,
+      ),
     );
+
+    return result.fold((_) => 0.0, (r) => r.price);
+  }
+
+  price_unit.UnitKind _mapUnitKind(UnitKind kind) {
+    switch (kind) {
+      case UnitKind.weight:
+        return price_unit.UnitKind.weight;
+      case UnitKind.volume:
+        return price_unit.UnitKind.volume;
+      case UnitKind.unit:
+        return price_unit.UnitKind.unit;
+    }
   }
 }
 

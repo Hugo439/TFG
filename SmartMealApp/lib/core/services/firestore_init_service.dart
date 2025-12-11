@@ -7,24 +7,22 @@ class FirestoreInitService {
 
     try {
       if (kDebugMode) {
-        print('📊 [FirestoreInit] Inicializando base de precios...');
+        print('📊 [FirestoreInit] Inicializando catálogo de precios...');
       }
 
-      final pricesRef = firestore.collection('prices').doc('ingredients');
-      final doc = await pricesRef.get();
-
-      // Si ya existe, no hacer nada
-      if (doc.exists) {
+      // Verificar si ya existe al menos un precio
+      final catalogSnapshot = await firestore.collection('price_catalog').limit(1).get();
+      if (catalogSnapshot.docs.isNotEmpty) {
         if (kDebugMode) {
-          print('✅ [FirestoreInit] Base de precios ya existe');
+          print('✅ [FirestoreInit] Catálogo de precios ya existe');
         }
         return;
       }
 
-      // Crear documento con datos de precios
-      await pricesRef.set({
+      // Crear documentos con precios en price_catalog
+      final priceDataMap = {
         // ===== FRUTAS Y VERDURAS =====
-        'frutas_y_verduras': {
+        'frutas_verduras': {
           'manzana': {'min': 1.5, 'max': 3.0, 'avg': 2.0, 'unit': 'weight'},
           'platano': {'min': 1.2, 'max': 2.0, 'avg': 1.5, 'unit': 'weight'},
           'naranja': {'min': 1.5, 'max': 2.5, 'avg': 2.0, 'unit': 'weight'},
@@ -58,7 +56,7 @@ class FirestoreInitService {
         },
 
         // ===== CARNES Y PESCADOS =====
-        'carnes_y_pescados': {
+        'carnes_pescados': {
           'pollo': {'min': 5.0, 'max': 8.0, 'avg': 6.5, 'unit': 'weight'},
           'pavo': {'min': 6.0, 'max': 9.0, 'avg': 7.5, 'unit': 'weight'},
           'carne res': {'min': 10.0, 'max': 20.0, 'avg': 15.0, 'unit': 'weight'},
@@ -155,18 +153,51 @@ class FirestoreInitService {
           'chocolate': {'min': 5.0, 'max': 15.0, 'avg': 10.0, 'unit': 'weight'},
           'galleta': {'min': 3.0, 'max': 8.0, 'avg': 5.0, 'unit': 'weight'},
         },
+      };
 
-        'timestamp': FieldValue.serverTimestamp(),
+      // Transformar estructura para price_catalog
+      // Cada ingrediente será un documento con su categoría
+      final batch = firestore.batch();
+      priceDataMap.forEach((category, ingredients) {
+        (ingredients as Map<String, dynamic>).forEach((ingredientName, priceData) {
+          final docId = ingredientName.toLowerCase().replaceAll(' ', '_');
+          final docRef = firestore.collection('price_catalog').doc(docId);
+          
+          batch.set(docRef, {
+            'normalizedName': docId,
+            'displayName': ingredientName,
+            'category': category,
+            'priceRef': ((priceData as Map<String, dynamic>)['avg'] as num).toDouble(),
+            'unitKind': _convertUnitKind(priceData['unit'] as String?),
+            'brand': 'Genérico',
+            'createdAt': FieldValue.serverTimestamp(),
+          });
+        });
       });
+      
+      await batch.commit();
 
       if (kDebugMode) {
-        print('✅ [FirestoreInit] Base de precios creada exitosamente');
+        print('✅ [FirestoreInit] Catálogo de precios creado exitosamente');
       }
     } catch (e) {
       if (kDebugMode) {
         print('❌ [FirestoreInit] Error inicializando precios: $e');
       }
       rethrow;
+    }
+  }
+
+  static String _convertUnitKind(String? oldUnit) {
+    switch (oldUnit?.toLowerCase()) {
+      case 'liter':
+        return 'volume';
+      case 'piece':
+        return 'unit';
+      case 'weight':
+        return 'weight';
+      default:
+        return 'weight';
     }
   }
 }
