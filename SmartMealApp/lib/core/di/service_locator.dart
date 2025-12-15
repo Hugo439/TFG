@@ -31,12 +31,12 @@ import 'package:smartmeal/data/repositories_impl/menu_generation_repository_impl
 
 // Data Sources
 import 'package:smartmeal/data/datasources/local/auth_local_datasource.dart';
+import 'package:smartmeal/data/datasources/local/shopping_local_datasource.dart';
 import 'package:smartmeal/data/datasources/remote/firebase_auth_datasource.dart';
 import 'package:smartmeal/data/datasources/remote/firestore_datasource.dart';
 import 'package:smartmeal/data/datasources/remote/menu_datasource.dart';
 import 'package:smartmeal/data/datasources/remote/shopping_datasource.dart';
 import 'package:smartmeal/data/datasources/remote/gemini_menu_datasource.dart';
-import 'package:smartmeal/data/datasources/remote/user_price_firestore_datasource.dart';
 import 'package:smartmeal/domain/services/shopping/ingredient_aggregator.dart';
 import 'package:smartmeal/domain/services/shopping/ingredient_parser.dart';
 import 'package:smartmeal/domain/services/shopping/smart_category_helper.dart';
@@ -94,6 +94,7 @@ Future<void> setupServiceLocator() async {
 
   // ===== DATA SOURCES =====
   sl.registerLazySingleton(() => AuthLocalDataSource());
+  sl.registerLazySingleton(() => ShoppingLocalDatasource(sl()));
   sl.registerLazySingleton(() => FirebaseAuthDataSource(auth: sl()));
   sl.registerLazySingleton(() => FirestoreDataSource(firestore: sl()));
   sl.registerLazySingleton(() => MenuDataSource(firestore: sl(), auth: sl()));
@@ -155,6 +156,7 @@ Future<void> setupServiceLocator() async {
     () => ShoppingRepositoryImpl(
       dataSource: sl(),
       userPriceDatasource: sl(),
+      localDatasource: sl(),
       auth: sl(),
     ),
   );

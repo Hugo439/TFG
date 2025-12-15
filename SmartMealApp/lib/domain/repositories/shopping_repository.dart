@@ -10,4 +10,5 @@ abstract class ShoppingRepository {
   Future<void> deleteCheckedItems(String userId);
   Future<double> getTotalPrice();
   Future<void> setAllChecked(bool checked);
+  Future<void> clearLocalCache(); // Nuevo: limpiar caché local
 }

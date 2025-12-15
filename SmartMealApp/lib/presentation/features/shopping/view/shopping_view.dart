@@ -50,6 +50,22 @@ class _ShoppingContent extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = context.l10n;
 
+    // Mostrar SnackBar si hay mensaje informativo de menú duplicado
+    if (state.infoMessage != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(state.infoMessage!),
+            duration: const Duration(seconds: 3),
+            backgroundColor: colorScheme.primary,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+        // Limpiar el mensaje para que no se repita
+        vm.clearInfoMessage();
+      });
+    }
+
     return AppShell(
       title: l10n.shoppingTitle,
       subtitle: l10n.shoppingSubtitle,
@@ -122,8 +138,9 @@ class _ShoppingContent extends StatelessWidget {
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: () async {
-                    await vm.generateFromMenus();
-                    if (context.mounted) {
+                    final generated = await vm.generateFromMenus();
+                    // Solo mostrar el éxito si realmente se generó (no duplicado)
+                    if (context.mounted && generated) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(l10n.shoppingGeneratedFromMenus),

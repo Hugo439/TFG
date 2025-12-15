@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:smartmeal/core/usecases/usecase.dart';
+import 'package:smartmeal/core/exceptions/menu_already_generated_exception.dart';
 import 'package:smartmeal/domain/repositories/menu_repository.dart';
 import 'package:smartmeal/domain/repositories/shopping_repository.dart';
 import 'package:smartmeal/domain/services/shopping/ingredient_aggregator.dart';
@@ -47,6 +48,24 @@ class GenerateShoppingFromMenusUseCase implements UseCase<List<ShoppingItem>, No
         }
         return [];
       }
+
+      // Evitar duplicar ingredientes de un mismo menú ya generado
+      final menuNames = menus.map((m) => m.name.value).toSet();
+      final existingItems = await shoppingRepository.getShoppingItems();
+      final alreadyGenerated = existingItems.any(
+        (item) => item.usedInMenus.any(menuNames.contains),
+      );
+      if (alreadyGenerated) {
+        if (kDebugMode) {
+          print('⏭️ [GenerateShoppingUseCase] Menú ya está en la lista de compra; se omite generación');
+        }
+        throw MenuAlreadyGeneratedException(
+          message: 'Los ingredientes de este menú ya se han añadido a la lista de compra',
+        );
+      }
+
+      // 🗑️  LIMPIAR CACHÉ LOCAL antes de generar nueva lista
+      await shoppingRepository.clearLocalCache();
 
       // Procesar ingredientes
       for (final menu in menus) {
