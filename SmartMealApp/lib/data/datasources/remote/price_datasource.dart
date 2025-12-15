@@ -13,6 +13,17 @@ abstract class PriceDatasource {
 class FirestorePriceDatasource implements PriceDatasource {
   final FirebaseFirestore _firestore;
   final Map<String, Map<String, PriceRange>> _cache = {};
+  
+  //TODO: poner bien el nombre de las categorias
+  // Mapeo de categorías alternativas si la primera no existe
+  static const _categoryAliases = {
+    'frutas_y_verduras': ['frutas_verduras', 'frutas y verduras', 'frutas-y-verduras'],
+    'carnes_y_pescados': ['carnes_pescados', 'carnes y pescados', 'carnes-y-pescados'],
+    'lacteos': ['lacteo', 'lácteos'],
+    'panaderia': ['pan', 'panadería'],
+    'bebidas': ['bebida'],
+    'snacks': ['snack'],
+  };
 
   FirestorePriceDatasource(this._firestore);
 
@@ -27,23 +38,42 @@ class FirestorePriceDatasource implements PriceDatasource {
         return _cache[category]!;
       }
 
-      // Obtener de price_catalog en Firestore
-      final query = await _firestore
-          .collection('price_catalog')
-          .where('category', isEqualTo: category)
-          .get();
+      // Obtener de price_catalog en Firestore (intenta categoría principal + aliases)
+      final categoriesToTry = [category];
+      if (_categoryAliases.containsKey(category)) {
+        categoriesToTry.addAll(_categoryAliases[category]!);
+      }
       
-      if (query.docs.isEmpty) {
+      QuerySnapshot? query;
+      String? foundCategory;
+      
+      for (final cat in categoriesToTry) {
+        query = await _firestore
+            .collection('price_catalog')
+            .where('category', isEqualTo: cat)
+            .get();
+        
+        if (query.docs.isNotEmpty) {
+          foundCategory = cat;
+          break;
+        }
+      }
+      
+      if (query == null || query.docs.isEmpty) {
         if (kDebugMode) {
-          print('⚠️ [PriceDatasource] Categoría no encontrada: $category');
+          print('⚠️ [PriceDatasource] Categoría no encontrada: $category (intentadas: ${categoriesToTry.join(", ")})');
         }
         return {};
+      }
+
+      if (kDebugMode && foundCategory != category) {
+        print('ℹ️ [PriceDatasource] Categoría mapeada: $category → $foundCategory');
       }
 
       // Convertir a PriceRange
       final prices = <String, PriceRange>{};
       for (final doc in query.docs) {
-        final data = doc.data();
+        final data = doc.data() as Map<String, dynamic>;
         final displayName = data['displayName'] as String? ?? doc.id;
         prices[displayName.toLowerCase()] = PriceRange(
           min: (data['priceRef'] as num).toDouble() * 0.8,

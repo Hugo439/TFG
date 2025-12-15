@@ -32,6 +32,8 @@ class GenerateShoppingFromMenusUseCase implements UseCase<List<ShoppingItem>, No
 
   @override
   Future<List<ShoppingItem>> call(NoParams params) async {
+    final startTime = DateTime.now();
+    
     if (kDebugMode) {
       print('🛒 [GenerateShoppingUseCase] Iniciando generación desde último menú...');
     }
@@ -59,49 +61,115 @@ class GenerateShoppingFromMenusUseCase implements UseCase<List<ShoppingItem>, No
 
       final aggList = aggregator.toList();
 
-      final List<ShoppingItem> shoppingItems = [];
-
-      // Crear items con precios
+      // 📦 PRE-CACHEAR precios por categoría (una lectura Firestore por categoría)
+      final preCacheStart = DateTime.now();
+      final categories = <String>{};
       for (final agg in aggList) {
-        final category = categoryHelper.guessCategory(agg.name);
-        
-        // ✅ Usar firestoreKey en lugar de displayName
-        final estimatedPrice = await priceEstimator.estimatePrice(
-          ingredientName: agg.name,
-          category: category.firestoreKey,  // 👈 CAMBIO
-          kind: agg.unitKind,
-          base: agg.totalBase,
-        );
-
-        try {
-          final item = ShoppingItem(
-            id: DateTime.now().millisecondsSinceEpoch.toString() +
-                shoppingItems.length.toString(),
-            name: ShoppingItemName(agg.name),
-            quantity: ShoppingItemQuantity(agg.quantityLabel),
-            price: Price(estimatedPrice),
-            category: category.displayName,
-            usedInMenus: agg.usedInMenus,
-            isChecked: false,
-            createdAt: DateTime.now(),
-          );
-
-          await shoppingRepository.addShoppingItem(item);
-          shoppingItems.add(item);
-          
-          if (kDebugMode) {
-            print('✅ Item: ${item.name.value} - ${item.quantity.value} - €${estimatedPrice.toStringAsFixed(2)} [${category.displayName}]');
-          }
-        } catch (e) {
-          if (kDebugMode) {
-            print('❌ Error creando item ${agg.name}: $e');
-          }
-          continue;
-        }
+        final cat = categoryHelper.guessCategory(agg.name);
+        categories.add(cat.firestoreKey);
       }
 
       if (kDebugMode) {
-        print('🛒 [GenerateShoppingUseCase] Total items añadidos: ${shoppingItems.length}');
+        print('📥 [GenerateShoppingUseCase] Pre-cacheando ${categories.length} categorías...');
+      }
+
+      // Precargar precios de categorías (máx 6 en paralelo)
+      const maxConcurrentPreloads = 6;
+      for (int i = 0; i < categories.length; i += maxConcurrentPreloads) {
+        final chunk = categories.toList().sublist(
+          i,
+          i + maxConcurrentPreloads > categories.length
+              ? categories.length
+              : i + maxConcurrentPreloads,
+        );
+        
+        final futures = chunk.map((catKey) async {
+          await priceEstimator.preloadCategoryPrices(catKey);
+        }).toList();
+
+        await Future.wait(futures);
+      }
+
+      final preCacheDuration = DateTime.now().difference(preCacheStart);
+      if (kDebugMode) {
+        print('✅ [GenerateShoppingUseCase] Caché de precios listo (${preCacheDuration.inMilliseconds}ms)');
+      }
+
+      final List<ShoppingItem> shoppingItems = [];
+
+      // 📦 Crear items con precios en lotes (batch size = 4 para mejor concurrencia)
+      final estimationStart = DateTime.now();
+      const batchSize = 4;
+      for (int i = 0; i < aggList.length; i += batchSize) {
+        final chunk = aggList.sublist(
+          i,
+          i + batchSize > aggList.length ? aggList.length : i + batchSize,
+        );
+
+        final futures = chunk.map((agg) async {
+          final category = categoryHelper.guessCategory(agg.name);
+
+          final estimatedPrice = await priceEstimator.estimatePrice(
+            ingredientName: agg.name,
+            category: category.firestoreKey,
+            kind: agg.unitKind,
+            base: agg.totalBase,
+          );
+
+          try {
+            final item = ShoppingItem(
+              id: DateTime.now().millisecondsSinceEpoch.toString() +
+                  agg.name.hashCode.toString(),
+              name: ShoppingItemName(agg.name),
+              quantity: ShoppingItemQuantity(agg.quantityLabel),
+              price: Price(estimatedPrice),
+              category: category.displayName,
+              usedInMenus: agg.usedInMenus,
+              isChecked: false,
+              createdAt: DateTime.now(),
+            );
+
+            if (kDebugMode) {
+              print(
+                  '✅ Item: ${item.name.value} - ${item.quantity.value} - €${estimatedPrice.toStringAsFixed(2)} [${category.displayName}]');
+            }
+            return item;
+          } catch (e) {
+            if (kDebugMode) {
+              print('❌ Error creando item ${agg.name}: $e');
+            }
+            return null;
+          }
+        }).toList();
+
+        final results = await Future.wait(futures);
+        shoppingItems.addAll(results.whereType<ShoppingItem>());
+      }
+
+      final estimationDuration = DateTime.now().difference(estimationStart);
+      if (kDebugMode) {
+        print('✅ [GenerateShoppingUseCase] Estimación completada (${estimationDuration.inMilliseconds}ms)');
+      }
+
+      // 📦 Guardar todos los items en una sola transacción (batch write)
+      final writeStart = DateTime.now();
+      if (shoppingItems.isNotEmpty) {
+        await shoppingRepository.addShoppingItemsBatch(shoppingItems);
+      }
+
+      final writeDuration = DateTime.now().difference(writeStart);
+      if (kDebugMode) {
+        print('✅ [GenerateShoppingUseCase] Batch write completado (${writeDuration.inMilliseconds}ms)');
+      }
+
+      final totalDuration = DateTime.now().difference(startTime);
+      if (kDebugMode) {
+        print('🛒 [GenerateShoppingUseCase] ✅ COMPLETADO');
+        print('   └─ Total items: ${shoppingItems.length}');
+        print('   └─ Pre-caché: ${preCacheDuration.inMilliseconds}ms');
+        print('   └─ Estimación: ${estimationDuration.inMilliseconds}ms');
+        print('   └─ Escritura: ${writeDuration.inMilliseconds}ms');
+        print('   └─ ⏱️  TIEMPO TOTAL: ${totalDuration.inSeconds}s ${totalDuration.inMilliseconds % 1000}ms');
       }
 
       return shoppingItems;

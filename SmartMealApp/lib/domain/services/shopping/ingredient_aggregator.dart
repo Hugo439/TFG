@@ -1,7 +1,9 @@
 import 'ingredient_parser.dart' as parser;
 import 'package:smartmeal/domain/usecases/shopping/get_ingredient_price_usecase.dart';
+import 'package:smartmeal/domain/usecases/shopping/get_prices_by_category_usecase.dart';
 import 'package:smartmeal/domain/value_objects/unit_kind.dart' as price_unit;
 import 'package:smartmeal/domain/value_objects/shopping_item_unit_kind.dart';
+import 'package:smartmeal/domain/services/shopping/price_database.dart';
 
 class AggregatedIngredient {
   final String name;
@@ -59,10 +61,15 @@ class IngredientAggregator {
 
 class PriceEstimator {
   final GetIngredientPriceUseCase getIngredientPriceUseCase;
+  final GetPricesByCategoryUseCase getPricesByCategoryUseCase;
   final String? userId;
+  
+  // Caché local: categoría -> mapa de precios de la categoría
+  final Map<String, Map<String, PriceRange>> _categoryCache = {};
 
   PriceEstimator({
     required this.getIngredientPriceUseCase,
+    required this.getPricesByCategoryUseCase,
     this.userId,
   });
 
@@ -72,6 +79,25 @@ class PriceEstimator {
     required UnitKind kind,
     required double base,
   }) async {
+    final n = ingredientName.toLowerCase();
+
+    // 1) Si tenemos la categoría en caché, hacer búsqueda rápida sin llamadas async
+    if (_categoryCache.containsKey(category)) {
+      final prices = _categoryCache[category]!;
+      final matched = _matchPrice(prices, n);
+      if (matched != null) {
+        return _calculatePrice(matched, base, kind);
+      }
+    }
+
+    // 2) Si no está en caché, cargar toda la categoría una vez
+    final prices = await _loadCategory(category);
+    final matched = _matchPrice(prices, n);
+    if (matched != null) {
+      return _calculatePrice(matched, base, kind);
+    }
+
+    // 3) Fallback a llamada puntual (debería ser raro)
     final result = await getIngredientPriceUseCase(
       GetIngredientPriceParams(
         ingredientName: ingredientName,
@@ -83,6 +109,54 @@ class PriceEstimator {
     );
 
     return result.fold((_) => 0.0, (r) => r.price);
+  }
+
+  Future<Map<String, PriceRange>> _loadCategory(String category) async {
+    if (_categoryCache.containsKey(category)) {
+      return _categoryCache[category]!;
+    }
+    final prices = await getPricesByCategoryUseCase(
+      GetPricesByCategoryParams(category: category),
+    );
+    // Normalizar claves a lower-case
+    final normalized = {
+      for (final entry in prices.entries) entry.key.toLowerCase(): entry.value
+    };
+    _categoryCache[category] = normalized;
+    return normalized;
+  }
+
+  double? _matchPrice(Map<String, PriceRange> prices, String n) {
+    for (final entry in prices.entries) {
+      final key = entry.key;
+      if (n.contains(key) || key.contains(n)) {
+        return entry.value.avg;
+      }
+    }
+    return null;
+  }
+
+  // Precarga todos los precios de una categoría a la vez
+  Future<void> preloadCategoryPrices(String category) async {
+    await _loadCategory(category);
+  }
+
+  double _calculatePrice(double pricePerUnit, double base, UnitKind kind) {
+    final unitStr = kind == UnitKind.weight 
+        ? 'weight' 
+        : kind == UnitKind.volume 
+            ? 'volume' 
+            : 'unit';
+    
+    if (unitStr == 'weight') {
+      final kg = base / 1000.0;
+      return (pricePerUnit * kg).clamp(0.1, 100.0);
+    }
+    if (unitStr == 'volume') {
+      final liters = base / 1000.0;
+      return (pricePerUnit * liters).clamp(0.1, 50.0);
+    }
+    return (pricePerUnit * base).clamp(0.1, 50.0);
   }
 
   price_unit.UnitKind _mapUnitKind(UnitKind kind) {

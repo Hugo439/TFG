@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:smartmeal/domain/repositories/shopping_repository.dart';
 import 'package:smartmeal/domain/entities/shopping_item.dart';
 import 'package:smartmeal/data/datasources/remote/shopping_datasource.dart';
@@ -21,43 +22,66 @@ class ShoppingRepositoryImpl implements ShoppingRepository {
 
   @override
   Future<List<ShoppingItem>> getShoppingItems() async {
+    final startTime = DateTime.now();
+    
     final models = await dataSource.getShoppingItems();
     final items = models.map((model) => ShoppingItemMapper.fromModel(model)).toList();
     
-    // Aplicar precios personalizados del usuario
+    // Aplicar precios personalizados del usuario (fetch único + O(1) lookups)
     final userId = auth.currentUser?.uid;
     if (userId != null) {
-      final itemsWithCustomPrices = <ShoppingItem>[];
-      
-      for (final item in items) {
-        try {
-          // Normalizar el nombre del ingrediente
-          final normalizedName = _normalizer.normalize(item.nameValue);
-          
-          // Buscar precio personalizado
-          final override = await userPriceDatasource.getUserPriceOverride(
-            userId: userId,
-            ingredientId: normalizedName,
-          );
-          
-          if (override != null) {
-            // Aplicar precio personalizado
-            itemsWithCustomPrices.add(item.copyWith(
-              price: Price(override.customPrice),
-            ));
-          } else {
-            // Mantener precio original
-            itemsWithCustomPrices.add(item);
+      // Cargar todos los overrides del usuario de una sola vez
+      try {
+        final overridesStart = DateTime.now();
+        final overrides = await userPriceDatasource.getAllUserOverrides(userId);
+        final overridesDuration = DateTime.now().difference(overridesStart);
+        
+        final priceByIngredientId = {
+          for (final o in overrides) o.ingredientId.toLowerCase(): o.customPrice
+        };
+
+        final itemsWithCustomPrices = items.map((item) {
+          final normalizedName = _normalizer.normalize(item.nameValue).toLowerCase();
+          final custom = priceByIngredientId[normalizedName];
+          if (custom != null) {
+            return item.copyWith(price: Price(custom));
           }
-        } catch (e) {
-          // Si falla, mantener precio original
-          itemsWithCustomPrices.add(item);
+          return item;
+        }).toList();
+
+        // Orden alfabético A→Z por nombre visible
+        itemsWithCustomPrices.sort((a, b) => a.nameValue.compareTo(b.nameValue));
+        
+        final totalDuration = DateTime.now().difference(startTime);
+        if (kDebugMode) {
+          print('📦 [ShoppingRepository] getShoppingItems completado');
+          print('   └─ Items cargados: ${items.length}');
+          print('   └─ Overrides aplicados: ${overrides.length}');
+          print('   └─ Carga overrides: ${overridesDuration.inMilliseconds}ms');
+          print('   └─ ⏱️  TIEMPO TOTAL: ${totalDuration.inMilliseconds}ms');
         }
+        
+        return itemsWithCustomPrices;
+      } catch (_) {
+        // En caso de error, devolver items originales ordenados alfabéticamente
+        items.sort((a, b) => a.nameValue.compareTo(b.nameValue));
+        final totalDuration = DateTime.now().difference(startTime);
+        if (kDebugMode) {
+          print('⚠️ [ShoppingRepository] Error en overrides; devolviendo items sin customización');
+          print('   └─ ⏱️  TIEMPO: ${totalDuration.inMilliseconds}ms');
+        }
+        return items;
       }
-      
-      return itemsWithCustomPrices;
     }
     
+    // Sin usuario: devolver ordenado alfabéticamente
+    items.sort((a, b) => a.nameValue.compareTo(b.nameValue));
+    final totalDuration = DateTime.now().difference(startTime);
+    if (kDebugMode) {
+      print('📦 [ShoppingRepository] getShoppingItems (sin usuario customización)');
+      print('   └─ Items: ${items.length}');
+      print('   └─ ⏱️  TIEMPO: ${totalDuration.inMilliseconds}ms');
+    }
     return items;
   }
 
@@ -65,6 +89,16 @@ class ShoppingRepositoryImpl implements ShoppingRepository {
   Future<void> addShoppingItem(ShoppingItem item) async {
     final model = ShoppingItemMapper.toModel(item);
     await dataSource.addShoppingItem(item.id, model.toFirestoreCreate());
+  }
+
+  @override
+  Future<void> addShoppingItemsBatch(List<ShoppingItem> items) async {
+    if (items.isEmpty) return;
+    final models = items
+        .map((item) => ShoppingItemMapper.toModel(item).toFirestoreCreate()
+            ..['id'] = item.id)
+        .toList();
+    await dataSource.addShoppingItemsBatch(models);
   }
 
   @override

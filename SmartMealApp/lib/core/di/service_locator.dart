@@ -114,7 +114,10 @@ Future<void> setupServiceLocator() async {
 
   sl.registerLazySingleton(() => SmartCategoryHelper());
   sl.registerLazySingleton(() => SmartIngredientNormalizer());
-  sl.registerLazySingleton(() => PriceEstimator(getIngredientPriceUseCase: sl()));
+  sl.registerLazySingleton(() => PriceEstimator(
+        getIngredientPriceUseCase: sl(),
+        getPricesByCategoryUseCase: sl(),
+      ));
 
   // ===== REPOSITORIES =====
   sl.registerLazySingleton<AppRepository>(

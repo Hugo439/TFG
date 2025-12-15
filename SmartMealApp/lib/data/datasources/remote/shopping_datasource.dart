@@ -35,6 +35,30 @@ class ShoppingDataSource {
         .set(data);
   }
 
+  // Escribir múltiples items en una sola transacción (más rápido)
+  Future<void> addShoppingItemsBatch(List<Map<String, dynamic>> items) async {
+    final userId = auth.currentUser?.uid;
+    if (userId == null) throw Exception('Usuario no autenticado');
+    
+    if (items.isEmpty) return;
+
+    final batch = firestore.batch();
+    for (final item in items) {
+      final itemId = item['id'] as String? ?? DateTime.now().millisecondsSinceEpoch.toString();
+      final ref = firestore
+          .collection('users')
+          .doc(userId)
+          .collection('shoppingItems')
+          .doc(itemId);
+      batch.set(ref, item);
+    }
+    
+    await batch.commit();
+    if (kDebugMode) {
+      print('✅ [ShoppingDS] ${items.length} items guardados en batch');
+    }
+  }
+
   Future<void> updateShoppingItem(String id, Map<String, dynamic> data) async {
     final userId = auth.currentUser?.uid;
     if (userId == null) throw Exception('Usuario no autenticado');

@@ -40,6 +40,15 @@ class SmartIngredientNormalizer {
 
   // Sinónimos básicos
   static const _synonyms = {
+    // ⚠️  IMPORTANTE: Ordenar por especificidad (más específico primero)
+    // Así "claras huevo" se reemplaza ANTES que "claras" solo
+    'claras de huevo': 'huevo',           // Exacto: 3 palabras
+    'clara de huevo': 'huevo',            // Singular exacto: 3 palabras
+    'claras huevo': 'huevo',              // Sin "de": 2 palabras (ANTES de "claras" solo)
+    'clara huevo': 'huevo',               // Clara singular + huevo: 2 palabras
+    'claras': 'huevo',                    // Fallback: solo claras (1 palabra)
+    'clara': 'huevo',                     // Clara singular solo (1 palabra)
+    'pechuga pollo': 'pollo',             // 2 palabras (ANTES de otros singles)
     'porotos': 'alubia',
     'frijoles': 'alubia',
     'judias': 'alubia',
@@ -49,7 +58,6 @@ class SmartIngredientNormalizer {
     'camote': 'batata',
     'boniato': 'batata',
     'porridge': 'avena',
-    'pechuga pollo': 'pollo',
   };
 
   /// Normaliza un ingrediente

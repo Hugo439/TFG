@@ -5,6 +5,7 @@ class SmartCategoryHelper {
   /// Base de datos de categorías por palabra clave
   static const _categoryKeywords = {
     ShoppingItemCategory.lacteos: [
+      'claras huevo', 'claras de huevo', 'clara de huevo',
       'queso', 'yogur', 'leche', 'mantequilla', 'nata', 'huevo', 'requeson',
       'cottage', 'mozzarella', 'parmesano', 'feta', 'crema', 'leche almendras',
       'leche coco', 'leche soja', 'leche avena',
