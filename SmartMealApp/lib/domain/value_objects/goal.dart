@@ -40,3 +40,5 @@ class Goal extends ValueObject<GoalType> {
     }
   }
 }
+
+//TODO: usar constantes

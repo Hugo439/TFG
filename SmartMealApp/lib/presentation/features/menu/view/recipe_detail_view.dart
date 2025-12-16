@@ -20,10 +20,16 @@ class RecipeDetailView extends StatelessWidget {
     }
 
     final recipe = vm.recipe!;
-    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       appBar: SmartMealAppBar(
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 12.0, top: 8.0),
+          child: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ),
         title: recipe.name.value,
         subtitle: recipe.mealType.name,
         centerTitle: false,

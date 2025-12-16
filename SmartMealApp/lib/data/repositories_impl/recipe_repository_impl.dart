@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smartmeal/domain/entities/recipe.dart';
 import 'package:smartmeal/domain/repositories/recipe_repository.dart';
 import 'package:smartmeal/data/models/recipe_model.dart';
@@ -8,16 +7,8 @@ import 'package:smartmeal/core/utils/meal_type_utils.dart';
 
 class RecipeRepositoryImpl implements RecipeRepository {
   final FirebaseFirestore _firestore;
-  final FirebaseAuth _auth;
 
-  RecipeRepositoryImpl(this._firestore, {FirebaseAuth? auth})
-      : _auth = auth ?? FirebaseAuth.instance;
-
-  String get _currentUserId {
-    final user = _auth.currentUser;
-    if (user == null) throw Exception('Usuario no autenticado');
-    return user.uid;
-  }
+  RecipeRepositoryImpl(this._firestore);
 
   @override
   Future<Recipe?> getRecipeById(String id, String userId) async {
@@ -84,6 +75,23 @@ class RecipeRepositoryImpl implements RecipeRepository {
           .toList();
     } catch (e) {
       throw Exception('Error al obtener recetas por tipo: $e');
+    }
+  }
+
+  @override
+  Future<void> updateRecipeSteps(String recipeId, String userId, List<String> steps) async {
+    try {
+      await _firestore
+          .collection('users')
+          .doc(userId)
+          .collection('recipes')
+          .doc(recipeId)
+          .update({
+        'steps': steps,
+        'updatedAt': FieldValue.serverTimestamp(),
+      });
+    } catch (e) {
+      throw Exception('Error al actualizar pasos de receta: $e');
     }
   }
 }

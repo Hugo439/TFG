@@ -11,6 +11,7 @@ class RecipeMapper {
       ingredients: entity.ingredients,
       calories: entity.calories,
       mealType: mealTypeToString(entity.mealType),
+      steps: entity.steps,
       createdAt: entity.createdAt,
       updatedAt: entity.updatedAt,
     );

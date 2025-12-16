@@ -5,8 +5,11 @@ import 'package:smartmeal/presentation/features/auth/view/register_view.dart';
 import 'package:smartmeal/presentation/features/home/view/home_view.dart';
 import 'package:smartmeal/presentation/features/profile/view/profile_view.dart';
 import 'package:smartmeal/presentation/features/profile/view/edit_profile_view.dart';
+import 'package:provider/provider.dart';
 import 'package:smartmeal/presentation/features/menu/view/menu_view.dart';
 import 'package:smartmeal/presentation/features/menu/view/generate_menu_view.dart';
+import 'package:smartmeal/presentation/features/menu/view/recipe_detail_view.dart';
+import 'package:smartmeal/presentation/features/menu/viewmodel/recipe_detail_view_model.dart';
 import 'package:smartmeal/presentation/features/shopping/view/shopping_view.dart';
 import 'package:smartmeal/presentation/features/shopping/view/add_shopping_item_view.dart';
 import 'package:smartmeal/presentation/features/settings/view/settings_view.dart';
@@ -23,6 +26,7 @@ class Routes {
   static const String editProfile = '/edit-profile';
   static const String menu = '/menu';
   static const String generateMenu = '/generate-menu';
+  static const String recipeDetail = '/recipe-detail';
   static const String shopping = '/shopping';
   static const String addShoppingItem = '/add-shopping-item';
   static const String settings = '/settings';
@@ -48,6 +52,14 @@ class Routes {
         return MaterialPageRoute(builder: (_) => const MenuView());
       case generateMenu:
         return MaterialPageRoute(builder: (_) => const GenerateMenuView());
+      case recipeDetail:
+        final recipeId = routeSettings.arguments as String;
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider(
+            create: (_) => RecipeDetailViewModel(),
+            child: RecipeDetailView(recipeId: recipeId),
+          ),
+        );
       case shopping:
         return MaterialPageRoute(builder: (_) => const ShoppingView());
       case addShoppingItem:

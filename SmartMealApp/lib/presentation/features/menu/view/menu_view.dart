@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smartmeal/core/di/service_locator.dart';
 import 'package:smartmeal/presentation/features/menu/viewmodel/menu_view_model.dart';
 import 'package:smartmeal/presentation/routes/navigation_controller.dart';
+import 'package:smartmeal/presentation/routes/routes.dart';
 import 'package:smartmeal/presentation/widgets/layout/app_shell.dart';
 import 'package:smartmeal/presentation/features/menu/widgets/stat_card.dart';
 import 'package:smartmeal/presentation/features/menu/widgets/weekly_menu_calendar.dart';
@@ -170,7 +171,7 @@ class _MenuContentState extends State<_MenuContent> {
               const SizedBox(height: 24),
               WeeklyMenuCalendar(
                 menu: lastMenu,
-                onRecipeTap: (id) => Navigator.of(context).pushNamed('/recipe-detail', arguments: id),
+                onRecipeTap: (id) => Navigator.of(context).pushNamed(Routes.recipeDetail, arguments: id),
               ),
               const SizedBox(height: 80), // Espacio extra al final
             ],

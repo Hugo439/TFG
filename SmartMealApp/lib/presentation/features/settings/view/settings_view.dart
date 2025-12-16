@@ -9,6 +9,7 @@ import 'package:smartmeal/presentation/features/settings/viewmodel/settings_view
 import 'package:smartmeal/presentation/features/settings/widgets/settings_section.dart';
 import 'package:smartmeal/presentation/features/settings/widgets/settings_tile.dart';
 import 'package:smartmeal/presentation/features/settings/widgets/account_info_card.dart';
+import 'package:smartmeal/presentation/features/settings/widgets/language_card.dart';
 import 'package:smartmeal/presentation/theme/theme_provider.dart';
 import 'package:smartmeal/presentation/routes/routes.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
@@ -115,29 +116,7 @@ class _SettingsContent extends StatelessWidget {
                         subtitle: l10n.settingsLanguageSubtitle,
                         onTap: () async {
                           final provider = context.read<LocaleProvider>();
-                          final selected = await showModalBottomSheet<String>(
-                            context: context,
-                            builder: (ctx) {
-                              return SafeArea(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    ListTile(
-                                      leading: const Icon(Icons.flag, color: Colors.red),
-                                      title: Text(l10n.settingsLanguageSpanish),
-                                      onTap: () => Navigator.pop(ctx, 'es'),
-                                    ),
-                                    ListTile(
-                                      leading: const Icon(Icons.flag, color: Colors.blue),
-                                      title: Text(l10n.settingsLanguageEnglish),
-                                      onTap: () => Navigator.pop(ctx, 'en'),
-                                    ),
-                                    const SizedBox(height: 8),
-                                  ],
-                                ),
-                              );
-                            },
-                          );
+                          final selected = await _showLanguageModal(context);
                           if (selected != null) {
                             provider.setLocale(Locale(selected));
                           }
@@ -333,6 +312,67 @@ class _SettingsContent extends StatelessWidget {
         const SizedBox(height: 16),
         Text(l10n.settingsAboutCopyright),
       ],
+    );
+  }
+
+  Future<String?> _showLanguageModal(BuildContext context) {
+    return showModalBottomSheet<String>(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        final modalColorScheme = Theme.of(ctx).colorScheme;
+        final modalL10n = ctx.l10n;
+        final currentLocale = Localizations.localeOf(ctx).languageCode;
+        return Container(
+          decoration: BoxDecoration(
+            color: modalColorScheme.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          child: SafeArea(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 24),
+                      child: Text(
+                        modalL10n.settingsLanguage,
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: modalColorScheme.onSurface,
+                        ),
+                      ),
+                    ),
+                    LanguageCard(
+                      isSelected: currentLocale == 'es',
+                      flag: '🇪🇸',
+                      title: modalL10n.settingsLanguageSpanish,
+                      description: 'Español',
+                      onTap: () => Navigator.pop(ctx, 'es'),
+                      colorScheme: modalColorScheme,
+                    ),
+                    const SizedBox(height: 12),
+                    LanguageCard(
+                      isSelected: currentLocale == 'en',
+                      flag: '🇬🇧',
+                      title: modalL10n.settingsLanguageEnglish,
+                      description: 'English',
+                      onTap: () => Navigator.pop(ctx, 'en'),
+                      colorScheme: modalColorScheme,
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

@@ -11,6 +11,7 @@ class RecipeModel {
   final List<String> ingredients;
   final int calories;
   final String mealType;
+  final List<String> steps;
   final DateTime? createdAt;
   final DateTime? updatedAt;
 
@@ -21,6 +22,7 @@ class RecipeModel {
     required this.ingredients,
     required this.calories,
     required this.mealType,
+    this.steps = const [],
     this.createdAt,
     this.updatedAt,
   });
@@ -35,6 +37,7 @@ class RecipeModel {
       ingredients: List<String>.from(data['ingredients'] ?? []),
       calories: data['calories'] ?? 0,
       mealType: data['mealType'] ?? 'breakfast',
+      steps: List<String>.from(data['steps'] ?? []),
       createdAt: (data['createdAt'] as Timestamp?)?.toDate(),
       updatedAt: (data['updatedAt'] as Timestamp?)?.toDate(),
     );
@@ -48,6 +51,7 @@ class RecipeModel {
     ingredients: ingredients,
     calories: calories,
     mealType: mealTypeFromString(mealType),
+    steps: steps,
     createdAt: createdAt,
     updatedAt: updatedAt,
   );
@@ -59,6 +63,7 @@ class RecipeModel {
     'ingredients': ingredients,
     'calories': calories,
     'mealType': mealType,
+    'steps': steps,
     'createdAt': createdAt,
     'updatedAt': updatedAt,
   };

@@ -78,6 +78,8 @@ import 'package:smartmeal/domain/usecases/shopping/initialize_price_database_use
 // Use Cases - Recipes & Weekly Menus
 import 'package:smartmeal/domain/usecases/menus/save_menu_recipes_usecase.dart';
 import 'package:smartmeal/domain/usecases/menus/get_recipe_by_id_usecase.dart';
+import 'package:smartmeal/domain/usecases/recipes/generate_recipe_steps_usecase.dart';
+import 'package:smartmeal/domain/usecases/recipes/update_recipe_usecase.dart';
 import 'package:smartmeal/domain/usecases/support/get_support_messages_usecase.dart';
 import 'package:smartmeal/presentation/features/auth/viewmodel/login_view_model.dart';
 
@@ -224,6 +226,9 @@ Future<void> setupServiceLocator() async {
   sl.registerLazySingleton<GetRecipeByIdUseCase>(
     () => GetRecipeByIdUseCase(sl<RecipeRepository>())
   );
+
+  sl.registerLazySingleton(() => GenerateRecipeStepsUseCase(sl<MenuGenerationRepository>()));
+  sl.registerLazySingleton(() => UpdateRecipeUseCase(sl<RecipeRepository>()));
 
   // ===== USE CASES - SUPPORT =====
   sl.registerLazySingleton(() => GetSupportMessagesUseCase(sl()));

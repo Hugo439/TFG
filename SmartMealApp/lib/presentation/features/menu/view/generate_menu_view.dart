@@ -34,7 +34,6 @@ class _GenerateMenuContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<GenerateMenuViewModel>();
-    final state = vm.state;
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = context.l10n;
 

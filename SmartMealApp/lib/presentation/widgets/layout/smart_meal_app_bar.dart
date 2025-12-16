@@ -125,6 +125,8 @@ class _TitleBlock extends StatelessWidget {
       children: [
         Text(
           title,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
           style: TextStyle(
             color: colorScheme.onSurface,
             fontSize: 18,
@@ -134,10 +136,12 @@ class _TitleBlock extends StatelessWidget {
         const SizedBox(height: 2),
         Text(
           subtitle,
+          maxLines: 2,
+          overflow: TextOverflow.ellipsis,
           style: TextStyle(
-            color: colorScheme.onSurface.withOpacity(0.6),
-            fontSize: 12,
-            fontWeight: FontWeight.w400,
+            color: colorScheme.onSurface.withOpacity(0.8),
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ],

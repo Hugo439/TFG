@@ -7,4 +7,10 @@ abstract class MenuGenerationRepository {
     required List<String> allergies,
     required String userGoal,
   });
+
+  Future<List<String>> generateRecipeSteps({
+    required String recipeName,
+    required List<String> ingredients,
+    required String description,
+  });
 }

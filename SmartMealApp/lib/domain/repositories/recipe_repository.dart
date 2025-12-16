@@ -5,4 +5,5 @@ abstract class RecipeRepository {
   Future<void> saveRecipe(Recipe recipe);
   Future<List<Recipe>> getAllRecipes(String userId);
   Future<List<Recipe>> getRecipesByMealType(MealType mealType, String userId);
+  Future<void> updateRecipeSteps(String recipeId, String userId, List<String> steps);
 }

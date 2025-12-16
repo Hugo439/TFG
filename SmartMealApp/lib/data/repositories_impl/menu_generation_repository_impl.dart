@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:smartmeal/data/datasources/remote/gemini_recipe_steps_extension.dart';
 import 'package:smartmeal/domain/entities/weekly_menu.dart';
 import 'package:smartmeal/domain/repositories/menu_generation_repository.dart';
 import 'package:smartmeal/data/datasources/remote/gemini_menu_datasource.dart';
@@ -216,5 +217,18 @@ class MenuGenerationRepositoryImpl implements MenuGenerationRepository {
         debugPrint(' - Día "$d": índices duplicados $nonNull');
       }
     }
+  }
+
+  @override
+  Future<List<String>> generateRecipeSteps({
+    required String recipeName,
+    required List<String> ingredients,
+    required String description,
+  }) async {
+    return await _geminiDatasource.generateRecipeSteps(
+      recipeName: recipeName,
+      ingredients: ingredients,
+      description: description,
+    );
   }
 }
