@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smartmeal/domain/usecases/support/get_support_messages_usecase.dart';
 import 'package:smartmeal/domain/repositories/support_message_repository.dart';
+import 'package:smartmeal/data/datasources/local/faq_local_datasource.dart';
+import 'package:smartmeal/core/di/service_locator.dart';
 import '../viewmodel/support_view_model.dart';
 import '../widgets/support_form.dart';
 import '../widgets/support_history.dart';
@@ -20,6 +22,7 @@ class SupportView extends StatelessWidget {
         final vm = SupportViewModel(
           getSupportMessagesUseCase: Provider.of<GetSupportMessagesUseCase>(context, listen: false),
           supportMessageRepository: Provider.of<SupportMessageRepository>(context, listen: false),
+          faqLocalDatasource: sl<FAQLocalDatasource>(),
         );
         vm.loadMessages(vm.userId);
         return vm;

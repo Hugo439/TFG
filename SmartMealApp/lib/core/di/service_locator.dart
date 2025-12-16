@@ -32,6 +32,8 @@ import 'package:smartmeal/data/repositories_impl/menu_generation_repository_impl
 // Data Sources
 import 'package:smartmeal/data/datasources/local/auth_local_datasource.dart';
 import 'package:smartmeal/data/datasources/local/shopping_local_datasource.dart';
+import 'package:smartmeal/data/datasources/local/weekly_menu_local_datasource.dart';
+import 'package:smartmeal/data/datasources/local/faq_local_datasource.dart';
 import 'package:smartmeal/data/datasources/remote/firebase_auth_datasource.dart';
 import 'package:smartmeal/data/datasources/remote/firestore_datasource.dart';
 import 'package:smartmeal/data/datasources/remote/menu_datasource.dart';
@@ -95,6 +97,8 @@ Future<void> setupServiceLocator() async {
   // ===== DATA SOURCES =====
   sl.registerLazySingleton(() => AuthLocalDataSource());
   sl.registerLazySingleton(() => ShoppingLocalDatasource(sl()));
+  sl.registerLazySingleton(() => WeeklyMenuLocalDatasource(sl()));
+  sl.registerLazySingleton(() => FAQLocalDatasource(sl()));
   sl.registerLazySingleton(() => FirebaseAuthDataSource(auth: sl()));
   sl.registerLazySingleton(() => FirestoreDataSource(firestore: sl()));
   sl.registerLazySingleton(() => MenuDataSource(firestore: sl(), auth: sl()));
@@ -166,7 +170,7 @@ Future<void> setupServiceLocator() async {
   );
 
   sl.registerLazySingleton<WeeklyMenuRepository>(
-    () => WeeklyMenuRepositoryImpl(sl(), sl()),
+    () => WeeklyMenuRepositoryImpl(sl(), sl(), sl()),
   );
 
   sl.registerLazySingleton<SupportMessageRepository>(

@@ -5,14 +5,16 @@ import 'package:smartmeal/domain/entities/recipe.dart';
 import 'package:smartmeal/domain/repositories/weekly_menu_repository.dart';
 import 'package:smartmeal/domain/repositories/recipe_repository.dart';
 import 'package:smartmeal/data/models/weekly_menu_model.dart';
+import 'package:smartmeal/data/datasources/local/weekly_menu_local_datasource.dart';
 import 'package:smartmeal/data/mappers/weekly_menu_mapper.dart';
 
 class WeeklyMenuRepositoryImpl implements WeeklyMenuRepository {
   final FirebaseFirestore _firestore;
   final RecipeRepository _recipeRepository;
+  final WeeklyMenuLocalDatasource _localDS;
   final FirebaseAuth _auth;
 
-  WeeklyMenuRepositoryImpl(this._firestore, this._recipeRepository, {FirebaseAuth? auth})
+  WeeklyMenuRepositoryImpl(this._firestore, this._recipeRepository, this._localDS, {FirebaseAuth? auth})
       : _auth = auth ?? FirebaseAuth.instance;
 
   CollectionReference<Map<String, dynamic>> _userMenusRef(String userId) =>
@@ -96,9 +98,16 @@ class WeeklyMenuRepositoryImpl implements WeeklyMenuRepository {
         .limit(1)
         .get();
 
-    if (snapshot.docs.isEmpty) return null;
+    if (snapshot.docs.isEmpty) {
+      // Fallback a caché local
+      final cached = await _localDS.getLatest();
+      if (cached == null) return null;
+      return await WeeklyMenuMapper.toEntity(cached, (id) => _getRecipeById(userId, id));
+    }
 
     final model = WeeklyMenuModel.fromFirestore(snapshot.docs.first);
+    // Guardar en caché local
+    await _localDS.saveLatest(model);
     return await WeeklyMenuMapper.toEntity(model, (id) => _getRecipeById(userId, id));
   }
 

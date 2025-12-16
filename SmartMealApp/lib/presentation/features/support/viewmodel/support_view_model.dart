@@ -12,10 +12,12 @@ import 'package:smartmeal/data/mappers/faq_mapper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smartmeal/domain/value_objects/support_message_content.dart';
 import 'package:smartmeal/domain/value_objects/support_category.dart';
+import 'package:smartmeal/data/datasources/local/faq_local_datasource.dart';
 
 class SupportViewModel extends ChangeNotifier {
   final GetSupportMessagesUseCase? getSupportMessagesUseCase;
   final SupportMessageRepository? supportMessageRepository;
+  final FAQLocalDatasource? faqLocalDatasource;
 
   List<SupportMessage> _messages = [];
   List<SupportMessage> get messages => _messages;
@@ -33,7 +35,11 @@ class SupportViewModel extends ChangeNotifier {
   String? historyError;
   bool success = false;
 
-  SupportViewModel({this.getSupportMessagesUseCase, this.supportMessageRepository});
+  SupportViewModel({
+    this.getSupportMessagesUseCase, 
+    this.supportMessageRepository,
+    this.faqLocalDatasource,
+  });
 
   // Obtén el userId del usuario autenticado
   String get userId {
@@ -134,20 +140,59 @@ class SupportViewModel extends ChangeNotifier {
 
   Future<void> loadFAQs(String locale) async {
     try {
+      // 1. Intenta cargar desde caché local
+      if (faqLocalDatasource != null) {
+        final cachedFAQs = await faqLocalDatasource!.getLatest(locale);
+        if (cachedFAQs != null && cachedFAQs.isNotEmpty) {
+          debugPrint('Cargando FAQs desde caché local ($locale)');
+          _faqs = cachedFAQs
+              .map((model) => FAQMapper.toEntity(model, locale))
+              .toList();
+          notifyListeners();
+          return;
+        }
+      }
+
+      // 2. Si no hay caché, carga desde Firestore
+      debugPrint('Cargando FAQs desde Firestore ($locale)');
       final query = await FirebaseFirestore.instance
           .collection('faqs')
           .orderBy('order')
           .get();
-    
-      _faqs = query.docs
-          .map((doc) => FAQMapper.toEntity(
-                FAQModel.fromMap(doc.data(), doc.id),
-                locale,
-              ))
+      
+      final faqModels = query.docs
+          .map((doc) => FAQModel.fromMap(doc.data(), doc.id))
+          .toList();
+
+      // 3. Guarda en caché local
+      if (faqLocalDatasource != null && faqModels.isNotEmpty) {
+        await faqLocalDatasource!.saveLatest(faqModels, locale);
+      }
+
+      // 4. Convierte a entidades y notifica
+      _faqs = faqModels
+          .map((model) => FAQMapper.toEntity(model, locale))
           .toList();
       notifyListeners();
     } catch (e) {
       debugPrint('Error al cargar FAQs: $e');
+
+      // 5. Fallback: intenta caché local si Firestore falla
+      if (faqLocalDatasource != null) {
+        final cachedFAQs = await faqLocalDatasource!.getLatest(locale);
+        if (cachedFAQs != null && cachedFAQs.isNotEmpty) {
+          debugPrint('Cargando FAQs desde caché de fallback ($locale)');
+          _faqs = cachedFAQs
+              .map((model) => FAQMapper.toEntity(model, locale))
+              .toList();
+          notifyListeners();
+          return;
+        }
+      }
+
+      // 6. Si todo falla, deja lista vacía
+      _faqs = [];
+      notifyListeners();
     }
   }
 
