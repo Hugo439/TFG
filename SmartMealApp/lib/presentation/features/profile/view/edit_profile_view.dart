@@ -3,12 +3,14 @@ import 'package:provider/provider.dart';
 import 'package:smartmeal/core/di/service_locator.dart';
 import 'package:smartmeal/domain/entities/user_profile.dart';
 import 'package:smartmeal/domain/usecases/profile/update_user_profile_usecase.dart';
+import 'package:smartmeal/domain/usecases/profile/upload_profile_photo_usecase.dart';
 import 'package:smartmeal/presentation/features/profile/viewmodel/edit_profile_view_model.dart';
 import 'package:smartmeal/presentation/widgets/inputs/filled_text_field.dart';
 import 'package:smartmeal/presentation/widgets/buttons/primary_button.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
 import 'package:smartmeal/presentation/widgets/inputs/age_field.dart';
 import 'package:smartmeal/presentation/widgets/inputs/gender_dropdown.dart';
+import 'package:image_picker/image_picker.dart';
 
 class EditProfileView extends StatelessWidget {
   final UserProfile profile;
@@ -20,6 +22,7 @@ class EditProfileView extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) => EditProfileViewModel(
         sl<UpdateUserProfileUseCase>(),
+        sl<UploadProfilePhotoUseCase>(),
         profile,
       ),
       child: const _EditProfileContent(),
@@ -84,40 +87,74 @@ class _EditProfileContent extends StatelessWidget {
           children: [
             // Avatar section
             Center(
-              child: Stack(
-                children: [
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundColor: colorScheme.primary,
-                    child: Text(
-                      vm.displayName.isNotEmpty
-                          ? vm.displayName[0].toUpperCase()
-                          : '?',
-                      style: TextStyle(
-                        fontSize: 40,
-                        color: colorScheme.onPrimary,
-                        fontWeight: FontWeight.bold,
+              child: GestureDetector(
+                onTap: () async {
+                  final picker = ImagePicker();
+                  final picked = await picker.pickImage(source: ImageSource.gallery);
+                  if (picked != null && context.mounted) {
+                    final success = await vm.uploadPhoto(picked.path);
+                    if (success && context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(l10n.editProfilePhotoUpdated)),
+                      );
+                    } else if (vm.photoError != null && context.mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(vm.photoError!)),
+                      );
+                    }
+                  }
+                },
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    CircleAvatar(
+                      radius: 50,
+                      backgroundColor: colorScheme.primary,
+                      backgroundImage: vm.photoUrl != null ? NetworkImage(vm.photoUrl!) : null,
+                      child: vm.photoUrl == null
+                          ? Text(
+                              vm.displayName.isNotEmpty
+                                  ? vm.displayName[0].toUpperCase()
+                                  : '?',
+                              style: TextStyle(
+                                fontSize: 40,
+                                color: colorScheme.onPrimary,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )
+                          : null,
+                    ),
+                    if (vm.uploadingPhoto)
+                      Container(
+                        width: 100,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          color: Colors.black38,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Center(
+                          child: CircularProgressIndicator(strokeWidth: 3),
+                        ),
+                      ),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: colorScheme.primary,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: colorScheme.surface, width: 2),
+                        ),
+                        child: Icon(
+                          Icons.camera_alt,
+                          size: 20,
+                          color: colorScheme.onPrimary,
+                        ),
                       ),
                     ),
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    right: 0,
-                    child: Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: BoxDecoration(
-                        color: colorScheme.primary,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: colorScheme.surface, width: 2),
-                      ),
-                      child: Icon(
-                        Icons.camera_alt,
-                        size: 20,
-                        color: colorScheme.onPrimary,
-                      ),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 32),

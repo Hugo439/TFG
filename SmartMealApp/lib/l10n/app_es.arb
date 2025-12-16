@@ -360,7 +360,7 @@
   
   "shoppingTitle": "Lista de la Compra",
   "shoppingSubtitle": "Productos",
-  "shoppingItemsCount": "{count, plural, =0{Sin productos} one{# producto} other{# productos}}",
+  "shoppingItemsCount": "{count, plural, =0{Sin productos} one{{count} producto} other{{count} productos}}",
   "@shoppingItemsCount": {
     "description": "Número de productos en la lista de la compra",
     "placeholders": {
@@ -373,6 +373,7 @@
   "shoppingGenerateButton": "Generar",
   "shoppingGeneratedFromMenus": "Lista generada desde menús",
   "shoppingEmptyTitle": "Lista vacía",
+  "editProfilePhotoUpdated": "Foto de perfil actualizada",
   "shoppingEmptySubtitle": "Añade productos o genera desde menús",
   "shoppingTotalLabel": "Total Estimado",
   "shoppingSelectedCount": "{checked}/{total} productos",

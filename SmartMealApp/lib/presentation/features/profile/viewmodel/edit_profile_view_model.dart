@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:smartmeal/domain/entities/user_profile.dart';
 import 'package:smartmeal/domain/usecases/profile/update_user_profile_usecase.dart';
+import 'package:smartmeal/domain/usecases/profile/upload_profile_photo_usecase.dart';
 import 'package:smartmeal/domain/value_objects/allergies.dart';
 import 'package:smartmeal/domain/value_objects/display_name.dart';
 import 'package:smartmeal/domain/value_objects/goal.dart';
@@ -47,6 +48,7 @@ class EditProfileState {
 
 class EditProfileViewModel extends ChangeNotifier {
   final UpdateUserProfileUseCase _updateProfile;
+  final UploadProfilePhotoUseCase _uploadProfilePhoto;
   final UserProfile initialProfile;
 
   EditProfileState _state = const EditProfileState();
@@ -61,8 +63,17 @@ class EditProfileViewModel extends ChangeNotifier {
   late String allergies;
   late String age;
   late String gender;
+  String? photoUrl;
+  bool _uploadingPhoto = false;
+  String? photoError;
 
-  EditProfileViewModel(this._updateProfile, this.initialProfile) {
+  bool get uploadingPhoto => _uploadingPhoto;
+
+  EditProfileViewModel(
+    this._updateProfile,
+    this._uploadProfilePhoto,
+    this.initialProfile,
+  ) {
     // Inicializar con los valores actuales del perfil
     displayName = initialProfile.displayName.value;
     phone = initialProfile.phone?.value ?? '';
@@ -72,6 +83,7 @@ class EditProfileViewModel extends ChangeNotifier {
     allergies = initialProfile.allergies?.value ?? '';
     age = initialProfile.age?.value.toString() ?? '';
     gender = initialProfile.gender?.value ?? '';
+    photoUrl = initialProfile.photoUrl;
   }
 
   void setDisplayName(String value) {
@@ -177,7 +189,7 @@ class EditProfileViewModel extends ChangeNotifier {
         uid: initialProfile.uid,
         displayName: displayNameVO,
         email: initialProfile.email,
-        photoUrl: initialProfile.photoUrl,
+        photoUrl: photoUrl,
         phone: phoneVO,
         height: heightVO,
         weight: weightVO,
@@ -204,6 +216,27 @@ class EditProfileViewModel extends ChangeNotifier {
         errorCode: EditProfileErrorCode.generic,
         errorMessage: e.toString(),
       ));
+      return false;
+    }
+  }
+
+  Future<bool> uploadPhoto(String filePath) async {
+    _uploadingPhoto = true;
+    photoError = null;
+    notifyListeners();
+
+    try {
+      final url = await _uploadProfilePhoto(
+        UploadProfilePhotoParams(filePath: filePath, userId: initialProfile.uid),
+      );
+      photoUrl = url;
+      _uploadingPhoto = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      photoError = e.toString();
+      _uploadingPhoto = false;
+      notifyListeners();
       return false;
     }
   }

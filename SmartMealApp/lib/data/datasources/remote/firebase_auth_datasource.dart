@@ -49,4 +49,10 @@ class FirebaseAuthDataSource {
     if (user == null) throw Exception('Usuario no autenticado');
     await user.updateDisplayName(displayName);
   }
+
+  Future<void> updatePhotoURL(String photoUrl) async {
+    final user = _auth.currentUser;
+    if (user == null) throw Exception('Usuario no autenticado');
+    await user.updatePhotoURL(photoUrl);
+  }
 }

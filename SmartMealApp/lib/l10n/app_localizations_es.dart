@@ -893,8 +893,8 @@ class AppLocalizationsEs extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '# productos',
-      one: '# producto',
+      other: '$count productos',
+      one: '$count producto',
       zero: 'Sin productos',
     );
     return '$_temp0';
@@ -911,6 +911,9 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get shoppingEmptyTitle => 'Lista vacía';
+
+  @override
+  String get editProfilePhotoUpdated => 'Foto de perfil actualizada';
 
   @override
   String get shoppingEmptySubtitle => 'Añade productos o genera desde menús';

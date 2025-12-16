@@ -1811,7 +1811,7 @@ abstract class AppLocalizations {
   /// Número de productos en la lista de la compra
   ///
   /// In es, this message translates to:
-  /// **'{count, plural, =0{Sin productos} one{# producto} other{# productos}}'**
+  /// **'{count, plural, =0{Sin productos} one{{count} producto} other{{count} productos}}'**
   String shoppingItemsCount(int count);
 
   /// No description provided for @shoppingAddButton.
@@ -1837,6 +1837,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Lista vacía'**
   String get shoppingEmptyTitle;
+
+  /// No description provided for @editProfilePhotoUpdated.
+  ///
+  /// In es, this message translates to:
+  /// **'Foto de perfil actualizada'**
+  String get editProfilePhotoUpdated;
 
   /// No description provided for @shoppingEmptySubtitle.
   ///

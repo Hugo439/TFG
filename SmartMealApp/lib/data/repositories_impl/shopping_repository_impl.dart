@@ -128,6 +128,8 @@ class ShoppingRepositoryImpl implements ShoppingRepository {
   Future<void> addShoppingItem(ShoppingItem item) async {
     final model = ShoppingItemMapper.toModel(item);
     await dataSource.addShoppingItem(item.id, model.toFirestoreCreate());
+    // Invalida caché porque se añadió un nuevo item
+    await localDatasource.clearCache();
   }
 
   @override
@@ -138,6 +140,8 @@ class ShoppingRepositoryImpl implements ShoppingRepository {
             ..['id'] = item.id)
         .toList();
     await dataSource.addShoppingItemsBatch(models);
+    // Invalida caché porque se añadieron items en batch
+    await localDatasource.clearCache();
   }
 
   @override

@@ -370,7 +370,7 @@
 
   "shoppingTitle": "Shopping List",
   "shoppingSubtitle": "Items",
-  "shoppingItemsCount": "{count, plural, =0{No items} one{# item} other{# items}}",
+  "shoppingItemsCount": "{count, plural, =0{No items} one{{count} item} other{{count} items}}",
   "@shoppingItemsCount": {
     "description": "Number of items in the shopping list",
     "placeholders": {
@@ -383,6 +383,7 @@
   "shoppingGenerateButton": "Generate",
   "shoppingGeneratedFromMenus": "List generated from menus",
   "shoppingEmptyTitle": "Empty list",
+  "editProfilePhotoUpdated": "Profile photo updated",
   "shoppingEmptySubtitle": "Add items or generate from menus",
   "shoppingTotalLabel": "Estimated Total",
   "shoppingSelectedCount": "{checked}/{total} items",

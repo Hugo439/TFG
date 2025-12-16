@@ -60,6 +60,7 @@ import 'package:smartmeal/domain/usecases/user/get_current_user_usecase.dart';
 // Use Cases - Profile
 import 'package:smartmeal/domain/usecases/user/get_user_profile_usecase.dart';
 import 'package:smartmeal/domain/usecases/profile/update_user_profile_usecase.dart';
+import 'package:smartmeal/domain/usecases/profile/upload_profile_photo_usecase.dart';
 import 'package:smartmeal/domain/usecases/auth/delete_account_usecase.dart';
 
 // Use Cases - Shopping
@@ -193,6 +194,7 @@ Future<void> setupServiceLocator() async {
   // ===== USE CASES - PROFILE =====
   sl.registerLazySingleton(() => GetUserProfileUseCase(sl()));
   sl.registerLazySingleton(() => UpdateUserProfileUseCase(sl()));
+  sl.registerLazySingleton(() => UploadProfilePhotoUseCase(sl()));
   sl.registerLazySingleton(() => DeleteAccountUseCase(sl()));
 
   // ===== USE CASES - MENU =====

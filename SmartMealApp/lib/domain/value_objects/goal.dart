@@ -1,5 +1,4 @@
 import 'package:smartmeal/domain/value_objects/value_object.dart';
-import 'package:smartmeal/core/constants/app_constants.dart';
 
 enum GoalType {
   loseWeight('Perder peso'),

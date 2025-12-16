@@ -887,8 +887,8 @@ class AppLocalizationsEn extends AppLocalizations {
     String _temp0 = intl.Intl.pluralLogic(
       count,
       locale: localeName,
-      other: '# items',
-      one: '# item',
+      other: '$count items',
+      one: '$count item',
       zero: 'No items',
     );
     return '$_temp0';
@@ -905,6 +905,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shoppingEmptyTitle => 'Empty list';
+
+  @override
+  String get editProfilePhotoUpdated => 'Profile photo updated';
 
   @override
   String get shoppingEmptySubtitle => 'Add items or generate from menus';
