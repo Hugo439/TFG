@@ -9,3 +9,5 @@ abstract class WeeklyMenuRepository {
   Future<WeeklyMenu?> getCurrentWeekMenu(String userId);
   Future<List<WeeklyMenu>> getWeeklyMenus(String userId);
 }
+
+//TODO: mirar si se usa, yo creo  que no

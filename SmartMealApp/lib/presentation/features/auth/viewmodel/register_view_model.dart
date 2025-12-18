@@ -1,12 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:smartmeal/domain/usecases/auth/sign_up_usecase.dart';
 
-enum RegisterErrorCode {
-  emailInUse,
-  invalidEmail,
-  weakPassword,
-  generic,
-}
+enum RegisterErrorCode { emailInUse, invalidEmail, weakPassword, generic }
 
 class RegisterViewModel extends ChangeNotifier {
   final SignUpUseCase _signUp;
@@ -57,17 +52,19 @@ class RegisterViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _signUp(SignUpParams(
-        email: email,
-        password: password,
-        displayName: displayName,
-        heightCm: heightCm,
-        weightKg: weightKg,
-        goal: goal,
-        allergies: allergies,
-        age: age,
-        gender: gender,
-      ));
+      await _signUp(
+        SignUpParams(
+          email: email,
+          password: password,
+          displayName: displayName,
+          heightCm: heightCm,
+          weightKg: weightKg,
+          goal: goal,
+          allergies: allergies,
+          age: age,
+          gender: gender,
+        ),
+      );
 
       _loading = false;
       notifyListeners();

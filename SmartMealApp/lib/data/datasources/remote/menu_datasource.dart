@@ -6,13 +6,11 @@ class MenuDataSource {
   final FirebaseFirestore _firestore;
   final FirebaseAuth _auth;
 
-  MenuDataSource({
-    FirebaseFirestore? firestore,
-    FirebaseAuth? auth,
-  })  : _firestore = firestore ?? FirebaseFirestore.instance,
-        _auth = auth ?? FirebaseAuth.instance;
+  MenuDataSource({FirebaseFirestore? firestore, FirebaseAuth? auth})
+    : _firestore = firestore ?? FirebaseFirestore.instance,
+      _auth = auth ?? FirebaseAuth.instance;
 
-//TODO: borrar este metodo, no me sirve  de nada que me coja todas las recetas de todos los menus del usuario
+  //TODO: borrar este metodo, no me sirve  de nada que me coja todas las recetas de todos los menus del usuario
   /// Obtiene todas las recetas de todos los menús semanales
   Future<List<Map<String, dynamic>>> getMenuItems() async {
     final user = _auth.currentUser;
@@ -89,7 +87,9 @@ class MenuDataSource {
           allRecipes.add(recipeData);
 
           if (kDebugMode) {
-            print('✅ Receta encontrada: ${recipeData['name']} (ingredientes: ${(recipeData['ingredients'] as List?)?.length ?? 0})');
+            print(
+              '✅ Receta encontrada: ${recipeData['name']} (ingredientes: ${(recipeData['ingredients'] as List?)?.length ?? 0})',
+            );
           }
         }
       }
@@ -120,10 +120,7 @@ class MenuDataSource {
 
     if (!doc.exists) return null;
 
-    return {
-      'id': doc.id,
-      ...doc.data()!,
-    };
+    return {'id': doc.id, ...doc.data()!};
   }
 
   Future<void> createMenuItem(String id, Map<String, dynamic> data) async {
@@ -239,7 +236,9 @@ class MenuDataSource {
         allRecipes.add(recipeData);
 
         if (kDebugMode) {
-          print('✅ Receta encontrada: ${recipeData['name']} (ingredientes: ${(recipeData['ingredients'] as List?)?.length ?? 0})');
+          print(
+            '✅ Receta encontrada: ${recipeData['name']} (ingredientes: ${(recipeData['ingredients'] as List?)?.length ?? 0})',
+          );
         }
       }
     }

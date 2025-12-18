@@ -10,16 +10,16 @@ class Height extends ValueObject<int> {
         'La altura debe ser mayor o igual a ${AppConstants.minHeightCm} cm',
       );
     }
-    
+
     if (value > AppConstants.maxHeightCm) {
       throw ArgumentError(
         'La altura debe ser menor o igual a ${AppConstants.maxHeightCm} cm',
       );
     }
-    
+
     return value;
   }
-  
+
   factory Height.fromString(String value) {
     final parsed = int.tryParse(value);
     if (parsed == null) {
@@ -27,8 +27,8 @@ class Height extends ValueObject<int> {
     }
     return Height(parsed);
   }
-  
+
   String get formatted => '$value cm';
-  
+
   double get meters => value / 100.0;
 }

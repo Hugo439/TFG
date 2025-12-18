@@ -31,7 +31,11 @@ class LoginView extends StatelessWidget {
         body: Center(
           child: SingleChildScrollView(
             padding: EdgeInsets.symmetric(
-              horizontal: width > 1000 ? 48 : width > 800 ? 32 : 16,
+              horizontal: width > 1000
+                  ? 48
+                  : width > 800
+                  ? 32
+                  : 16,
               vertical: 24,
             ),
             child: ConstrainedBox(

@@ -15,6 +15,14 @@ import 'package:smartmeal/presentation/features/shopping/view/add_shopping_item_
 import 'package:smartmeal/presentation/features/settings/view/settings_view.dart';
 import 'package:smartmeal/presentation/features/support/view/support_view.dart';
 import 'package:smartmeal/domain/entities/user_profile.dart';
+import 'package:smartmeal/presentation/features/statistics/view/statistics_view.dart';
+import 'package:smartmeal/presentation/features/settings/view/privacy_policy_view.dart';
+import 'package:smartmeal/presentation/features/settings/view/terms_conditions_view.dart';
+import 'package:smartmeal/presentation/features/statistics/viewmodel/statistics_view_model.dart';
+import 'package:smartmeal/core/di/service_locator.dart';
+import 'package:smartmeal/domain/usecases/user/get_current_user_usecase.dart';
+import 'package:smartmeal/domain/usecases/statistics/get_statistics_summary_usecase.dart';
+import 'package:smartmeal/domain/usecases/user/get_user_profile_usecase.dart';
 import 'package:smartmeal/domain/entities/shopping_item.dart';
 
 class Routes {
@@ -31,6 +39,9 @@ class Routes {
   static const String addShoppingItem = '/add-shopping-item';
   static const String settings = '/settings';
   static const String support = '/support';
+  static const String statistics = '/statistics';
+  static const String privacy = '/privacy';
+  static const String terms = '/terms';
 
   static Route<dynamic>? onGenerateRoute(RouteSettings routeSettings) {
     switch (routeSettings.name) {
@@ -38,7 +49,9 @@ class Routes {
         return MaterialPageRoute(builder: (_) => const SplashGate());
       case login:
         final email = routeSettings.arguments as String?;
-        return MaterialPageRoute(builder: (_) => LoginView(prefilledEmail: email));
+        return MaterialPageRoute(
+          builder: (_) => LoginView(prefilledEmail: email),
+        );
       case register:
         return MaterialPageRoute(builder: (_) => const RegisterView());
       case home:
@@ -47,7 +60,9 @@ class Routes {
         return MaterialPageRoute(builder: (_) => const ProfileView());
       case editProfile:
         final profile = routeSettings.arguments as UserProfile;
-        return MaterialPageRoute(builder: (_) => EditProfileView(profile: profile));
+        return MaterialPageRoute(
+          builder: (_) => EditProfileView(profile: profile),
+        );
       case menu:
         return MaterialPageRoute(builder: (_) => const MenuView());
       case generateMenu:
@@ -71,6 +86,23 @@ class Routes {
         return MaterialPageRoute(builder: (_) => const SettingsView());
       case support:
         return MaterialPageRoute(builder: (_) => const SupportView());
+      case privacy:
+        return MaterialPageRoute(builder: (_) => const PrivacyPolicyView());
+      case terms:
+        return MaterialPageRoute(
+          builder: (_) => const TermsAndConditionsView(),
+        );
+      case statistics:
+        return MaterialPageRoute(
+          builder: (_) => ChangeNotifierProvider(
+            create: (_) => StatisticsViewModel(
+              sl<GetCurrentUserUseCase>(),
+              sl<GetStatisticsSummaryUseCase>(),
+              sl<GetUserProfileUseCase>(),
+            ),
+            child: const StatisticsView(),
+          ),
+        );
       default:
         return null;
     }

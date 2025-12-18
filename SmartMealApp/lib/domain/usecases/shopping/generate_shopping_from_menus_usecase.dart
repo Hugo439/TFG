@@ -7,12 +7,14 @@ import 'package:smartmeal/domain/services/shopping/ingredient_aggregator.dart';
 import 'package:smartmeal/domain/services/shopping/ingredient_parser.dart';
 import 'package:smartmeal/domain/services/shopping/smart_category_helper.dart';
 import 'package:smartmeal/domain/services/shopping/smart_ingredient_normalizer.dart';
+import 'package:smartmeal/domain/services/shopping/cost_estimator.dart';
 import 'package:smartmeal/domain/entities/shopping_item.dart';
 import 'package:smartmeal/domain/value_objects/shopping_item_name.dart';
 import 'package:smartmeal/domain/value_objects/shopping_item_quantity.dart';
 import 'package:smartmeal/domain/value_objects/price.dart';
 
-class GenerateShoppingFromMenusUseCase implements UseCase<List<ShoppingItem>, NoParams> {
+class GenerateShoppingFromMenusUseCase
+    implements UseCase<List<ShoppingItem>, NoParams> {
   final MenuRepository menuRepository;
   final ShoppingRepository shoppingRepository;
   final IngredientParser parser;
@@ -20,6 +22,7 @@ class GenerateShoppingFromMenusUseCase implements UseCase<List<ShoppingItem>, No
   final PriceEstimator priceEstimator;
   final SmartCategoryHelper categoryHelper;
   final SmartIngredientNormalizer normalizer;
+  final CostEstimator costEstimator;
 
   GenerateShoppingFromMenusUseCase({
     required this.menuRepository,
@@ -29,19 +32,22 @@ class GenerateShoppingFromMenusUseCase implements UseCase<List<ShoppingItem>, No
     required this.priceEstimator,
     required this.categoryHelper,
     required this.normalizer,
+    required this.costEstimator,
   });
 
   @override
   Future<List<ShoppingItem>> call(NoParams params) async {
     final startTime = DateTime.now();
-    
+
     if (kDebugMode) {
-      print('🛒 [GenerateShoppingUseCase] Iniciando generación desde último menú...');
+      print(
+        '🛒 [GenerateShoppingUseCase] Iniciando generación desde último menú...',
+      );
     }
 
     try {
       final menus = await menuRepository.getLatestWeeklyMenu();
-      
+
       if (menus.isEmpty) {
         if (kDebugMode) {
           print('⚠️ [GenerateShoppingUseCase] No hay menús disponibles');
@@ -57,10 +63,13 @@ class GenerateShoppingFromMenusUseCase implements UseCase<List<ShoppingItem>, No
       );
       if (alreadyGenerated) {
         if (kDebugMode) {
-          print('⏭️ [GenerateShoppingUseCase] Menú ya está en la lista de compra; se omite generación');
+          print(
+            '⏭️ [GenerateShoppingUseCase] Menú ya está en la lista de compra; se omite generación',
+          );
         }
         throw MenuAlreadyGeneratedException(
-          message: 'Los ingredientes de este menú ya se han añadido a la lista de compra',
+          message:
+              'Los ingredientes de este menú ya se han añadido a la lista de compra',
         );
       }
 
@@ -80,38 +89,18 @@ class GenerateShoppingFromMenusUseCase implements UseCase<List<ShoppingItem>, No
 
       final aggList = aggregator.toList();
 
-      // 📦 PRE-CACHEAR precios por categoría (una lectura Firestore por categoría)
+      // 📦 PRE-CACHEAR precios por categoría usando CostEstimator
       final preCacheStart = DateTime.now();
-      final categories = <String>{};
-      for (final agg in aggList) {
-        final cat = categoryHelper.guessCategory(agg.name);
-        categories.add(cat.firestoreKey);
-      }
-
-      if (kDebugMode) {
-        print('📥 [GenerateShoppingUseCase] Pre-cacheando ${categories.length} categorías...');
-      }
-
-      // Precargar precios de categorías (máx 6 en paralelo)
-      const maxConcurrentPreloads = 6;
-      for (int i = 0; i < categories.length; i += maxConcurrentPreloads) {
-        final chunk = categories.toList().sublist(
-          i,
-          i + maxConcurrentPreloads > categories.length
-              ? categories.length
-              : i + maxConcurrentPreloads,
-        );
-        
-        final futures = chunk.map((catKey) async {
-          await priceEstimator.preloadCategoryPrices(catKey);
-        }).toList();
-
-        await Future.wait(futures);
-      }
+      await costEstimator.preloadCategoriesForAggregated(
+        aggList,
+        maxConcurrent: 6,
+      );
 
       final preCacheDuration = DateTime.now().difference(preCacheStart);
       if (kDebugMode) {
-        print('✅ [GenerateShoppingUseCase] Caché de precios listo (${preCacheDuration.inMilliseconds}ms)');
+        print(
+          '✅ [GenerateShoppingUseCase] Caché de precios listo (${preCacheDuration.inMilliseconds}ms)',
+        );
       }
 
       final List<ShoppingItem> shoppingItems = [];
@@ -137,7 +126,8 @@ class GenerateShoppingFromMenusUseCase implements UseCase<List<ShoppingItem>, No
 
           try {
             final item = ShoppingItem(
-              id: DateTime.now().millisecondsSinceEpoch.toString() +
+              id:
+                  DateTime.now().millisecondsSinceEpoch.toString() +
                   agg.name.hashCode.toString(),
               name: ShoppingItemName(agg.name),
               quantity: ShoppingItemQuantity(agg.quantityLabel),
@@ -150,7 +140,8 @@ class GenerateShoppingFromMenusUseCase implements UseCase<List<ShoppingItem>, No
 
             if (kDebugMode) {
               print(
-                  '✅ Item: ${item.name.value} - ${item.quantity.value} - €${estimatedPrice.toStringAsFixed(2)} [${category.displayName}]');
+                '✅ Item: ${item.name.value} - ${item.quantity.value} - €${estimatedPrice.toStringAsFixed(2)} [${category.displayName}]',
+              );
             }
             return item;
           } catch (e) {
@@ -167,7 +158,9 @@ class GenerateShoppingFromMenusUseCase implements UseCase<List<ShoppingItem>, No
 
       final estimationDuration = DateTime.now().difference(estimationStart);
       if (kDebugMode) {
-        print('✅ [GenerateShoppingUseCase] Estimación completada (${estimationDuration.inMilliseconds}ms)');
+        print(
+          '✅ [GenerateShoppingUseCase] Estimación completada (${estimationDuration.inMilliseconds}ms)',
+        );
       }
 
       // 📦 Guardar todos los items en una sola transacción (batch write)
@@ -178,7 +171,9 @@ class GenerateShoppingFromMenusUseCase implements UseCase<List<ShoppingItem>, No
 
       final writeDuration = DateTime.now().difference(writeStart);
       if (kDebugMode) {
-        print('✅ [GenerateShoppingUseCase] Batch write completado (${writeDuration.inMilliseconds}ms)');
+        print(
+          '✅ [GenerateShoppingUseCase] Batch write completado (${writeDuration.inMilliseconds}ms)',
+        );
       }
 
       final totalDuration = DateTime.now().difference(startTime);
@@ -188,7 +183,9 @@ class GenerateShoppingFromMenusUseCase implements UseCase<List<ShoppingItem>, No
         print('   └─ Pre-caché: ${preCacheDuration.inMilliseconds}ms');
         print('   └─ Estimación: ${estimationDuration.inMilliseconds}ms');
         print('   └─ Escritura: ${writeDuration.inMilliseconds}ms');
-        print('   └─ ⏱️  TIEMPO TOTAL: ${totalDuration.inSeconds}s ${totalDuration.inMilliseconds % 1000}ms');
+        print(
+          '   └─ ⏱️  TIEMPO TOTAL: ${totalDuration.inSeconds}s ${totalDuration.inMilliseconds % 1000}ms',
+        );
       }
 
       return shoppingItems;

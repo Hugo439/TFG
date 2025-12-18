@@ -16,7 +16,8 @@ class GenerateWeeklyMenuParams {
   });
 }
 
-class GenerateWeeklyMenuUseCase implements UseCase<WeeklyMenu, GenerateWeeklyMenuParams> {
+class GenerateWeeklyMenuUseCase
+    implements UseCase<WeeklyMenu, GenerateWeeklyMenuParams> {
   final MenuGenerationRepository _repository;
 
   GenerateWeeklyMenuUseCase(this._repository);

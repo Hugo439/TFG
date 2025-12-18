@@ -12,7 +12,7 @@ class PersonalInfoSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = context.l10n;
-    
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -77,7 +77,8 @@ class PersonalInfoSection extends StatelessWidget {
           const SizedBox(height: 12),
           _InfoRow(
             label: l10n.profileBmiLabel,
-            value: '${profile.bmi.toStringAsFixed(1)} - ${_getLocalizedBmiCategory(context, profile.bmiCategory)}',
+            value:
+                '${profile.bmi.toStringAsFixed(1)} - ${_getLocalizedBmiCategory(context, profile.bmiCategory)}',
             icon: Icons.health_and_safety_outlined,
           ),
         ],
@@ -100,7 +101,7 @@ class _InfoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Row(
       children: [
         Icon(icon, color: colorScheme.primary, size: 20),
@@ -112,7 +113,7 @@ class _InfoRow extends StatelessWidget {
               Text(
                 label,
                 style: TextStyle(
-                  color: colorScheme.onSurface.withOpacity(0.6),
+                  color: colorScheme.onSurface.withValues(alpha: 0.6),
                   fontSize: 12,
                 ),
               ),

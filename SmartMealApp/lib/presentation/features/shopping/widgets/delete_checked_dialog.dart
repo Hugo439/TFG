@@ -4,10 +4,7 @@ import 'package:smartmeal/l10n/l10n_ext.dart';
 class DeleteCheckedDialog extends StatelessWidget {
   final VoidCallback onConfirm;
 
-  const DeleteCheckedDialog({
-    super.key,
-    required this.onConfirm,
-  });
+  const DeleteCheckedDialog({super.key, required this.onConfirm});
 
   @override
   Widget build(BuildContext context) {

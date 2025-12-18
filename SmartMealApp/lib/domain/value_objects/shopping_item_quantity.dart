@@ -5,11 +5,11 @@ class ShoppingItemQuantity extends ValueObject<String> {
 
   static String _validate(String value) {
     final trimmed = value.trim();
-    
+
     if (trimmed.isEmpty) {
       throw ArgumentError('La cantidad no puede estar vacía');
     }
-    
+
     return trimmed;
   }
 }

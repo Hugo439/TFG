@@ -142,6 +142,39 @@
   "settingsLegalSection": "Legal",
   "settingsPrivacyPolicy": "Privacy Policy",
   "settingsTermsAndConditions": "Terms and Conditions",
+
+  "privacyHeading": "SmartMeal Privacy Policy",
+  "privacyUpdated": "Last updated: {date}",
+  "privacySection1Title": "1. Information we collect",
+  "privacySection1Body": "We collect basic account data (email) and usage data needed to run the app (e.g., saved menus, shopping list, and preferences).",
+  "privacySection2Title": "2. How we use your information",
+  "privacySection2Body": "We use your data to provide SmartMeal features: generate menus, compute statistics, and send notifications if you allow it.",
+  "privacySection3Title": "3. Storage and security",
+  "privacySection3Body": "We store information in Firebase. We take reasonable measures to protect your data, but no system is 100% secure.",
+  "privacySection4Title": "4. Data sharing",
+  "privacySection4Body": "We do not sell your data. We may share information with service providers strictly necessary to operate the app (e.g., Firebase).",
+  "privacySection5Title": "5. Your rights",
+  "privacySection5Body": "You can request access, rectification, or deletion of your account from Settings. For other requests, contact support.",
+  "privacySection6Title": "6. Contact",
+  "privacySection6Body": "If you have questions about this policy, use the Support section in the app.",
+
+  "termsHeading": "SmartMeal Terms and Conditions",
+  "termsUpdated": "Last updated: {date}",
+  "termsSection1Title": "1. Acceptance of terms",
+  "termsSection1Body": "By using SmartMeal you accept these terms. If you disagree, please do not use the app.",
+  "termsSection2Title": "2. Use of the application",
+  "termsSection2Body": "SmartMeal is intended for personal use. We do not guarantee nutritional or medical outcomes; use it as support, not professional advice.",
+  "termsSection3Title": "3. Generated content",
+  "termsSection3Body": "The content (menus, recipes) is generated for your personal use. We are not responsible for misuse.",
+  "termsSection4Title": "4. Limitation of liability",
+  "termsSection4Body": "SmartMeal is provided “as-is”. We are not liable for indirect or consequential damages arising from the use of the app.",
+  "termsSection5Title": "5. Changes to the terms",
+  "termsSection5Body": "We may update these terms. We will notify you of relevant changes and the update date.",
+
+  "statsGoalTitle": "Calorie goal",
+  "statsGoalRatio": "{current} kcal / {target} kcal",
+  "statsGoalPercent": "{percent}% of the goal",
+  "statsGoalNoData": "Complete your profile to calculate your calorie goal.",
   "settingsAccountSection": "Account",
   "settingsSignOut": "Sign Out",
   "settingsSignOutDialogTitle": "Sign Out",
@@ -435,6 +468,15 @@
     "description": "Shows the current price of the product",
     "placeholders": {
       "price": {
+        "type": "String"
+      }
+    }
+  },
+  "shoppingEditPriceUnitInfo": "This price applies per {unit}",
+  "@shoppingEditPriceUnitInfo": {
+    "description": "Indicates the unit of measurement for the price",
+    "placeholders": {
+      "unit": {
         "type": "String"
       }
     }

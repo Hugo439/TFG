@@ -67,10 +67,10 @@ class _RegisterFormState extends State<RegisterForm> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            l10n.registerUsernameLabel, 
+            l10n.registerUsernameLabel,
             style: TextStyle(
-              color: colorScheme.onSurface, 
-              fontSize: 14, 
+              color: colorScheme.onSurface,
+              fontSize: 14,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -78,14 +78,16 @@ class _RegisterFormState extends State<RegisterForm> {
           FilledTextField(
             hintText: l10n.registerUsernameHint,
             controller: _nameCtrl,
-            validator: (v) => (v == null || v.trim().isEmpty) ? l10n.registerFieldRequired : null,
+            validator: (v) => (v == null || v.trim().isEmpty)
+                ? l10n.registerFieldRequired
+                : null,
           ),
           const SizedBox(height: 16),
           Text(
-            l10n.registerEmailLabel, 
+            l10n.registerEmailLabel,
             style: TextStyle(
-              color: colorScheme.onSurface, 
-              fontSize: 14, 
+              color: colorScheme.onSurface,
+              fontSize: 14,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -95,17 +97,19 @@ class _RegisterFormState extends State<RegisterForm> {
             controller: _emailCtrl,
             keyboardType: TextInputType.emailAddress,
             validator: (v) {
-              if (v == null || v.trim().isEmpty) return l10n.registerFieldRequired;
+              if (v == null || v.trim().isEmpty) {
+                return l10n.registerFieldRequired;
+              }
               if (!v.contains('@')) return l10n.registerEmailInvalid;
               return null;
             },
           ),
           const SizedBox(height: 16),
           Text(
-            l10n.registerPasswordLabel, 
+            l10n.registerPasswordLabel,
             style: TextStyle(
-              color: colorScheme.onSurface, 
-              fontSize: 14, 
+              color: colorScheme.onSurface,
+              fontSize: 14,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -116,26 +120,36 @@ class _RegisterFormState extends State<RegisterForm> {
             obscureText: vm.obscurePassword,
             suffix: IconButton(
               icon: Icon(
-                vm.obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                vm.obscurePassword
+                    ? Icons.visibility_off_outlined
+                    : Icons.visibility_outlined,
                 color: colorScheme.primary,
               ),
-              onPressed: context.read<RegisterViewModel>().togglePasswordVisibility,
+              onPressed: context
+                  .read<RegisterViewModel>()
+                  .togglePasswordVisibility,
             ),
             validator: (v) {
               if (v == null || v.isEmpty) return l10n.registerFieldRequired;
               if (v.length < 8) return l10n.registerPasswordMinLength;
-              if (!RegExp(r'[A-Z]').hasMatch(v)) return l10n.registerPasswordUppercase;
-              if (!RegExp(r'[a-z]').hasMatch(v)) return l10n.registerPasswordLowercase;
-              if (!RegExp(r'[0-9]').hasMatch(v)) return l10n.registerPasswordNumber;
+              if (!RegExp(r'[A-Z]').hasMatch(v)) {
+                return l10n.registerPasswordUppercase;
+              }
+              if (!RegExp(r'[a-z]').hasMatch(v)) {
+                return l10n.registerPasswordLowercase;
+              }
+              if (!RegExp(r'[0-9]').hasMatch(v)) {
+                return l10n.registerPasswordNumber;
+              }
               return null;
             },
           ),
           const SizedBox(height: 16),
           Text(
-            l10n.registerConfirmPasswordLabel, 
+            l10n.registerConfirmPasswordLabel,
             style: TextStyle(
-              color: colorScheme.onSurface, 
-              fontSize: 14, 
+              color: colorScheme.onSurface,
+              fontSize: 14,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -146,10 +160,14 @@ class _RegisterFormState extends State<RegisterForm> {
             obscureText: vm.obscureConfirmPassword,
             suffix: IconButton(
               icon: Icon(
-                vm.obscureConfirmPassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                vm.obscureConfirmPassword
+                    ? Icons.visibility_off_outlined
+                    : Icons.visibility_outlined,
                 color: colorScheme.primary,
               ),
-              onPressed: context.read<RegisterViewModel>().toggleConfirmPasswordVisibility,
+              onPressed: context
+                  .read<RegisterViewModel>()
+                  .toggleConfirmPasswordVisibility,
             ),
             validator: (v) {
               if (v == null || v.isEmpty) return l10n.registerFieldRequired;
@@ -165,10 +183,10 @@ class _RegisterFormState extends State<RegisterForm> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      l10n.registerHeightLabel, 
+                      l10n.registerHeightLabel,
                       style: TextStyle(
-                        color: colorScheme.onSurface, 
-                        fontSize: 14, 
+                        color: colorScheme.onSurface,
+                        fontSize: 14,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -178,8 +196,12 @@ class _RegisterFormState extends State<RegisterForm> {
                       controller: _heightCtrl,
                       keyboardType: TextInputType.number,
                       validator: (v) {
-                        if (v == null || v.isEmpty) return l10n.registerFieldRequiredShort;
-                        if (int.tryParse(v) == null) return l10n.registerInvalidNumber;
+                        if (v == null || v.isEmpty) {
+                          return l10n.registerFieldRequiredShort;
+                        }
+                        if (int.tryParse(v) == null) {
+                          return l10n.registerInvalidNumber;
+                        }
                         return null;
                       },
                     ),
@@ -192,10 +214,10 @@ class _RegisterFormState extends State<RegisterForm> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      l10n.registerWeightLabel, 
+                      l10n.registerWeightLabel,
                       style: TextStyle(
-                        color: colorScheme.onSurface, 
-                        fontSize: 14, 
+                        color: colorScheme.onSurface,
+                        fontSize: 14,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -203,10 +225,16 @@ class _RegisterFormState extends State<RegisterForm> {
                     FilledTextField(
                       hintText: l10n.registerWeightHint,
                       controller: _weightCtrl,
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
                       validator: (v) {
-                        if (v == null || v.isEmpty) return l10n.registerFieldRequiredShort;
-                        if (double.tryParse(v) == null) return l10n.registerInvalidNumber;
+                        if (v == null || v.isEmpty) {
+                          return l10n.registerFieldRequiredShort;
+                        }
+                        if (double.tryParse(v) == null) {
+                          return l10n.registerInvalidNumber;
+                        }
                         return null;
                       },
                     ),
@@ -218,12 +246,7 @@ class _RegisterFormState extends State<RegisterForm> {
           const SizedBox(height: 16),
           Row(
             children: [
-              Expanded(
-                child: AgeField(
-                  controller: _ageCtrl,
-                  isOptional: true,
-                ),
-              ),
+              Expanded(child: AgeField(controller: _ageCtrl, isOptional: true)),
               const SizedBox(width: 16),
               Expanded(
                 child: GenderDropdown(
@@ -241,10 +264,10 @@ class _RegisterFormState extends State<RegisterForm> {
           ),
           const SizedBox(height: 16),
           Text(
-            l10n.registerGoalLabel, 
+            l10n.registerGoalLabel,
             style: TextStyle(
-              color: colorScheme.onSurface, 
-              fontSize: 14, 
+              color: colorScheme.onSurface,
+              fontSize: 14,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -252,10 +275,10 @@ class _RegisterFormState extends State<RegisterForm> {
           _buildGoalSelector(vm, colorScheme, l10n),
           const SizedBox(height: 16),
           Text(
-            l10n.registerAllergiesLabel, 
+            l10n.registerAllergiesLabel,
             style: TextStyle(
-              color: colorScheme.onSurface, 
-              fontSize: 14, 
+              color: colorScheme.onSurface,
+              fontSize: 14,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -278,8 +301,13 @@ class _RegisterFormState extends State<RegisterForm> {
             isLoading: vm.isLoading,
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
-                final ageValue = _ageCtrl.text.trim().isEmpty ? null : int.tryParse(_ageCtrl.text);
-                final genderValue = _selectedGender.isEmpty ? null : _selectedGender;
+                final navigator = Navigator.of(context);
+                final ageValue = _ageCtrl.text.trim().isEmpty
+                    ? null
+                    : int.tryParse(_ageCtrl.text);
+                final genderValue = _selectedGender.isEmpty
+                    ? null
+                    : _selectedGender;
 
                 final success = await vm.signUp(
                   _nameCtrl.text.trim(),
@@ -288,12 +316,15 @@ class _RegisterFormState extends State<RegisterForm> {
                   int.parse(_heightCtrl.text),
                   double.parse(_weightCtrl.text),
                   vm.goal,
-                  _allergiesCtrl.text.trim().isEmpty ? null : _allergiesCtrl.text.trim(),
+                  _allergiesCtrl.text.trim().isEmpty
+                      ? null
+                      : _allergiesCtrl.text.trim(),
                   ageValue,
                   genderValue,
                 );
-                if (success && mounted) {
-                  Navigator.of(context).pushReplacementNamed(
+                if (!mounted) return;
+                if (success) {
+                  navigator.pushReplacementNamed(
                     Routes.login,
                     arguments: _emailCtrl.text.trim(),
                   );
@@ -306,13 +337,17 @@ class _RegisterFormState extends State<RegisterForm> {
     );
   }
 
-  Widget _buildGoalSelector(RegisterViewModel vm, ColorScheme colorScheme, l10n) {
+  Widget _buildGoalSelector(
+    RegisterViewModel vm,
+    ColorScheme colorScheme,
+    l10n,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: colorScheme.outline.withOpacity(0.2)),
+        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.2)),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
@@ -322,20 +357,32 @@ class _RegisterFormState extends State<RegisterForm> {
           dropdownColor: colorScheme.surfaceContainerHighest,
           items: [
             DropdownMenuItem(
-              value: 'Perder peso', 
-              child: Text(l10n.registerGoalLoseWeight, style: TextStyle(color: colorScheme.onSurface)),
+              value: 'Perder peso',
+              child: Text(
+                l10n.registerGoalLoseWeight,
+                style: TextStyle(color: colorScheme.onSurface),
+              ),
             ),
             DropdownMenuItem(
-              value: 'Ganar masa muscular', 
-              child: Text(l10n.registerGoalGainMuscle, style: TextStyle(color: colorScheme.onSurface)),
+              value: 'Ganar masa muscular',
+              child: Text(
+                l10n.registerGoalGainMuscle,
+                style: TextStyle(color: colorScheme.onSurface),
+              ),
             ),
             DropdownMenuItem(
-              value: 'Mantener peso', 
-              child: Text(l10n.registerGoalMaintainWeight, style: TextStyle(color: colorScheme.onSurface)),
+              value: 'Mantener peso',
+              child: Text(
+                l10n.registerGoalMaintainWeight,
+                style: TextStyle(color: colorScheme.onSurface),
+              ),
             ),
             DropdownMenuItem(
-              value: 'Alimentación saludable', 
-              child: Text(l10n.registerGoalHealthyEating, style: TextStyle(color: colorScheme.onSurface)),
+              value: 'Alimentación saludable',
+              child: Text(
+                l10n.registerGoalHealthyEating,
+                style: TextStyle(color: colorScheme.onSurface),
+              ),
             ),
           ],
           onChanged: (value) {

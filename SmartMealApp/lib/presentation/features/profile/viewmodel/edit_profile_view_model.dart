@@ -127,37 +127,45 @@ class EditProfileViewModel extends ChangeNotifier {
   }
 
   Future<bool> saveChanges() async {
-    _update(_state.copyWith(
-      status: EditProfileStatus.loading,
-      errorCode: null,
-      errorMessage: null,
-    ));
+    _update(
+      _state.copyWith(
+        status: EditProfileStatus.loading,
+        errorCode: null,
+        errorMessage: null,
+      ),
+    );
 
     try {
       // Validar campos básicos
       if (displayName.trim().isEmpty) {
-        _update(_state.copyWith(
-          status: EditProfileStatus.error,
-          errorCode: EditProfileErrorCode.nameRequired,
-        ));
+        _update(
+          _state.copyWith(
+            status: EditProfileStatus.error,
+            errorCode: EditProfileErrorCode.nameRequired,
+          ),
+        );
         return false;
       }
 
       final height = int.tryParse(heightCm);
       if (height == null) {
-        _update(_state.copyWith(
-          status: EditProfileStatus.error,
-          errorCode: EditProfileErrorCode.heightInvalid,
-        ));
+        _update(
+          _state.copyWith(
+            status: EditProfileStatus.error,
+            errorCode: EditProfileErrorCode.heightInvalid,
+          ),
+        );
         return false;
       }
 
       final weight = double.tryParse(weightKg);
       if (weight == null) {
-        _update(_state.copyWith(
-          status: EditProfileStatus.error,
-          errorCode: EditProfileErrorCode.weightInvalid,
-        ));
+        _update(
+          _state.copyWith(
+            status: EditProfileStatus.error,
+            errorCode: EditProfileErrorCode.weightInvalid,
+          ),
+        );
         return false;
       }
 
@@ -166,10 +174,12 @@ class EditProfileViewModel extends ChangeNotifier {
       if (age.trim().isNotEmpty) {
         final ageValue = int.tryParse(age);
         if (ageValue == null) {
-          _update(_state.copyWith(
-            status: EditProfileStatus.error,
-            errorCode: EditProfileErrorCode.ageInvalid,
-          ));
+          _update(
+            _state.copyWith(
+              status: EditProfileStatus.error,
+              errorCode: EditProfileErrorCode.ageInvalid,
+            ),
+          );
           return false;
         }
         ageVO = Age(ageValue);
@@ -204,18 +214,22 @@ class EditProfileViewModel extends ChangeNotifier {
       return true;
     } on ArgumentError catch (e) {
       // Errores de validación de Value Objects
-      _update(_state.copyWith(
-        status: EditProfileStatus.error,
-        errorCode: EditProfileErrorCode.validationError,
-        errorMessage: e.message,
-      ));
+      _update(
+        _state.copyWith(
+          status: EditProfileStatus.error,
+          errorCode: EditProfileErrorCode.validationError,
+          errorMessage: e.message,
+        ),
+      );
       return false;
     } catch (e) {
-      _update(_state.copyWith(
-        status: EditProfileStatus.error,
-        errorCode: EditProfileErrorCode.generic,
-        errorMessage: e.toString(),
-      ));
+      _update(
+        _state.copyWith(
+          status: EditProfileStatus.error,
+          errorCode: EditProfileErrorCode.generic,
+          errorMessage: e.toString(),
+        ),
+      );
       return false;
     }
   }
@@ -227,7 +241,10 @@ class EditProfileViewModel extends ChangeNotifier {
 
     try {
       final url = await _uploadProfilePhoto(
-        UploadProfilePhotoParams(filePath: filePath, userId: initialProfile.uid),
+        UploadProfilePhotoParams(
+          filePath: filePath,
+          userId: initialProfile.uid,
+        ),
       );
       photoUrl = url;
       _uploadingPhoto = false;

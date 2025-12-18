@@ -13,14 +13,10 @@ class RecommendedSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Row(
       children: [
-        Icon(
-          Icons.restaurant_menu,
-          color: colorScheme.primary,
-          size: 20,
-        ),
+        Icon(Icons.restaurant_menu, color: colorScheme.primary, size: 20),
         const SizedBox(width: 8),
         Text(
           'Menús Recomendados',
@@ -34,7 +30,7 @@ class RecommendedSection extends StatelessWidget {
         Text(
           '$menuCount menús',
           style: TextStyle(
-            color: colorScheme.onSurface.withOpacity(0.6),
+            color: colorScheme.onSurface.withValues(alpha: 0.6),
             fontSize: 14,
           ),
         ),
@@ -43,7 +39,7 @@ class RecommendedSection extends StatelessWidget {
           IconButton(
             icon: Icon(
               Icons.info_outline,
-              color: colorScheme.onSurface.withOpacity(0.6),
+              color: colorScheme.onSurface.withValues(alpha: 0.6),
               size: 20,
             ),
             onPressed: onInfoTap,

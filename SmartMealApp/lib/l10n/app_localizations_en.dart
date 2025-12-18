@@ -508,6 +508,116 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settingsTermsAndConditions => 'Terms and Conditions';
 
   @override
+  String get privacyHeading => 'SmartMeal Privacy Policy';
+
+  @override
+  String privacyUpdated(Object date) {
+    return 'Last updated: $date';
+  }
+
+  @override
+  String get privacySection1Title => '1. Information we collect';
+
+  @override
+  String get privacySection1Body =>
+      'We collect basic account data (email) and usage data needed to run the app (e.g., saved menus, shopping list, and preferences).';
+
+  @override
+  String get privacySection2Title => '2. How we use your information';
+
+  @override
+  String get privacySection2Body =>
+      'We use your data to provide SmartMeal features: generate menus, compute statistics, and send notifications if you allow it.';
+
+  @override
+  String get privacySection3Title => '3. Storage and security';
+
+  @override
+  String get privacySection3Body =>
+      'We store information in Firebase. We take reasonable measures to protect your data, but no system is 100% secure.';
+
+  @override
+  String get privacySection4Title => '4. Data sharing';
+
+  @override
+  String get privacySection4Body =>
+      'We do not sell your data. We may share information with service providers strictly necessary to operate the app (e.g., Firebase).';
+
+  @override
+  String get privacySection5Title => '5. Your rights';
+
+  @override
+  String get privacySection5Body =>
+      'You can request access, rectification, or deletion of your account from Settings. For other requests, contact support.';
+
+  @override
+  String get privacySection6Title => '6. Contact';
+
+  @override
+  String get privacySection6Body =>
+      'If you have questions about this policy, use the Support section in the app.';
+
+  @override
+  String get termsHeading => 'SmartMeal Terms and Conditions';
+
+  @override
+  String termsUpdated(Object date) {
+    return 'Last updated: $date';
+  }
+
+  @override
+  String get termsSection1Title => '1. Acceptance of terms';
+
+  @override
+  String get termsSection1Body =>
+      'By using SmartMeal you accept these terms. If you disagree, please do not use the app.';
+
+  @override
+  String get termsSection2Title => '2. Use of the application';
+
+  @override
+  String get termsSection2Body =>
+      'SmartMeal is intended for personal use. We do not guarantee nutritional or medical outcomes; use it as support, not professional advice.';
+
+  @override
+  String get termsSection3Title => '3. Generated content';
+
+  @override
+  String get termsSection3Body =>
+      'The content (menus, recipes) is generated for your personal use. We are not responsible for misuse.';
+
+  @override
+  String get termsSection4Title => '4. Limitation of liability';
+
+  @override
+  String get termsSection4Body =>
+      'SmartMeal is provided “as-is”. We are not liable for indirect or consequential damages arising from the use of the app.';
+
+  @override
+  String get termsSection5Title => '5. Changes to the terms';
+
+  @override
+  String get termsSection5Body =>
+      'We may update these terms. We will notify you of relevant changes and the update date.';
+
+  @override
+  String get statsGoalTitle => 'Calorie goal';
+
+  @override
+  String statsGoalRatio(Object current, Object target) {
+    return '$current kcal / $target kcal';
+  }
+
+  @override
+  String statsGoalPercent(Object percent) {
+    return '$percent% of the goal';
+  }
+
+  @override
+  String get statsGoalNoData =>
+      'Complete your profile to calculate your calorie goal.';
+
+  @override
   String get settingsAccountSection => 'Account';
 
   @override
@@ -1020,6 +1130,11 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String shoppingEditPriceCurrentPrice(String price) {
     return 'Current price: €$price';
+  }
+
+  @override
+  String shoppingEditPriceUnitInfo(String unit) {
+    return 'This price applies per $unit';
   }
 
   @override

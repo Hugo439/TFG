@@ -45,17 +45,12 @@ class SupportForm extends StatelessWidget {
         DropdownButtonFormField<String>(
           initialValue: selectedCategory,
           items: categories
-              .map((cat) => DropdownMenuItem(
-                    value: cat,
-                    child: Text(cat),
-                  ))
+              .map((cat) => DropdownMenuItem(value: cat, child: Text(cat)))
               .toList(),
           onChanged: onCategoryChanged,
           decoration: InputDecoration(
             labelText: context.l10n.supportCategory,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
             filled: true,
             fillColor: ThemeHelpers.backgroundSecondary(context),
           ),
@@ -66,9 +61,7 @@ class SupportForm extends StatelessWidget {
           maxLines: 5,
           decoration: InputDecoration(
             labelText: context.l10n.supportMessage,
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-            ),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
             fillColor: colorScheme.surfaceContainerHighest,
             filled: true,
           ),
@@ -108,10 +101,7 @@ class SupportForm extends StatelessWidget {
         if (error != null)
           Padding(
             padding: const EdgeInsets.only(top: 8),
-            child: Text(
-              error!,
-              style: TextStyle(color: colorScheme.error),
-            ),
+            child: Text(error!, style: TextStyle(color: colorScheme.error)),
           ),
         if (success)
           Padding(

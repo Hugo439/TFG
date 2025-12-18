@@ -24,7 +24,11 @@ class UserPriceFirestoreDatasource {
         return null;
       }
 
-      return UserPriceOverrideModel.fromFirestore(doc.data()!, userId, ingredientId);
+      return UserPriceOverrideModel.fromFirestore(
+        doc.data()!,
+        userId,
+        ingredientId,
+      );
     } catch (e) {
       if (kDebugMode) {
         print('❌ [UserPriceDatasource] Error obteniendo override: $e');
@@ -33,7 +37,9 @@ class UserPriceFirestoreDatasource {
     }
   }
 
-  Future<List<UserPriceOverrideModel>> getAllUserOverrides(String userId) async {
+  Future<List<UserPriceOverrideModel>> getAllUserOverrides(
+    String userId,
+  ) async {
     try {
       final query = await _firestore
           .collection('users')
@@ -42,11 +48,19 @@ class UserPriceFirestoreDatasource {
           .get();
 
       return query.docs
-          .map((doc) => UserPriceOverrideModel.fromFirestore(doc.data(), userId, doc.id))
+          .map(
+            (doc) => UserPriceOverrideModel.fromFirestore(
+              doc.data(),
+              userId,
+              doc.id,
+            ),
+          )
           .toList();
     } catch (e) {
       if (kDebugMode) {
-        print('❌ [UserPriceDatasource] Error obteniendo overrides del usuario: $e');
+        print(
+          '❌ [UserPriceDatasource] Error obteniendo overrides del usuario: $e',
+        );
       }
       rethrow;
     }
@@ -62,7 +76,9 @@ class UserPriceFirestoreDatasource {
           .set(model.toFirestore());
 
       if (kDebugMode) {
-        print('💾 [UserPriceDatasource] Override guardado: ${model.ingredientId}');
+        print(
+          '💾 [UserPriceDatasource] Override guardado: ${model.ingredientId}',
+        );
       }
     } catch (e) {
       if (kDebugMode) {

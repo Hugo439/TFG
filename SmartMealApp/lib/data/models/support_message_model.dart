@@ -23,7 +23,10 @@ class SupportMessageModel {
     this.responseDate,
   });
 
-  factory SupportMessageModel.fromMap(Map<String, dynamic> map, {required String id}) {
+  factory SupportMessageModel.fromMap(
+    Map<String, dynamic> map, {
+    required String id,
+  }) {
     return SupportMessageModel(
       id: id,
       userId: map['userId'] ?? '',
@@ -33,7 +36,9 @@ class SupportMessageModel {
       category: map['category'],
       attachmentUrl: map['attachmentUrl'],
       response: map['response'],
-      responseDate: map['responseDate'] != null ? (map['responseDate'] as Timestamp).toDate() : null,
+      responseDate: map['responseDate'] != null
+          ? (map['responseDate'] as Timestamp).toDate()
+          : null,
     );
   }
 

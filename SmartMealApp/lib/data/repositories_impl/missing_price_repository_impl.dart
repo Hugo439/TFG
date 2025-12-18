@@ -12,7 +12,9 @@ class MissingPriceRepositoryImpl implements MissingPriceRepository {
   MissingPriceRepositoryImpl(this._datasource);
 
   @override
-  Future<Either<Failure, void>> trackMissingPrice(MissingPriceEntry entry) async {
+  Future<Either<Failure, void>> trackMissingPrice(
+    MissingPriceEntry entry,
+  ) async {
     try {
       final model = MissingPriceEntryModel.fromEntity(entry);
       await _datasource.trackMissingPrice(model);
@@ -54,7 +56,9 @@ class MissingPriceRepositoryImpl implements MissingPriceRepository {
   }
 
   @override
-  Future<Either<Failure, void>> removeMissingPrice(String normalizedName) async {
+  Future<Either<Failure, void>> removeMissingPrice(
+    String normalizedName,
+  ) async {
     try {
       await _datasource.removeMissingPrice(normalizedName);
       return const Right(null);

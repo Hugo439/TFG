@@ -4,17 +4,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smartmeal/core/di/service_locator.dart';
 import 'package:smartmeal/domain/entities/shopping_item.dart';
 import 'package:smartmeal/domain/usecases/shopping/save_user_price_override_usecase.dart';
+import 'package:smartmeal/domain/services/shopping/price_database.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
 
 class EditPriceDialog extends StatefulWidget {
   final ShoppingItem item;
   final VoidCallback? onPriceSaved;
 
-  const EditPriceDialog({
-    super.key,
-    required this.item,
-    this.onPriceSaved,
-  });
+  const EditPriceDialog({super.key, required this.item, this.onPriceSaved});
 
   @override
   State<EditPriceDialog> createState() => _EditPriceDialogState();
@@ -25,6 +22,7 @@ class _EditPriceDialogState extends State<EditPriceDialog> {
   late final TextEditingController _reasonController;
   bool _isSaving = false;
   String? _errorMessage;
+  late final String _unitLabel;
 
   @override
   void initState() {
@@ -33,6 +31,46 @@ class _EditPriceDialogState extends State<EditPriceDialog> {
       text: widget.item.price.value.toStringAsFixed(2),
     );
     _reasonController = TextEditingController();
+    _unitLabel = _getUnitLabel();
+  }
+
+  String _getUnitLabel() {
+    // Detectar tipo de unidad basado en la base de datos de precios
+    final ingredientName = widget.item.name.value.toLowerCase();
+
+    // Buscar en precios específicos
+    if (PriceDatabase.specificPrices.containsKey(ingredientName)) {
+      final priceInfo = PriceDatabase.specificPrices[ingredientName]!;
+      switch (priceInfo.unitType) {
+        case UnitType.piece:
+          return 'unidad';
+        case UnitType.weight:
+          return 'kilogramo';
+        case UnitType.liter:
+          return 'litro';
+      }
+    }
+
+    // Por defecto, inferir del texto de cantidad
+    final quantity = widget.item.quantity.value.toLowerCase();
+    if (quantity.contains('kg')) return 'kilogramo';
+    if (quantity.contains('l')) return 'litro';
+    if (quantity.contains('ud') || quantity.contains('unidad')) return 'unidad';
+
+    // Fallback basado en categoría
+    return 'kilogramo'; // La mayoría de productos se venden por peso
+  }
+
+  IconData _getUnitIcon() {
+    switch (_unitLabel) {
+      case 'unidad':
+        return Icons.looks_one;
+      case 'litro':
+        return Icons.water_drop;
+      case 'kilogramo':
+      default:
+        return Icons.scale;
+    }
   }
 
   @override
@@ -66,14 +104,16 @@ class _EditPriceDialogState extends State<EditPriceDialog> {
       }
 
       final useCase = sl<SaveUserPriceOverrideUseCase>();
-      final result = await useCase(SaveUserPriceOverrideParams(
-        userId: user.uid,
-        ingredientName: widget.item.name.value,
-        customPrice: newPrice,
-        reason: _reasonController.text.trim().isEmpty
-            ? l10n.shoppingEditPriceReasonDefault
-            : _reasonController.text.trim(),
-      ));
+      final result = await useCase(
+        SaveUserPriceOverrideParams(
+          userId: user.uid,
+          ingredientName: widget.item.name.value,
+          customPrice: newPrice,
+          reason: _reasonController.text.trim().isEmpty
+              ? l10n.shoppingEditPriceReasonDefault
+              : _reasonController.text.trim(),
+        ),
+      );
 
       result.fold(
         (failure) {
@@ -136,7 +176,31 @@ class _EditPriceDialogState extends State<EditPriceDialog> {
               ),
               style: TextStyle(
                 fontSize: 14,
-                color: colorScheme.onSurface.withOpacity(0.7),
+                color: colorScheme.onSurface.withValues(alpha: 0.7),
+              ),
+            ),
+            const SizedBox(height: 4),
+            // Indicador de unidad de medida
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: colorScheme.primaryContainer.withValues(alpha: 0.5),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(_getUnitIcon(), size: 16, color: colorScheme.primary),
+                  const SizedBox(width: 6),
+                  Text(
+                    l10n.shoppingEditPriceUnitInfo(_unitLabel),
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                      color: colorScheme.primary,
+                    ),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 20),
@@ -144,7 +208,9 @@ class _EditPriceDialogState extends State<EditPriceDialog> {
             // Campo de precio
             TextField(
               controller: _priceController,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r'^\d*[.,]?\d{0,2}')),
               ],
@@ -180,7 +246,7 @@ class _EditPriceDialogState extends State<EditPriceDialog> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: colorScheme.primaryContainer.withOpacity(0.3),
+                color: colorScheme.primaryContainer.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
@@ -196,7 +262,7 @@ class _EditPriceDialogState extends State<EditPriceDialog> {
                       l10n.shoppingEditPriceInfo,
                       style: TextStyle(
                         fontSize: 12,
-                        color: colorScheme.onSurface.withOpacity(0.8),
+                        color: colorScheme.onSurface.withValues(alpha: 0.8),
                       ),
                     ),
                   ),

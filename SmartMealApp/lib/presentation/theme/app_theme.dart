@@ -93,18 +93,9 @@ class AppTheme {
         fontSize: 14,
         fontWeight: FontWeight.w500,
       ),
-      bodyLarge: TextStyle(
-        color: AppColors.primaryText,
-        fontSize: 16,
-      ),
-      bodyMedium: TextStyle(
-        color: AppColors.secondaryText,
-        fontSize: 14,
-      ),
-      bodySmall: TextStyle(
-        color: AppColors.secondaryText,
-        fontSize: 12,
-      ),
+      bodyLarge: TextStyle(color: AppColors.primaryText, fontSize: 16),
+      bodyMedium: TextStyle(color: AppColors.secondaryText, fontSize: 14),
+      bodySmall: TextStyle(color: AppColors.secondaryText, fontSize: 12),
       labelLarge: TextStyle(
         color: AppColors.primaryText,
         fontSize: 14,
@@ -115,10 +106,7 @@ class AppTheme {
         fontSize: 12,
         fontWeight: FontWeight.w500,
       ),
-      labelSmall: TextStyle(
-        color: AppColors.secondaryText,
-        fontSize: 10,
-      ),
+      labelSmall: TextStyle(color: AppColors.secondaryText, fontSize: 10),
     ),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
       backgroundColor: AppColors.primary,
@@ -131,18 +119,14 @@ class AppTheme {
         foregroundColor: AppColors.white,
         textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         elevation: 2,
       ),
     ),
     cardTheme: CardThemeData(
       color: AppColors.white,
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
@@ -262,18 +246,9 @@ class AppTheme {
         fontSize: 14,
         fontWeight: FontWeight.w500,
       ),
-      bodyLarge: TextStyle(
-        color: AppColors.darkPrimaryText,
-        fontSize: 16,
-      ),
-      bodyMedium: TextStyle(
-        color: AppColors.darkSecondaryText,
-        fontSize: 14,
-      ),
-      bodySmall: TextStyle(
-        color: AppColors.darkSecondaryText,
-        fontSize: 12,
-      ),
+      bodyLarge: TextStyle(color: AppColors.darkPrimaryText, fontSize: 16),
+      bodyMedium: TextStyle(color: AppColors.darkSecondaryText, fontSize: 14),
+      bodySmall: TextStyle(color: AppColors.darkSecondaryText, fontSize: 12),
       labelLarge: TextStyle(
         color: AppColors.darkPrimaryText,
         fontSize: 14,
@@ -284,10 +259,7 @@ class AppTheme {
         fontSize: 12,
         fontWeight: FontWeight.w500,
       ),
-      labelSmall: TextStyle(
-        color: AppColors.darkSecondaryText,
-        fontSize: 10,
-      ),
+      labelSmall: TextStyle(color: AppColors.darkSecondaryText, fontSize: 10),
     ),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
       backgroundColor: AppColors.darkPrimary,
@@ -300,18 +272,14 @@ class AppTheme {
         foregroundColor: AppColors.darkWhite,
         textStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         elevation: 2,
       ),
     ),
     cardTheme: CardThemeData(
       color: AppColors.darkSecondaryBackground,
       elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,

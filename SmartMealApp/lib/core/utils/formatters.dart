@@ -23,10 +23,22 @@ class Formatters {
     if (text.isEmpty) return text;
     return text[0].toUpperCase() + text.substring(1);
   }
-  
-    static String formatShortDate(DateTime date) {
-    final months = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 
-                    'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+
+  static String formatShortDate(DateTime date) {
+    final months = [
+      'Ene',
+      'Feb',
+      'Mar',
+      'Abr',
+      'May',
+      'Jun',
+      'Jul',
+      'Ago',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dic',
+    ];
     return '${date.day} ${months[date.month - 1]}';
   }
 }

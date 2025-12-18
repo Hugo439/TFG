@@ -29,7 +29,9 @@ class SaveUserPriceOverrideUseCase {
         return const Left(ValidationFailure('El precio debe ser mayor a 0'));
       }
 
-      final normalizedName = SmartIngredientNormalizer().normalize(params.ingredientName);
+      final normalizedName = SmartIngredientNormalizer().normalize(
+        params.ingredientName,
+      );
 
       final override = UserPriceOverride(
         userId: params.userId,

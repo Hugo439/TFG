@@ -15,14 +15,17 @@ class CalorieCalculator {
   }) {
     // Valores por defecto si no se proporcionan
     final effectiveAge = age ?? 30; // Edad promedio
-    final isMale = gender == null || gender.toLowerCase() == 'hombre' || gender.toLowerCase() == 'male';
-    
+    final isMale =
+        gender == null ||
+        gender.toLowerCase() == 'hombre' ||
+        gender.toLowerCase() == 'male';
+
     // Fórmula Mifflin-St Jeor
     final baseBMR = (10 * weightKg) + (6.25 * heightCm) - (5 * effectiveAge);
-    
+
     return isMale ? baseBMR + 5 : baseBMR - 161;
   }
-  
+
   /// Calcula el Gasto Energético Diario Total (TDEE)
   ///
   /// Aplica factor de actividad física sobre el BMR:
@@ -38,7 +41,7 @@ class CalorieCalculator {
     final factor = _getActivityFactor(activityLevel);
     return bmr * factor;
   }
-  
+
   static double _getActivityFactor(String level) {
     switch (level.toLowerCase()) {
       case 'sedentary':
@@ -64,7 +67,7 @@ class CalorieCalculator {
         return 1.55; // Moderada por defecto
     }
   }
-  
+
   /// Calcula las calorías objetivo diarias según el objetivo del usuario
   ///
   /// Ajustes sobre TDEE:
@@ -86,23 +89,28 @@ class CalorieCalculator {
       age: age,
       gender: gender,
     );
-    
+
     // Calcular TDEE
     final tdee = calculateTDEE(bmr: bmr, activityLevel: activityLevel);
-    
+
     // Ajustar según objetivo
     final targetCalories = _applyGoalAdjustment(tdee, goal);
-    
+
     return targetCalories.round();
   }
-  
+
   static double _applyGoalAdjustment(double tdee, String goal) {
     final normalizedGoal = goal.toLowerCase();
-    
-    if (normalizedGoal.contains('perder') || normalizedGoal.contains('pérdida') || normalizedGoal.contains('adelgazar')) {
+
+    if (normalizedGoal.contains('perder') ||
+        normalizedGoal.contains('pérdida') ||
+        normalizedGoal.contains('adelgazar')) {
       // Déficit de 500 kcal/día = -0.5 kg/semana
       return tdee - 500;
-    } else if (normalizedGoal.contains('ganar') || normalizedGoal.contains('aumentar') || normalizedGoal.contains('músculo') || normalizedGoal.contains('musculo')) {
+    } else if (normalizedGoal.contains('ganar') ||
+        normalizedGoal.contains('aumentar') ||
+        normalizedGoal.contains('músculo') ||
+        normalizedGoal.contains('musculo')) {
       // Superávit de 400 kcal/día = ganancia muscular controlada
       return tdee + 400;
     } else {
@@ -110,7 +118,7 @@ class CalorieCalculator {
       return tdee;
     }
   }
-  
+
   /// Calcula las calorías desde un UserProfile
   static int calculateFromProfile({
     required double weightKg,

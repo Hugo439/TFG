@@ -25,15 +25,15 @@ class AuthRepositoryImpl implements AuthRepository {
     required FirebaseAuthDataSource authDataSource,
     required AuthLocalDataSource authLocalDataSource,
     required FirestoreDataSource firestoreDataSource,
-  })  : _authDataSource = authDataSource,
-        _authLocalDataSource = authLocalDataSource,
-        _firestoreDataSource = firestoreDataSource;
+  }) : _authDataSource = authDataSource,
+       _authLocalDataSource = authLocalDataSource,
+       _firestoreDataSource = firestoreDataSource;
 
   @override
   Future<void> signIn({required String email, required String password}) async {
     final emailVO = Email(email);
     final passwordVO = Password(password);
-    
+
     await _authDataSource.signIn(
       email: emailVO.value,
       password: passwordVO.value,
@@ -104,7 +104,7 @@ class AuthRepositoryImpl implements AuthRepository {
   Future<void> deleteAccount() async {
     final user = _authDataSource.getCurrentUser();
     if (user == null) throw Exception('Usuario no autenticado');
-    
+
     await _firestoreDataSource.deleteUserProfile(user.uid);
     await _authDataSource.deleteAccount();
   }

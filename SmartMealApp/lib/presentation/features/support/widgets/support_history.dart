@@ -88,7 +88,7 @@ class _SupportHistoryState extends State<SupportHistory> {
     if (widget.loading) {
       return const Center(child: CircularProgressIndicator());
     }
-    
+
     if (widget.error != null) {
       return Container(
         padding: const EdgeInsets.all(16),
@@ -110,7 +110,7 @@ class _SupportHistoryState extends State<SupportHistory> {
         ),
       );
     }
-    
+
     if (widget.messages.isEmpty) {
       return Container(
         padding: const EdgeInsets.all(24),
@@ -123,13 +123,13 @@ class _SupportHistoryState extends State<SupportHistory> {
             Icon(
               Icons.inbox_outlined,
               size: 48,
-              color: colorScheme.onSurface.withOpacity(0.5),
+              color: colorScheme.onSurface.withValues(alpha: 0.5),
             ),
             const SizedBox(height: 12),
             Text(
               context.l10n.supportNoMessages,
               style: TextStyle(
-                color: colorScheme.onSurface.withOpacity(0.7),
+                color: colorScheme.onSurface.withValues(alpha: 0.7),
                 fontSize: 16,
               ),
             ),
@@ -144,12 +144,18 @@ class _SupportHistoryState extends State<SupportHistory> {
       itemCount: widget.messages.length,
       itemBuilder: (context, index) {
         final msg = widget.messages[index];
-        final categoryColor = ThemeHelpers.getCategoryColor(msg.category, context);
+        final categoryColor = ThemeHelpers.getCategoryColor(
+          msg.category,
+          context,
+        );
         final categoryIcon = _getCategoryIcon(msg.category);
         final statusColor = ThemeHelpers.getStatusColor(msg.status, context);
-        
+
         // Localizar categoría y estado
-        final localizedCategory = SupportLocalizer.category(context, msg.category);
+        final localizedCategory = SupportLocalizer.category(
+          context,
+          msg.category,
+        );
         final localizedStatus = SupportLocalizer.status(context, msg.status);
 
         return Card(
@@ -159,7 +165,7 @@ class _SupportHistoryState extends State<SupportHistory> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
             side: BorderSide(
-              color: categoryColor.withOpacity(0.3),
+              color: categoryColor.withValues(alpha: 0.3),
               width: 2,
             ),
           ),
@@ -179,21 +185,17 @@ class _SupportHistoryState extends State<SupportHistory> {
                           vertical: 6,
                         ),
                         decoration: BoxDecoration(
-                          color: categoryColor.withOpacity(0.15),
+                          color: categoryColor.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(
-                            color: categoryColor.withOpacity(0.5),
+                            color: categoryColor.withValues(alpha: 0.5),
                             width: 1,
                           ),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Icon(
-                              categoryIcon,
-                              size: 16,
-                              color: categoryColor,
-                            ),
+                            Icon(categoryIcon, size: 16, color: categoryColor),
                             const SizedBox(width: 6),
                             Text(
                               localizedCategory,
@@ -221,7 +223,9 @@ class _SupportHistoryState extends State<SupportHistory> {
                         child: Text(
                           localizedStatus,
                           style: TextStyle(
-                            color: isDark ? AppColors.darkPrimaryText : AppColors.white,
+                            color: isDark
+                                ? AppColors.darkPrimaryText
+                                : AppColors.white,
                             fontSize: 12,
                             fontWeight: FontWeight.bold,
                           ),
@@ -230,7 +234,7 @@ class _SupportHistoryState extends State<SupportHistory> {
                   ],
                 ),
                 const SizedBox(height: 12),
-                
+
                 // Mensaje
                 Text(
                   msg.message,
@@ -241,7 +245,7 @@ class _SupportHistoryState extends State<SupportHistory> {
                   ),
                 ),
                 const SizedBox(height: 8),
-                
+
                 // Fecha
                 Text(
                   _formatDate(context, msg.sentAt),
@@ -250,7 +254,7 @@ class _SupportHistoryState extends State<SupportHistory> {
                     color: ThemeHelpers.textSecondary(context),
                   ),
                 ),
-                
+
                 // Adjunto
                 if (msg.attachmentUrl != null) ...[
                   const SizedBox(height: 12),
@@ -276,16 +280,18 @@ class _SupportHistoryState extends State<SupportHistory> {
                     ),
                   ),
                 ],
-                
+
                 // Respuesta
                 if (msg.response != null) ...[
                   const SizedBox(height: 12),
                   Container(
                     decoration: BoxDecoration(
-                      color: colorScheme.primaryContainer.withOpacity(0.3),
+                      color: colorScheme.primaryContainer.withValues(
+                        alpha: 0.3,
+                      ),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: colorScheme.primary.withOpacity(0.5),
+                        color: colorScheme.primary.withValues(alpha: 0.5),
                         width: 2,
                       ),
                     ),
@@ -345,7 +351,7 @@ class _SupportHistoryState extends State<SupportHistory> {
   String _formatDate(BuildContext context, DateTime date) {
     final l10n = context.l10n;
     final locale = Localizations.localeOf(context).toLanguageTag();
-  
+
     // Normalizar fechas a medianoche para comparar días del calendario
     final nowDate = DateTime(_now.year, _now.month, _now.day);
     final messageDate = DateTime(date.year, date.month, date.day);

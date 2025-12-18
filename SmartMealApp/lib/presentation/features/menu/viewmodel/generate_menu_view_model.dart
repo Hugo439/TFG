@@ -8,6 +8,7 @@ import 'package:smartmeal/domain/usecases/user/get_current_user_usecase.dart';
 import 'package:smartmeal/domain/usecases/menus/save_menu_recipes_usecase.dart';
 import 'package:smartmeal/domain/usecases/menus/generate_weekly_menu_usecase.dart';
 import 'package:smartmeal/domain/repositories/weekly_menu_repository.dart';
+import 'package:smartmeal/domain/repositories/statistics_repository.dart';
 
 enum GenerateMenuStatus { idle, generating, preview, saving, success, error }
 
@@ -45,6 +46,7 @@ class GenerateMenuViewModel extends ChangeNotifier {
   final GenerateWeeklyMenuUseCase _generateWeeklyMenu;
   final WeeklyMenuRepository _weeklyMenuRepository;
   final SaveMenuRecipesUseCase _saveMenuRecipesUseCase;
+  final StatisticsRepository _statisticsRepository; // Nueva inyección
 
   GenerateMenuState _state = const GenerateMenuState();
   GenerateMenuState get state => _state;
@@ -55,6 +57,7 @@ class GenerateMenuViewModel extends ChangeNotifier {
     this._generateWeeklyMenu,
     this._weeklyMenuRepository,
     this._saveMenuRecipesUseCase,
+    this._statisticsRepository, // Nuevo parámetro
   );
 
   /// Genera un nuevo menú semanal y lo muestra en preview
@@ -87,7 +90,9 @@ class GenerateMenuViewModel extends ChangeNotifier {
       final targetCalories = _calculateCaloriesFromProfile(profile);
 
       // Paso 4: Obtener alergias del perfil
-      final allergies = profile.allergies?.value.split(',').map((e) => e.trim()).toList() ?? [];
+      final allergies =
+          profile.allergies?.value.split(',').map((e) => e.trim()).toList() ??
+          [];
 
       if (kDebugMode) {
         print('📋 [GenerateMenuVM] Calorías objetivo: $targetCalories');
@@ -97,19 +102,21 @@ class GenerateMenuViewModel extends ChangeNotifier {
 
       // Paso 5: Generar menú con Gemini
       _updateProgress(0.4);
-      final menu = await _generateWeeklyMenu(GenerateWeeklyMenuParams(
-        userId: currentUser.uid,
-        targetCaloriesPerDay: targetCalories,
-        allergies: allergies,
-        userGoal: profile.goal.displayName,
-      ));
+      final menu = await _generateWeeklyMenu(
+        GenerateWeeklyMenuParams(
+          userId: currentUser.uid,
+          targetCaloriesPerDay: targetCalories,
+          allergies: allergies,
+          userGoal: profile.goal.displayName,
+        ),
+      );
 
       if (kDebugMode) {
         print('📋 [GenerateMenuVM] Menú generado:');
         print('   - ID: ${menu.id}');
         print('   - UserID: ${menu.userId}');
         print('   - Nombre: ${menu.name}');
-        print('   - Total recetas: 28');//${menu.allRecipes.length}
+        print('   - Total recetas: 28'); //${menu.allRecipes.length}
         print('   - Días: ${menu.days.length}');
         for (var day in menu.days) {
           print('     - ${day.day}: ${day.recipes.length} recetas');
@@ -160,10 +167,12 @@ class GenerateMenuViewModel extends ChangeNotifier {
       // Paso 1: Guardar todas las recetas primero
       _updateProgress(0.3);
       if (kDebugMode) {
-        print('💾 [GenerateMenuVM] Guardando 28 recetas...'); //${_state.generatedMenu!.allRecipes.length}
+        print(
+          '💾 [GenerateMenuVM] Guardando 28 recetas...',
+        ); //${_state.generatedMenu!.allRecipes.length}
       }
       await _saveMenuRecipesUseCase(_state.generatedMenu!);
-      
+
       if (kDebugMode) {
         print('✅ [GenerateMenuVM] Recetas guardadas');
       }
@@ -174,6 +183,11 @@ class GenerateMenuViewModel extends ChangeNotifier {
         print('💾 [GenerateMenuVM] Guardando menú semanal...');
       }
       await _weeklyMenuRepository.saveMenu(_state.generatedMenu!);
+
+      // Invalidar caché de estadísticas después de guardar el menú
+      await _statisticsRepository.clearStatisticsCache(
+        _state.generatedMenu!.userId,
+      );
 
       if (kDebugMode) {
         print('✅ [GenerateMenuVM] Menú semanal guardado');
@@ -187,7 +201,7 @@ class GenerateMenuViewModel extends ChangeNotifier {
         progress: 1.0,
       );
       notifyListeners();
-      
+
       if (kDebugMode) {
         print('🎉 [GenerateMenuVM] Guardado completado con éxito');
       }

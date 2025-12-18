@@ -3,9 +3,5 @@ class FAQ {
   final String question;
   final String answer;
 
-  FAQ({
-    required this.id,
-    required this.question,
-    required this.answer,
-  });
+  FAQ({required this.id, required this.question, required this.answer});
 }

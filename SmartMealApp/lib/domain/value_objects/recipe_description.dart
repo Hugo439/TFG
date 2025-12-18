@@ -20,7 +20,9 @@ class RecipeDescription {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is RecipeDescription && runtimeType == other.runtimeType && value == other.value;
+      other is RecipeDescription &&
+          runtimeType == other.runtimeType &&
+          value == other.value;
 
   @override
   int get hashCode => value.hashCode;

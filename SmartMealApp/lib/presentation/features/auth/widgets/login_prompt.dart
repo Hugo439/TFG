@@ -7,14 +7,14 @@ class LoginPrompt extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          '¿Ya tienes cuenta? ', 
+          '¿Ya tienes cuenta? ',
           style: TextStyle(
-            color: colorScheme.onSurface.withOpacity(0.6), 
+            color: colorScheme.onSurface.withValues(alpha: 0.6),
             fontSize: 14,
           ),
         ),

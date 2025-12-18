@@ -20,7 +20,9 @@ class ShoppingDataSource {
         .orderBy('createdAt', descending: true)
         .get();
 
-    return snapshot.docs.map((doc) => ShoppingItemModel.fromFirestore(doc)).toList();
+    return snapshot.docs
+        .map((doc) => ShoppingItemModel.fromFirestore(doc))
+        .toList();
   }
 
   Future<void> addShoppingItem(String id, Map<String, dynamic> data) async {
@@ -39,12 +41,14 @@ class ShoppingDataSource {
   Future<void> addShoppingItemsBatch(List<Map<String, dynamic>> items) async {
     final userId = auth.currentUser?.uid;
     if (userId == null) throw Exception('Usuario no autenticado');
-    
+
     if (items.isEmpty) return;
 
     final batch = firestore.batch();
     for (final item in items) {
-      final itemId = item['id'] as String? ?? DateTime.now().millisecondsSinceEpoch.toString();
+      final itemId =
+          item['id'] as String? ??
+          DateTime.now().millisecondsSinceEpoch.toString();
       final ref = firestore
           .collection('users')
           .doc(userId)
@@ -52,7 +56,7 @@ class ShoppingDataSource {
           .doc(itemId);
       batch.set(ref, item);
     }
-    
+
     await batch.commit();
     if (kDebugMode) {
       print('✅ [ShoppingDS] ${items.length} items guardados en batch');
@@ -107,7 +111,9 @@ class ShoppingDataSource {
     final checkedItems = allItems.where((item) => item.isChecked).toList();
 
     if (kDebugMode) {
-      print('🗑️ [ShoppingDS] Items marcados encontrados: ${checkedItems.length}');
+      print(
+        '🗑️ [ShoppingDS] Items marcados encontrados: ${checkedItems.length}',
+      );
       for (var item in checkedItems) {
         print('   - ${item.id}: ${item.name} (isChecked: ${item.isChecked})');
       }
@@ -145,7 +151,10 @@ class ShoppingDataSource {
     if (userId == null) return 0.0;
 
     final items = await getShoppingItems();
-    return items.fold<double>(0.0, (sum, item) => sum + item.price);
+    return items.fold<double>(
+      0.0,
+      (accumulator, item) => accumulator + item.price,
+    );
   }
 
   Future<void> setAllChecked(bool checked) async {
@@ -167,7 +176,9 @@ class ShoppingDataSource {
     await batch.commit();
 
     if (kDebugMode) {
-      print('✅ [ShoppingDS] setAllChecked -> $checked en ${snap.docs.length} items');
+      print(
+        '✅ [ShoppingDS] setAllChecked -> $checked en ${snap.docs.length} items',
+      );
     }
   }
 }

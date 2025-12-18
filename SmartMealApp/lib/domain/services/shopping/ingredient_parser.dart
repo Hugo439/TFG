@@ -11,7 +11,11 @@ class IngredientPortion {
     required this.unitKind,
   });
 
-  IngredientPortion copyWith({String? name, double? quantityBase, UnitKind? unitKind}) {
+  IngredientPortion copyWith({
+    String? name,
+    double? quantityBase,
+    UnitKind? unitKind,
+  }) {
     return IngredientPortion(
       name: name ?? this.name,
       quantityBase: quantityBase ?? this.quantityBase,
@@ -49,7 +53,10 @@ class IngredientParser {
 
   _UnitInfo _unitFromString(String unit) {
     // Peso
-    if (unit == 'kg' || unit == 'kilos' || unit == 'kilogramo' || unit == 'kilogramos') {
+    if (unit == 'kg' ||
+        unit == 'kilos' ||
+        unit == 'kilogramo' ||
+        unit == 'kilogramos') {
       return _UnitInfo(kind: UnitKind.weight, multiplier: 1000.0);
     }
     if (unit == 'g' || unit == 'gr' || unit == 'gramo' || unit == 'gramos') {
@@ -65,7 +72,12 @@ class IngredientParser {
     }
 
     // Unidades
-    if (unit == 'ud' || unit == 'uds' || unit == 'unidad' || unit == 'unidades' || unit == 'pz' || unit == 'pieza') {
+    if (unit == 'ud' ||
+        unit == 'uds' ||
+        unit == 'unidad' ||
+        unit == 'unidades' ||
+        unit == 'pz' ||
+        unit == 'pieza') {
       return _UnitInfo(kind: UnitKind.unit, multiplier: 1.0);
     }
 

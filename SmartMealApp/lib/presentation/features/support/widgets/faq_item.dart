@@ -4,11 +4,7 @@ class FAQItem extends StatelessWidget {
   final String question;
   final String answer;
 
-  const FAQItem({
-    super.key,
-    required this.question,
-    required this.answer,
-  });
+  const FAQItem({super.key, required this.question, required this.answer});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +16,7 @@ class FAQItem extends StatelessWidget {
         color: colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(
-          color: colorScheme.outline.withOpacity(0.2),
+          color: colorScheme.outline.withValues(alpha: 0.2),
           width: 1,
         ),
       ),
@@ -30,11 +26,7 @@ class FAQItem extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(
-                Icons.help_outline,
-                color: colorScheme.primary,
-                size: 20,
-              ),
+              Icon(Icons.help_outline, color: colorScheme.primary, size: 20),
               const SizedBox(width: 8),
               Expanded(
                 child: Text(
@@ -56,7 +48,7 @@ class FAQItem extends StatelessWidget {
               answer,
               style: TextStyle(
                 fontSize: 14,
-                color: colorScheme.onSurface.withOpacity(0.8),
+                color: colorScheme.onSurface.withValues(alpha: 0.8),
                 height: 1.4,
               ),
               textAlign: TextAlign.left,

@@ -5,22 +5,22 @@ class PhoneNumber extends ValueObject<String> {
 
   static String _validate(String value) {
     final trimmed = value.trim();
-    
+
     if (trimmed.isEmpty) {
       throw ArgumentError('El teléfono no puede estar vacío');
     }
-    
+
     // Remover espacios, guiones y paréntesis
     final cleaned = trimmed.replaceAll(RegExp(r'[\s\-\(\)]'), '');
-    
+
     // Validar que contenga solo dígitos y opcionalmente + al inicio
     if (!RegExp(r'^\+?\d{9,15}$').hasMatch(cleaned)) {
       throw ArgumentError('Formato de teléfono inválido');
     }
-    
+
     return cleaned;
   }
-  
+
   static PhoneNumber? tryParse(String? value) {
     if (value == null || value.trim().isEmpty) return null;
     try {
@@ -29,7 +29,7 @@ class PhoneNumber extends ValueObject<String> {
       return null;
     }
   }
-  
+
   String get formatted {
     // Formato español: +34 XXX XX XX XX
     if (value.startsWith('+34') && value.length == 12) {

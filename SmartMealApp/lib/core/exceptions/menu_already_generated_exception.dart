@@ -4,10 +4,12 @@ class MenuAlreadyGeneratedException implements Exception {
   final String message;
 
   MenuAlreadyGeneratedException({
-    this.message = 'Los ingredientes de este menú ya se habían añadido a la lista de compra',
+    this.message =
+        'Los ingredientes de este menú ya se habían añadido a la lista de compra',
   });
 
   @override
   String toString() => message;
 }
+
 //TODO: Usar l10n

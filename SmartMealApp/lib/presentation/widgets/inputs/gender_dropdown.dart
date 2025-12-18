@@ -55,7 +55,7 @@ class GenderDropdown extends StatelessWidget {
             color: colorScheme.surfaceContainerHighest,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: colorScheme.outline.withOpacity(0.2),
+              color: colorScheme.outline.withValues(alpha: 0.2),
             ),
           ),
           child: DropdownButtonHideUnderline(
@@ -63,7 +63,11 @@ class GenderDropdown extends StatelessWidget {
               value: value.isEmpty ? null : value,
               hint: Row(
                 children: [
-                  Icon(Icons.person_outline, color: colorScheme.primary, size: 20),
+                  Icon(
+                    Icons.person_outline,
+                    color: colorScheme.primary,
+                    size: 20,
+                  ),
                   const SizedBox(width: 12),
                   Text(
                     l10n.registerGenderHint,

@@ -1070,6 +1070,186 @@ abstract class AppLocalizations {
   /// **'Términos y Condiciones'**
   String get settingsTermsAndConditions;
 
+  /// No description provided for @privacyHeading.
+  ///
+  /// In es, this message translates to:
+  /// **'Política de Privacidad de SmartMeal'**
+  String get privacyHeading;
+
+  /// No description provided for @privacyUpdated.
+  ///
+  /// In es, this message translates to:
+  /// **'Última actualización: {date}'**
+  String privacyUpdated(Object date);
+
+  /// No description provided for @privacySection1Title.
+  ///
+  /// In es, this message translates to:
+  /// **'1. Información que recopilamos'**
+  String get privacySection1Title;
+
+  /// No description provided for @privacySection1Body.
+  ///
+  /// In es, this message translates to:
+  /// **'Recopilamos datos básicos de cuenta (email) y datos de uso necesarios para el funcionamiento de la app (por ejemplo, menús guardados, lista de la compra y preferencias).'**
+  String get privacySection1Body;
+
+  /// No description provided for @privacySection2Title.
+  ///
+  /// In es, this message translates to:
+  /// **'2. Uso de la información'**
+  String get privacySection2Title;
+
+  /// No description provided for @privacySection2Body.
+  ///
+  /// In es, this message translates to:
+  /// **'Usamos tus datos para ofrecerte la funcionalidad de SmartMeal: generar menús, calcular estadísticas y enviar notificaciones si lo autorizas.'**
+  String get privacySection2Body;
+
+  /// No description provided for @privacySection3Title.
+  ///
+  /// In es, this message translates to:
+  /// **'3. Almacenamiento y seguridad'**
+  String get privacySection3Title;
+
+  /// No description provided for @privacySection3Body.
+  ///
+  /// In es, this message translates to:
+  /// **'Almacenamos la información en Firebase. Tomamos medidas razonables para proteger tus datos, pero ningún sistema es 100% seguro.'**
+  String get privacySection3Body;
+
+  /// No description provided for @privacySection4Title.
+  ///
+  /// In es, this message translates to:
+  /// **'4. Compartición de datos'**
+  String get privacySection4Title;
+
+  /// No description provided for @privacySection4Body.
+  ///
+  /// In es, this message translates to:
+  /// **'No vendemos tus datos. Podemos compartir información con proveedores de servicios estrictamente necesarios para operar la app (por ejemplo, Firebase).'**
+  String get privacySection4Body;
+
+  /// No description provided for @privacySection5Title.
+  ///
+  /// In es, this message translates to:
+  /// **'5. Tus derechos'**
+  String get privacySection5Title;
+
+  /// No description provided for @privacySection5Body.
+  ///
+  /// In es, this message translates to:
+  /// **'Puedes solicitar acceso, rectificación o eliminación de tu cuenta desde Ajustes. Para otras solicitudes, contacta con soporte.'**
+  String get privacySection5Body;
+
+  /// No description provided for @privacySection6Title.
+  ///
+  /// In es, this message translates to:
+  /// **'6. Contacto'**
+  String get privacySection6Title;
+
+  /// No description provided for @privacySection6Body.
+  ///
+  /// In es, this message translates to:
+  /// **'Si tienes dudas sobre esta política, utiliza la sección de Soporte en la app.'**
+  String get privacySection6Body;
+
+  /// No description provided for @termsHeading.
+  ///
+  /// In es, this message translates to:
+  /// **'Términos y Condiciones de SmartMeal'**
+  String get termsHeading;
+
+  /// No description provided for @termsUpdated.
+  ///
+  /// In es, this message translates to:
+  /// **'Última actualización: {date}'**
+  String termsUpdated(Object date);
+
+  /// No description provided for @termsSection1Title.
+  ///
+  /// In es, this message translates to:
+  /// **'1. Aceptación de los términos'**
+  String get termsSection1Title;
+
+  /// No description provided for @termsSection1Body.
+  ///
+  /// In es, this message translates to:
+  /// **'Al utilizar SmartMeal aceptas estos términos. Si no estás de acuerdo, no uses la app.'**
+  String get termsSection1Body;
+
+  /// No description provided for @termsSection2Title.
+  ///
+  /// In es, this message translates to:
+  /// **'2. Uso de la aplicación'**
+  String get termsSection2Title;
+
+  /// No description provided for @termsSection2Body.
+  ///
+  /// In es, this message translates to:
+  /// **'SmartMeal está destinada a uso personal. No garantizamos resultados nutricionales o médicos; utiliza la app como apoyo, no como asesoramiento profesional.'**
+  String get termsSection2Body;
+
+  /// No description provided for @termsSection3Title.
+  ///
+  /// In es, this message translates to:
+  /// **'3. Contenido generado'**
+  String get termsSection3Title;
+
+  /// No description provided for @termsSection3Body.
+  ///
+  /// In es, this message translates to:
+  /// **'El contenido (menús, recetas) se genera para tu uso personal. No nos hacemos responsables del uso indebido.'**
+  String get termsSection3Body;
+
+  /// No description provided for @termsSection4Title.
+  ///
+  /// In es, this message translates to:
+  /// **'4. Limitación de responsabilidad'**
+  String get termsSection4Title;
+
+  /// No description provided for @termsSection4Body.
+  ///
+  /// In es, this message translates to:
+  /// **'SmartMeal se ofrece \"tal cual\". No seremos responsables por daños indirectos o consecuentes derivados del uso de la app.'**
+  String get termsSection4Body;
+
+  /// No description provided for @termsSection5Title.
+  ///
+  /// In es, this message translates to:
+  /// **'5. Cambios en los términos'**
+  String get termsSection5Title;
+
+  /// No description provided for @termsSection5Body.
+  ///
+  /// In es, this message translates to:
+  /// **'Podemos actualizar estos términos. Te notificaremos cambios relevantes y la fecha de actualización.'**
+  String get termsSection5Body;
+
+  /// No description provided for @statsGoalTitle.
+  ///
+  /// In es, this message translates to:
+  /// **'Objetivo calórico'**
+  String get statsGoalTitle;
+
+  /// No description provided for @statsGoalRatio.
+  ///
+  /// In es, this message translates to:
+  /// **'{current} kcal / {target} kcal'**
+  String statsGoalRatio(Object current, Object target);
+
+  /// No description provided for @statsGoalPercent.
+  ///
+  /// In es, this message translates to:
+  /// **'{percent}% del objetivo'**
+  String statsGoalPercent(Object percent);
+
+  /// No description provided for @statsGoalNoData.
+  ///
+  /// In es, this message translates to:
+  /// **'Completa tu perfil para calcular tu objetivo calórico.'**
+  String get statsGoalNoData;
+
   /// No description provided for @settingsAccountSection.
   ///
   /// In es, this message translates to:
@@ -2059,6 +2239,12 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Precio actual: {price}€'**
   String shoppingEditPriceCurrentPrice(String price);
+
+  /// Indica la unidad de medida del precio
+  ///
+  /// In es, this message translates to:
+  /// **'Este precio se aplica por {unit}'**
+  String shoppingEditPriceUnitInfo(String unit);
 
   /// No description provided for @shoppingEditPriceNewPriceLabel.
   ///

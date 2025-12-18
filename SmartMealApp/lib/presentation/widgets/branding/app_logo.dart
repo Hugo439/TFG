@@ -26,15 +26,12 @@ class AppLogo extends StatelessWidget {
         alignment: Alignment.center,
         padding: const EdgeInsets.symmetric(horizontal: 12),
         decoration: BoxDecoration(
-          color: colorScheme.onSurface.withOpacity(0.6),
+          color: colorScheme.onSurface.withValues(alpha: 0.6),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Text(
           l10n?.logoNotFound ?? 'Logo no encontrado',
-          style: TextStyle(
-            color: colorScheme.surface,
-            fontSize: 14,
-          ),
+          style: TextStyle(color: colorScheme.surface, fontSize: 14),
         ),
       ),
     );

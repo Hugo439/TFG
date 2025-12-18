@@ -19,7 +19,7 @@ class SplashView extends StatelessWidget {
   Widget build(BuildContext context) {
     final hasError = error != null;
     final l10n = AppLocalizations.of(context);
-    
+
     return Scaffold(
       backgroundColor: AppColors.primaryBackground,
       body: Center(
@@ -32,17 +32,28 @@ class SplashView extends StatelessWidget {
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.error_outline, size: 48, color: AppColors.error),
+                  const Icon(
+                    Icons.error_outline,
+                    size: 48,
+                    color: AppColors.error,
+                  ),
                   const SizedBox(height: 12),
                   Text(
                     l10n?.errorInitializing ?? 'Error inicializando',
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.primaryText),
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.primaryText,
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     error.toString(),
                     textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 12, color: AppColors.mutedText),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: AppColors.mutedText,
+                    ),
                   ),
                   const SizedBox(height: 16),
                   ElevatedButton(

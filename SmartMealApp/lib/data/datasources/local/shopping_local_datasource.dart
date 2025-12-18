@@ -25,7 +25,9 @@ class ShoppingLocalDatasource {
 
       final jsonList = jsonDecode(jsonString) as List<dynamic>;
       final items = jsonList
-          .map((item) => _shoppingItemModelFromJson(item as Map<String, dynamic>))
+          .map(
+            (item) => _shoppingItemModelFromJson(item as Map<String, dynamic>),
+          )
           .toList();
 
       if (kDebugMode) {
@@ -44,7 +46,9 @@ class ShoppingLocalDatasource {
   /// Guarda la lista de compra en caché local
   Future<void> cacheShoppingItems(List<ShoppingItemModel> items) async {
     try {
-      final jsonList = items.map((item) => _shoppingItemModelToJson(item)).toList();
+      final jsonList = items
+          .map((item) => _shoppingItemModelToJson(item))
+          .toList();
       final jsonString = jsonEncode(jsonList);
       await _prefs.setString(_cacheKey, jsonString);
 
@@ -89,14 +93,18 @@ class ShoppingLocalDatasource {
   }
 
   /// Convierte JSON a ShoppingItemModel
-  static ShoppingItemModel _shoppingItemModelFromJson(Map<String, dynamic> json) {
+  static ShoppingItemModel _shoppingItemModelFromJson(
+    Map<String, dynamic> json,
+  ) {
     return ShoppingItemModel(
       id: json['id'] as String? ?? '',
       name: json['name'] as String? ?? '',
       quantity: json['quantity'] as String? ?? '',
       price: (json['price'] as num?)?.toDouble() ?? 0.0,
       category: json['category'] as String? ?? 'Supermercado',
-      usedInMenus: List<String>.from(json['usedInMenus'] as List<dynamic>? ?? []),
+      usedInMenus: List<String>.from(
+        json['usedInMenus'] as List<dynamic>? ?? [],
+      ),
       isChecked: json['isChecked'] as bool? ?? false,
       createdAt: json['createdAt'] != null
           ? DateTime.parse(json['createdAt'] as String)

@@ -11,16 +11,16 @@ class Weight extends ValueObject<double> {
         'El peso debe ser mayor o igual a ${AppConstants.minWeightKg} kg',
       );
     }
-    
+
     if (value > AppConstants.maxWeightKg) {
       throw ArgumentError(
         'El peso debe ser menor o igual a ${AppConstants.maxWeightKg} kg',
       );
     }
-    
+
     return value;
   }
-  
+
   factory Weight.fromString(String value) {
     final parsed = double.tryParse(value);
     if (parsed == null) {
@@ -28,9 +28,9 @@ class Weight extends ValueObject<double> {
     }
     return Weight(parsed);
   }
-  
+
   String get formatted => '${value.toStringAsFixed(1)} kg';
-  
+
   // Calcular IMC (necesita altura)
   double calculateBMI(Height height) {
     return value / (height.meters * height.meters);

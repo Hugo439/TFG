@@ -28,7 +28,7 @@ class TotalPriceCard extends StatelessWidget {
         gradient: LinearGradient(
           colors: [
             colorScheme.secondary,
-            colorScheme.secondary.withOpacity(0.8),
+            colorScheme.secondary.withValues(alpha: 0.8),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -36,7 +36,7 @@ class TotalPriceCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: colorScheme.secondary.withOpacity(0.4),
+            color: colorScheme.secondary.withValues(alpha: 0.4),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -59,10 +59,7 @@ class TotalPriceCard extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 l10n.shoppingSelectedCount(checkedCount, totalCount),
-                style: TextStyle(
-                  color: colorScheme.onSecondary,
-                  fontSize: 13,
-                ),
+                style: TextStyle(color: colorScheme.onSecondary, fontSize: 13),
               ),
             ],
           ),

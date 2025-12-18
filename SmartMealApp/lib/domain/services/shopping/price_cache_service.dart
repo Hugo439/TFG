@@ -14,7 +14,7 @@ class PriceCacheEntry {
   });
 
   bool get isExpired => DateTime.now().isAfter(expiresAt);
-  
+
   Duration get age => DateTime.now().difference(fetchedAt);
 
   factory PriceCacheEntry.fromMap(Map<String, dynamic> map) {
@@ -38,7 +38,7 @@ class PriceCacheEntry {
 
 class PriceCacheService {
   final Map<String, PriceCacheEntry> _memoryCache = {};
-  
+
   // Configuración
   static const Duration defaultTtl = Duration(hours: 24);
   static const int maxCacheSize = 500;
@@ -46,9 +46,9 @@ class PriceCacheService {
   /// Obtiene un precio desde caché (si no ha expirado)
   double? get(String cacheKey) {
     final entry = _memoryCache[cacheKey];
-    
+
     if (entry == null) return null;
-    
+
     if (entry.isExpired) {
       _memoryCache.remove(cacheKey);
       return null;
@@ -140,10 +140,11 @@ class PriceCacheService {
 
   Duration? _getOldestEntryAge() {
     if (_memoryCache.isEmpty) return null;
-    
-    final oldest = _memoryCache.values
-        .reduce((a, b) => a.fetchedAt.isBefore(b.fetchedAt) ? a : b);
-    
+
+    final oldest = _memoryCache.values.reduce(
+      (a, b) => a.fetchedAt.isBefore(b.fetchedAt) ? a : b,
+    );
+
     return oldest.age;
   }
 }

@@ -7,14 +7,14 @@ class Price extends ValueObject<double> {
     if (value < 0) {
       throw ArgumentError('El precio no puede ser negativo');
     }
-    
+
     if (value > 10000) {
       throw ArgumentError('El precio no puede exceder €10,000');
     }
-    
+
     return value;
   }
-  
+
   factory Price.fromString(String value) {
     final parsed = double.tryParse(value.replaceAll(',', '.'));
     if (parsed == null) {
@@ -22,9 +22,9 @@ class Price extends ValueObject<double> {
     }
     return Price(parsed);
   }
-  
+
   String get formatted => '€${value.toStringAsFixed(2)}';
-  
+
   static Price? tryParse(String? value) {
     if (value == null || value.trim().isEmpty) return null;
     try {

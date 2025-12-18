@@ -26,7 +26,7 @@ class GoalsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = context.l10n;
-    
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -61,14 +61,14 @@ class GoalsSection extends StatelessWidget {
 
   Widget _buildDropdown(BuildContext context, String label, String value) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           label,
           style: TextStyle(
-            color: colorScheme.onSurface.withOpacity(0.6),
+            color: colorScheme.onSurface.withValues(alpha: 0.6),
             fontSize: 12,
           ),
         ),
@@ -84,14 +84,11 @@ class GoalsSection extends StatelessWidget {
             children: [
               Text(
                 value,
-                style: TextStyle(
-                  color: colorScheme.onSurface,
-                  fontSize: 14,
-                ),
+                style: TextStyle(color: colorScheme.onSurface, fontSize: 14),
               ),
               Icon(
-                Icons.arrow_drop_down, 
-                color: colorScheme.onSurface.withOpacity(0.6),
+                Icons.arrow_drop_down,
+                color: colorScheme.onSurface.withValues(alpha: 0.6),
               ),
             ],
           ),
@@ -103,7 +100,7 @@ class GoalsSection extends StatelessWidget {
   Widget _buildAllergies(BuildContext context, String? allergies) {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = context.l10n;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -112,7 +109,7 @@ class GoalsSection extends StatelessWidget {
             Text(
               l10n.profileAllergiesLabel,
               style: TextStyle(
-                color: colorScheme.onSurface.withOpacity(0.6),
+                color: colorScheme.onSurface.withValues(alpha: 0.6),
                 fontSize: 12,
               ),
             ),
@@ -120,7 +117,7 @@ class GoalsSection extends StatelessWidget {
             Icon(
               Icons.info_outline,
               size: 16,
-              color: colorScheme.onSurface.withOpacity(0.4),
+              color: colorScheme.onSurface.withValues(alpha: 0.4),
             ),
           ],
         ),
@@ -133,13 +130,10 @@ class GoalsSection extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
           ),
           child: Text(
-            allergies == null || allergies.isEmpty 
-                ? l10n.profileNoAllergies 
+            allergies == null || allergies.isEmpty
+                ? l10n.profileNoAllergies
                 : allergies,
-            style: TextStyle(
-              color: colorScheme.onSurface,
-              fontSize: 14,
-            ),
+            style: TextStyle(color: colorScheme.onSurface, fontSize: 14),
           ),
         ),
       ],

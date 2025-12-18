@@ -21,15 +21,20 @@ class MissingPriceEntryModel {
     required this.lastRequested,
   });
 
-  factory MissingPriceEntryModel.fromFirestore(Map<String, dynamic> map, String id) {
+  factory MissingPriceEntryModel.fromFirestore(
+    Map<String, dynamic> map,
+    String id,
+  ) {
     return MissingPriceEntryModel(
       normalizedName: id,
       ingredientName: map['ingredientName'] as String? ?? id,
       category: map['category'] as String,
       unitKind: map['unitKind'] as String? ?? 'weight',
       requestCount: map['requestCount'] as int? ?? 1,
-      firstRequested: map['firstRequested'] as String? ?? DateTime.now().toIso8601String(),
-      lastRequested: map['lastRequested'] as String? ?? DateTime.now().toIso8601String(),
+      firstRequested:
+          map['firstRequested'] as String? ?? DateTime.now().toIso8601String(),
+      lastRequested:
+          map['lastRequested'] as String? ?? DateTime.now().toIso8601String(),
     );
   }
 

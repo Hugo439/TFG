@@ -28,8 +28,10 @@ class FilledTextField extends StatelessWidget {
     this.onChanged,
     this.enabled = true,
     this.maxLines = 1,
-  }) : assert(controller == null || initialValue == null,
-            'Cannot provide both controller and initialValue');
+  }) : assert(
+         controller == null || initialValue == null,
+         'Cannot provide both controller and initialValue',
+       );
 
   @override
   Widget build(BuildContext context) {
@@ -44,37 +46,37 @@ class FilledTextField extends StatelessWidget {
       maxLines: maxLines,
       onChanged: onChanged,
       style: TextStyle(
-        color: enabled 
-            ? colorScheme.onSurface 
-            : colorScheme.onSurface.withOpacity(0.5),
+        color: enabled
+            ? colorScheme.onSurface
+            : colorScheme.onSurface.withValues(alpha: 0.5),
         fontSize: 14,
       ),
       decoration: InputDecoration(
         labelText: label,
         labelStyle: TextStyle(
-          color: colorScheme.onSurface.withOpacity(0.6), 
+          color: colorScheme.onSurface.withValues(alpha: 0.6),
           fontSize: 14,
         ),
         hintText: hintText,
         hintStyle: TextStyle(
-          color: colorScheme.onSurface.withOpacity(0.6), 
+          color: colorScheme.onSurface.withValues(alpha: 0.6),
           fontSize: 14,
         ),
         filled: true,
-        fillColor: enabled 
-            ? colorScheme.surfaceContainerHighest 
-            : colorScheme.surfaceContainerHighest.withOpacity(0.3),
+        fillColor: enabled
+            ? colorScheme.surfaceContainerHighest
+            : colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
         contentPadding: EdgeInsets.symmetric(
           horizontal: 14,
           vertical: maxLines > 1 ? 14 : 14,
         ),
-        prefixIcon: prefixIcon == null 
-            ? null 
+        prefixIcon: prefixIcon == null
+            ? null
             : Icon(prefixIcon, color: colorScheme.primary, size: 20),
         suffixIcon: suffix,
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: colorScheme.outline.withOpacity(0.2), 
+            color: colorScheme.outline.withValues(alpha: 0.2),
             width: 1,
           ),
           borderRadius: BorderRadius.circular(12),
@@ -85,7 +87,7 @@ class FilledTextField extends StatelessWidget {
         ),
         disabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
-            color: colorScheme.outline.withOpacity(0.1), 
+            color: colorScheme.outline.withValues(alpha: 0.1),
             width: 1,
           ),
           borderRadius: BorderRadius.circular(12),

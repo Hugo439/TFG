@@ -47,7 +47,7 @@ class MenuItemCard extends StatelessWidget {
               child: menuItem.imageUrl == null
                   ? Icon(
                       Icons.restaurant,
-                      color: colorScheme.onSurface.withOpacity(0.6),
+                      color: colorScheme.onSurface.withValues(alpha: 0.6),
                       size: 32,
                     )
                   : null,
@@ -72,7 +72,7 @@ class MenuItemCard extends StatelessWidget {
                   Text(
                     menuItem.description.value,
                     style: TextStyle(
-                      color: colorScheme.onSurface.withOpacity(0.6),
+                      color: colorScheme.onSurface.withValues(alpha: 0.6),
                       fontSize: 13,
                     ),
                     maxLines: 2,
@@ -86,7 +86,7 @@ class MenuItemCard extends StatelessWidget {
               IconButton(
                 icon: Icon(
                   Icons.more_vert,
-                  color: colorScheme.onSurface.withOpacity(0.6),
+                  color: colorScheme.onSurface.withValues(alpha: 0.6),
                 ),
                 onPressed: onMoreTap,
                 padding: EdgeInsets.zero,

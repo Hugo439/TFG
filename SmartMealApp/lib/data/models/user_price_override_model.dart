@@ -26,7 +26,8 @@ class UserPriceOverrideModel {
       ingredientId: ingredientId,
       customPrice: (map['customPrice'] as num).toDouble(),
       reason: map['reason'] as String?,
-      createdAt: map['createdAt'] as String? ?? DateTime.now().toIso8601String(),
+      createdAt:
+          map['createdAt'] as String? ?? DateTime.now().toIso8601String(),
     );
   }
 

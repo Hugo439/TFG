@@ -17,8 +17,8 @@ class EstimateIngredientPriceUseCase
       unitKind: params.unitKind == UnitKind.weight
           ? 'weight'
           : params.unitKind == UnitKind.volume
-              ? 'volume'
-              : 'unit',
+          ? 'volume'
+          : 'unit',
     );
   }
 }

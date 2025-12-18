@@ -145,9 +145,7 @@ void main() {
       });
 
       test('case-insensitive', () {
-        final variants = VariantAdjustmentService.detectVariants(
-          'ACEITE BIO',
-        );
+        final variants = VariantAdjustmentService.detectVariants('ACEITE BIO');
         expect(variants, isNotEmpty);
       });
     });
@@ -183,10 +181,7 @@ void main() {
 
     group('edge cases', () {
       test('maneja string vacío', () {
-        expect(
-          VariantAdjustmentService.getVariantMultiplier(''),
-          equals(1.0),
-        );
+        expect(VariantAdjustmentService.getVariantMultiplier(''), equals(1.0));
       });
 
       test('maneja strings con solo espacios', () {
@@ -197,10 +192,7 @@ void main() {
       });
 
       test('detectVariants con string vacío', () {
-        expect(
-          VariantAdjustmentService.detectVariants(''),
-          isEmpty,
-        );
+        expect(VariantAdjustmentService.detectVariants(''), isEmpty);
       });
 
       test('nombres largos sin variantes', () {

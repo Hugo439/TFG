@@ -4,7 +4,7 @@ class FirebaseAuthDataSource {
   final FirebaseAuth _auth;
 
   FirebaseAuthDataSource({FirebaseAuth? auth})
-      : _auth = auth ?? FirebaseAuth.instance;
+    : _auth = auth ?? FirebaseAuth.instance;
 
   Future<UserCredential> signIn({
     required String email,

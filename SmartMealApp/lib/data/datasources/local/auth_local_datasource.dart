@@ -27,7 +27,7 @@ class AuthLocalDataSource {
   Future<Map<String, String>?> getSavedCredentials() async {
     final prefs = await SharedPreferences.getInstance();
     final remember = prefs.getBool(_keyRememberMe) ?? false;
-    
+
     if (!remember) return null;
 
     final email = prefs.getString(_keyEmail);

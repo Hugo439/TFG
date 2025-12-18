@@ -51,38 +51,23 @@ void main() {
     group('volumeToWeight()', () {
       test('convierte volumen a peso correctamente', () {
         // 1000 ml de aceite (0.92 g/ml) = 920 g
-        expect(
-          DensityService.volumeToWeight(1000, 'aceite'),
-          equals(920.0),
-        );
+        expect(DensityService.volumeToWeight(1000, 'aceite'), equals(920.0));
       });
 
       test('convierte leche: 1000 ml → 1030 g', () {
-        expect(
-          DensityService.volumeToWeight(1000, 'leche'),
-          equals(1030.0),
-        );
+        expect(DensityService.volumeToWeight(1000, 'leche'), equals(1030.0));
       });
 
       test('convierte miel: 100 ml → 142 g', () {
-        expect(
-          DensityService.volumeToWeight(100, 'miel'),
-          equals(142.0),
-        );
+        expect(DensityService.volumeToWeight(100, 'miel'), equals(142.0));
       });
 
       test('convierte agua: 500 ml → 500 g', () {
-        expect(
-          DensityService.volumeToWeight(500, 'agua'),
-          equals(500.0),
-        );
+        expect(DensityService.volumeToWeight(500, 'agua'), equals(500.0));
       });
 
       test('devuelve null si ingrediente desconocido', () {
-        expect(
-          DensityService.volumeToWeight(1000, 'patata'),
-          isNull,
-        );
+        expect(DensityService.volumeToWeight(1000, 'patata'), isNull);
       });
 
       test('maneja decimales', () {
@@ -91,10 +76,7 @@ void main() {
       });
 
       test('maneja volumen cero', () {
-        expect(
-          DensityService.volumeToWeight(0, 'aceite'),
-          equals(0.0),
-        );
+        expect(DensityService.volumeToWeight(0, 'aceite'), equals(0.0));
       });
     });
 
@@ -122,24 +104,15 @@ void main() {
       });
 
       test('convierte agua: 500 g → 500 ml', () {
-        expect(
-          DensityService.weightToVolume(500, 'agua'),
-          equals(500.0),
-        );
+        expect(DensityService.weightToVolume(500, 'agua'), equals(500.0));
       });
 
       test('devuelve null si ingrediente desconocido', () {
-        expect(
-          DensityService.weightToVolume(500, 'arroz'),
-          isNull,
-        );
+        expect(DensityService.weightToVolume(500, 'arroz'), isNull);
       });
 
       test('maneja peso cero', () {
-        expect(
-          DensityService.weightToVolume(0, 'aceite'),
-          equals(0.0),
-        );
+        expect(DensityService.weightToVolume(0, 'aceite'), equals(0.0));
       });
     });
 
@@ -153,21 +126,12 @@ void main() {
           DensityService.suggestUnitKind('leche'),
           equals(UnitKind.volume),
         );
-        expect(
-          DensityService.suggestUnitKind('vino'),
-          equals(UnitKind.volume),
-        );
-        expect(
-          DensityService.suggestUnitKind('zumo'),
-          equals(UnitKind.volume),
-        );
+        expect(DensityService.suggestUnitKind('vino'), equals(UnitKind.volume));
+        expect(DensityService.suggestUnitKind('zumo'), equals(UnitKind.volume));
       });
 
       test('sugiere unidades para productos contables', () {
-        expect(
-          DensityService.suggestUnitKind('huevo'),
-          equals(UnitKind.unit),
-        );
+        expect(DensityService.suggestUnitKind('huevo'), equals(UnitKind.unit));
         expect(
           DensityService.suggestUnitKind('aguacate'),
           equals(UnitKind.unit),
@@ -176,10 +140,7 @@ void main() {
           DensityService.suggestUnitKind('tortilla'),
           equals(UnitKind.unit),
         );
-        expect(
-          DensityService.suggestUnitKind('pan'),
-          equals(UnitKind.unit),
-        );
+        expect(DensityService.suggestUnitKind('pan'), equals(UnitKind.unit));
       });
 
       test('sugiere peso por defecto', () {
@@ -202,10 +163,7 @@ void main() {
           DensityService.suggestUnitKind('ACEITE'),
           equals(UnitKind.volume),
         );
-        expect(
-          DensityService.suggestUnitKind('HUEVO'),
-          equals(UnitKind.unit),
-        );
+        expect(DensityService.suggestUnitKind('HUEVO'), equals(UnitKind.unit));
       });
 
       test('busca substring', () {
@@ -225,7 +183,7 @@ void main() {
         const original = 1000.0; // ml de aceite
         final weight = DensityService.volumeToWeight(original, 'aceite');
         expect(weight, isNotNull);
-        
+
         final volumeAgain = DensityService.weightToVolume(weight!, 'aceite');
         expect(volumeAgain, closeTo(original, 0.01));
       });
@@ -234,7 +192,7 @@ void main() {
         // 250 ml aceite
         final weight1 = DensityService.volumeToWeight(250, 'aceite');
         expect(weight1, equals(250 * 0.92));
-        
+
         // Convertir de vuelta
         final vol1 = DensityService.weightToVolume(weight1!, 'aceite');
         expect(vol1, closeTo(250.0, 0.01));
@@ -244,7 +202,7 @@ void main() {
         // 500 ml leche
         final weight = DensityService.volumeToWeight(500, 'leche');
         expect(weight, equals(500 * 1.03));
-        
+
         // Convertir de vuelta
         final vol = DensityService.weightToVolume(weight!, 'leche');
         expect(vol, closeTo(500.0, 0.01));

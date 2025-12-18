@@ -58,7 +58,7 @@ void main() {
     group('TTL (Time To Live)', () {
       test('expira después del TTL por defecto', () async {
         cache.set('key', 5.0, ttl: Duration(milliseconds: 100));
-        
+
         // Inmediatamente disponible
         expect(cache.get('key'), equals(5.0));
 
@@ -69,7 +69,7 @@ void main() {
 
       test('usa TTL personalizado', () async {
         cache.set('key', 5.0, ttl: Duration(milliseconds: 50));
-        
+
         expect(cache.get('key'), equals(5.0));
 
         await Future.delayed(Duration(milliseconds: 75));
@@ -78,12 +78,12 @@ void main() {
 
       test('refresca TTL en nueva entrada', () async {
         cache.set('key', 5.0, ttl: Duration(milliseconds: 150));
-        
+
         await Future.delayed(Duration(milliseconds: 50));
-        
+
         // Establecer nueva entrada (refresca TTL)
         cache.set('key', 6.0, ttl: Duration(milliseconds: 150));
-        
+
         // Después de otros 100ms, total 150ms, pero TTL refrescado en 50+100=150ms
         await Future.delayed(Duration(milliseconds: 100));
         expect(cache.get('key'), equals(6.0));

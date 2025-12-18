@@ -38,22 +38,26 @@ class _SplashGateBodyState extends State<_SplashGateBody> {
         if (state.status == SplashStatus.authenticated ||
             state.status == SplashStatus.notAuthenticated) {
           WidgetsBinding.instance.addPostFrameCallback((_) async {
+            // Guardamos la referencia local para no usar context tras gaps sin mounted.
+            final navigator = Navigator.of(context);
+            final destination = state.status == SplashStatus.authenticated
+                ? Routes.home
+                : Routes.login;
+
             try {
               await precacheImage(
                 const AssetImage('assets/branding/logo.png'),
                 context,
               );
-            } catch (_) {}
+            } catch (_) {
+              // Ignorar errores de caché para no bloquear la navegación.
+            }
+
             if (!mounted) return;
-            
-            final destination = state.status == SplashStatus.authenticated
-                ? Routes.home
-                : Routes.login;
-            
-            Navigator.of(context).pushReplacementNamed(destination);
+            navigator.pushReplacementNamed(destination);
           });
         }
-        
+
         return SplashView(
           error: state.status == SplashStatus.error ? state.error : null,
           onRetry: () => context.read<SplashViewModel>().initialize(),

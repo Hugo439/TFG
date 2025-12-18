@@ -103,8 +103,12 @@ void main() {
       test('sin fecha usa hoy', () {
         final season = SeasonalPricingService.getCurrentSeason();
         expect(season, isNotNull);
-        expect([Season.spring, Season.summer, Season.autumn, Season.winter],
-            contains(season));
+        expect([
+          Season.spring,
+          Season.summer,
+          Season.autumn,
+          Season.winter,
+        ], contains(season));
       });
     });
 
@@ -229,7 +233,10 @@ void main() {
           'tomate',
           DateTime(2025, 7, 15),
         );
-        expect(adjusted, closeTo(2.1, 0.001)); // Use closeTo for float comparison
+        expect(
+          adjusted,
+          closeTo(2.1, 0.001),
+        ); // Use closeTo for float comparison
       });
 
       test('sin ajuste estacional para huevo', () {
@@ -284,7 +291,11 @@ void main() {
             ingredient,
             DateTime(2025, 6, 15),
           );
-          expect(multiplier, isNot(1.0), reason: '$ingredient debe tener multiplicador');
+          expect(
+            multiplier,
+            isNot(1.0),
+            reason: '$ingredient debe tener multiplicador',
+          );
         }
       });
     });

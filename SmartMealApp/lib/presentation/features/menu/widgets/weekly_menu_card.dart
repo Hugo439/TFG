@@ -13,7 +13,7 @@ class WeeklyMenuCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = context.l10n;
-    
+
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       color: colorScheme.surfaceContainerHighest,
@@ -22,12 +22,11 @@ class WeeklyMenuCard extends StatelessWidget {
           'Semana: ${menu.weekStartDate.toLocal().toString().split(' ')[0]}',
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
-        subtitle: Text('${l10n.recipeTotalCalories}: ${menu.totalWeeklyCalories}'),
+        subtitle: Text(
+          '${l10n.recipeTotalCalories}: ${menu.totalWeeklyCalories}',
+        ),
         children: menu.days.map((dayMenu) {
-          return DayMenuCard(
-            day: dayMenu,
-            onRecipeTap: onRecipeTap,
-          );
+          return DayMenuCard(day: dayMenu, onRecipeTap: onRecipeTap);
         }).toList(),
       ),
     );

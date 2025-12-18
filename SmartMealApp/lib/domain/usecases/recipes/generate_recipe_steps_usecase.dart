@@ -1,7 +1,8 @@
 import 'package:smartmeal/core/usecases/usecase.dart';
 import 'package:smartmeal/domain/repositories/menu_generation_repository.dart';
 
-class GenerateRecipeStepsUseCase implements UseCase<List<String>, GenerateRecipeStepsParams> {
+class GenerateRecipeStepsUseCase
+    implements UseCase<List<String>, GenerateRecipeStepsParams> {
   final MenuGenerationRepository repository;
 
   GenerateRecipeStepsUseCase(this.repository);

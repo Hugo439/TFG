@@ -9,42 +9,35 @@ abstract class Failure {
 
 /// Error de conexión/red
 class NetworkFailure extends Failure {
-  const NetworkFailure([String message = 'Error de conexión'])
-      : super(message);
+  const NetworkFailure([super.message = 'Error de conexión']);
 }
 
 /// Error del servidor
 class ServerFailure extends Failure {
-  const ServerFailure([String message = 'Error del servidor'])
-      : super(message);
+  const ServerFailure([super.message = 'Error del servidor']);
 }
 
 /// Error de caché
 class CacheFailure extends Failure {
-  const CacheFailure([String message = 'Error de caché'])
-      : super(message);
+  const CacheFailure([super.message = 'Error de caché']);
 }
 
 /// Error de permisos
 class PermissionFailure extends Failure {
-  const PermissionFailure([String message = 'Permisos insuficientes'])
-      : super(message);
+  const PermissionFailure([super.message = 'Permisos insuficientes']);
 }
 
 /// Error de datos no encontrados
 class NotFoundFailure extends Failure {
-  const NotFoundFailure([String message = 'Datos no encontrados'])
-      : super(message);
+  const NotFoundFailure([super.message = 'Datos no encontrados']);
 }
 
 /// Error de validación
 class ValidationFailure extends Failure {
-  const ValidationFailure([String message = 'Error de validación'])
-      : super(message);
+  const ValidationFailure([super.message = 'Error de validación']);
 }
 
 /// Error desconocido
 class UnknownFailure extends Failure {
-  const UnknownFailure([String message = 'Error desconocido'])
-      : super(message);
+  const UnknownFailure([super.message = 'Error desconocido']);
 }

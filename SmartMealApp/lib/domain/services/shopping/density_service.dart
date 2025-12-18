@@ -24,13 +24,13 @@ class DensityService {
   /// Obtiene densidad para conversión peso↔volumen
   static double? getDensity(String ingredientName) {
     final name = ingredientName.toLowerCase();
-    
+
     for (final entry in _densities.entries) {
       if (name.contains(entry.key)) {
         return entry.value;
       }
     }
-    
+
     return null;
   }
 
@@ -51,7 +51,7 @@ class DensityService {
   /// Determina si un ingrediente debería usar volumen en lugar de peso
   static UnitKind suggestUnitKind(String ingredientName) {
     final name = ingredientName.toLowerCase().trim();
-    
+
     // Unidades contables (check first to avoid conflicts like "agua" in "aguacate")
     if (name.contains('huevo') ||
         name.contains('aguacate') ||
@@ -59,7 +59,7 @@ class DensityService {
         name.contains('pan')) {
       return UnitKind.unit;
     }
-    
+
     // Líquidos
     if (name.contains('aceite') ||
         name.contains('leche') ||
@@ -71,7 +71,7 @@ class DensityService {
         name.contains('bebida')) {
       return UnitKind.volume;
     }
-    
+
     // Por defecto: peso
     return UnitKind.weight;
   }

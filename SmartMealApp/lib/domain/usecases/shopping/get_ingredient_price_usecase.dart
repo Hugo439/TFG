@@ -54,17 +54,22 @@ class GetIngredientPriceUseCase {
     this._missingPriceRepository,
   );
 
-  Future<Either<Failure, PriceResult>> call(GetIngredientPriceParams params) async {
+  Future<Either<Failure, PriceResult>> call(
+    GetIngredientPriceParams params,
+  ) async {
     try {
-      final normalizedName = SmartIngredientNormalizer().normalize(params.ingredientName);
+      final normalizedName = SmartIngredientNormalizer().normalize(
+        params.ingredientName,
+      );
       final appliedAdjustments = <String>[];
 
       // PASO 1: Intentar obtener override del usuario
       if (params.userId != null) {
-        final userOverrideResult = await _userPriceRepository.getUserPriceOverride(
-          userId: params.userId!,
-          ingredientId: normalizedName,
-        );
+        final userOverrideResult = await _userPriceRepository
+            .getUserPriceOverride(
+              userId: params.userId!,
+              ingredientId: normalizedName,
+            );
 
         if (userOverrideResult.isRight()) {
           final override = userOverrideResult.getOrElse(() => null);
@@ -75,29 +80,38 @@ class GetIngredientPriceUseCase {
               params.unitKind,
             );
 
-            return Right(PriceResult(
-              price: finalPrice,
-              source: 'user_override',
-              appliedAdjustments: ['Precio personalizado: €${override.customPrice}'],
-            ));
+            return Right(
+              PriceResult(
+                price: finalPrice,
+                source: 'user_override',
+                appliedAdjustments: [
+                  'Precio personalizado: €${override.customPrice}',
+                ],
+              ),
+            );
           }
         }
       }
 
       // PASO 2: Buscar en catálogo Firestore
-      final catalogResult = await _catalogRepository.getPriceEntry(normalizedName);
-      
+      final catalogResult = await _catalogRepository.getPriceEntry(
+        normalizedName,
+      );
+
       if (catalogResult.isRight()) {
         final entry = catalogResult.getOrElse(() => null);
-        
+
         if (entry != null) {
           double basePrice = entry.priceRef;
-          appliedAdjustments.add('Precio base: €$basePrice/${entry.unitKind.largeUnit}');
+          appliedAdjustments.add(
+            'Precio base: €$basePrice/${entry.unitKind.largeUnit}',
+          );
 
           // Aplicar ajustes de variantes
-          final variantMultiplier = VariantAdjustmentService.getVariantMultiplier(
-            params.ingredientName,
-          );
+          final variantMultiplier =
+              VariantAdjustmentService.getVariantMultiplier(
+                params.ingredientName,
+              );
           bool hasVariant = false;
           if (variantMultiplier != 1.0) {
             basePrice *= variantMultiplier;
@@ -108,9 +122,8 @@ class GetIngredientPriceUseCase {
           }
 
           // Aplicar ajuste estacional
-          final seasonalMultiplier = SeasonalPricingService.getSeasonalMultiplier(
-            normalizedName,
-          );
+          final seasonalMultiplier =
+              SeasonalPricingService.getSeasonalMultiplier(normalizedName);
           bool hasSeasonal = false;
           if (seasonalMultiplier != 1.0) {
             basePrice *= seasonalMultiplier;
@@ -128,13 +141,15 @@ class GetIngredientPriceUseCase {
 
           final clampedPrice = _clampPrice(finalPrice, params.unitKind);
 
-          return Right(PriceResult(
-            price: clampedPrice,
-            source: 'catalog',
-            hasVariantAdjustment: hasVariant,
-            hasSeasonalAdjustment: hasSeasonal,
-            appliedAdjustments: appliedAdjustments,
-          ));
+          return Right(
+            PriceResult(
+              price: clampedPrice,
+              source: 'catalog',
+              hasVariantAdjustment: hasVariant,
+              hasSeasonalAdjustment: hasSeasonal,
+              appliedAdjustments: appliedAdjustments,
+            ),
+          );
         }
       }
 
@@ -159,17 +174,23 @@ class GetIngredientPriceUseCase {
         ),
       );
 
-      return Right(PriceResult(
-        price: fallbackPrice,
-        source: 'fallback',
-        appliedAdjustments: ['Precio estimado (fallback)'],
-      ));
+      return Right(
+        PriceResult(
+          price: fallbackPrice,
+          source: 'fallback',
+          appliedAdjustments: ['Precio estimado (fallback)'],
+        ),
+      );
     } catch (e) {
       return Left(UnknownFailure('Error obteniendo precio: $e'));
     }
   }
 
-  double _calculateTotalPrice(double pricePerUnit, double quantityBase, UnitKind unitKind) {
+  double _calculateTotalPrice(
+    double pricePerUnit,
+    double quantityBase,
+    UnitKind unitKind,
+  ) {
     if (unitKind == UnitKind.weight) {
       final kg = quantityBase / 1000.0;
       return pricePerUnit * kg;

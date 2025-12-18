@@ -11,10 +11,7 @@ class FAQList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: faqs
-          .map((faq) => FAQItem(
-                question: faq.question,
-                answer: faq.answer,
-              ))
+          .map((faq) => FAQItem(question: faq.question, answer: faq.answer))
           .toList(),
     );
   }

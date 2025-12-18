@@ -24,7 +24,7 @@ class SettingsSection extends StatelessWidget {
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: colorScheme.onSurface.withOpacity(0.6),
+              color: colorScheme.onSurface.withValues(alpha: 0.6),
               letterSpacing: 0.5,
             ),
           ),
@@ -37,15 +37,13 @@ class SettingsSection extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 4,
                 offset: const Offset(0, 2),
               ),
             ],
           ),
-          child: Column(
-            children: _buildChildrenWithDividers(colorScheme),
-          ),
+          child: Column(children: _buildChildrenWithDividers(colorScheme)),
         ),
       ],
     );
@@ -61,7 +59,7 @@ class SettingsSection extends StatelessWidget {
             height: 1,
             thickness: 1,
             indent: 56,
-            color: colorScheme.onSurface.withOpacity(0.1),
+            color: colorScheme.onSurface.withValues(alpha: 0.1),
           ),
         );
       }

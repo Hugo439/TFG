@@ -14,9 +14,7 @@ class RecipeDetailView extends StatelessWidget {
 
     if (vm.recipe == null) {
       vm.loadRecipe(recipeId);
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     final recipe = vm.recipe!;

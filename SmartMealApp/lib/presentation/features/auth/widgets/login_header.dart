@@ -9,7 +9,7 @@ class LoginHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = context.l10n;
-    
+
     return Column(
       children: [
         const LogoBox(height: 160),
@@ -28,7 +28,7 @@ class LoginHeader extends StatelessWidget {
           l10n.loginSubtitle,
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: colorScheme.onSurface.withOpacity(0.6),
+            color: colorScheme.onSurface.withValues(alpha: 0.6),
             fontSize: 14,
             fontWeight: FontWeight.w400,
           ),

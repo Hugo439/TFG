@@ -17,10 +17,9 @@ class WeeklyMenuMapper {
         final recipe = await getRecipeById(recipeId);
         if (recipe != null) recipes.add(recipe);
       }
-      daysEntities.add(DayMenu(
-        day: dayOfWeekFromString(dayModel.day),
-        recipes: recipes,
-      ));
+      daysEntities.add(
+        DayMenu(day: dayOfWeekFromString(dayModel.day), recipes: recipes),
+      );
     }
     return WeeklyMenu(
       id: model.id,
@@ -58,10 +57,7 @@ class WeeklyMenuMapper {
       'createdAt': model.createdAt,
       'updatedAt': model.updatedAt,
       'days': model.days.map((day) {
-        return {
-          'day': day.day,
-          'recipes': day.recipes,
-        };
+        return {'day': day.day, 'recipes': day.recipes};
       }).toList(),
     };
   }

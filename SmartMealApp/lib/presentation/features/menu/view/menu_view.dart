@@ -41,7 +41,8 @@ class _MenuContentState extends State<_MenuContent> {
       title: l10n.menuTitle,
       subtitle: l10n.menuSubtitle,
       selectedIndex: 0,
-      onNavChange: (index) => NavigationController.navigateToIndex(context, index, 0),
+      onNavChange: (index) =>
+          NavigationController.navigateToIndex(context, index, 0),
       body: Builder(
         builder: (context) {
           if (vm.state == MenuState.loading) {
@@ -60,7 +61,9 @@ class _MenuContentState extends State<_MenuContent> {
                   const SizedBox(height: 16),
                   Text(
                     vm.errorMessage ?? l10n.menuLoadError,
-                    style: TextStyle(color: Theme.of(context).colorScheme.error),
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                 ],
@@ -77,7 +80,9 @@ class _MenuContentState extends State<_MenuContent> {
                     Icon(
                       Icons.restaurant_menu,
                       size: 64,
-                      color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withValues(alpha: 0.5),
                     ),
                     const SizedBox(height: 16),
                     Text(
@@ -92,7 +97,9 @@ class _MenuContentState extends State<_MenuContent> {
                     Text(
                       l10n.menuEmptyHint,
                       style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withValues(alpha: 0.6),
                         fontSize: 14,
                       ),
                       textAlign: TextAlign.center,
@@ -130,7 +137,9 @@ class _MenuContentState extends State<_MenuContent> {
                             '${l10n.menuCreated}: ${_formatDate(lastMenu.createdAt)}',
                             style: TextStyle(
                               fontSize: 12,
-                              color: colorScheme.onSurface.withOpacity(0.6),
+                              color: colorScheme.onSurface.withValues(
+                                alpha: 0.6,
+                              ),
                             ),
                           ),
                           if (lastMenu.updatedAt != null)
@@ -138,7 +147,9 @@ class _MenuContentState extends State<_MenuContent> {
                               '${l10n.menuUpdated}: ${_formatDate(lastMenu.updatedAt!)}',
                               style: TextStyle(
                                 fontSize: 12,
-                                color: colorScheme.onSurface.withOpacity(0.6),
+                                color: colorScheme.onSurface.withValues(
+                                  alpha: 0.6,
+                                ),
                               ),
                             ),
                         ],
@@ -171,7 +182,9 @@ class _MenuContentState extends State<_MenuContent> {
               const SizedBox(height: 24),
               WeeklyMenuCalendar(
                 menu: lastMenu,
-                onRecipeTap: (id) => Navigator.of(context).pushNamed(Routes.recipeDetail, arguments: id),
+                onRecipeTap: (id) => Navigator.of(
+                  context,
+                ).pushNamed(Routes.recipeDetail, arguments: id),
               ),
               const SizedBox(height: 80), // Espacio extra al final
             ],

@@ -1,11 +1,12 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smartmeal/data/models/faq_model.dart';
 
 /// Datasource local para cachear FAQs en SharedPreferences
 class FAQLocalDatasource {
   static const String _keyPrefix = 'faq_cache_';
-  
+
   final SharedPreferences _prefs;
 
   FAQLocalDatasource(this._prefs);
@@ -16,20 +17,22 @@ class FAQLocalDatasource {
     try {
       final key = '$_keyPrefix$locale';
       final cached = _prefs.getString(key);
-      
+
       if (cached == null) {
         return null;
       }
-      
+
       final decoded = jsonDecode(cached) as List<dynamic>;
       return decoded
-          .map((item) => FAQModel.fromMap(
-                item as Map<String, dynamic>,
-                item['id'] as String,
-              ))
+          .map(
+            (item) => FAQModel.fromMap(
+              item as Map<String, dynamic>,
+              item['id'] as String,
+            ),
+          )
           .toList();
     } catch (e) {
-      print('Error al cargar FAQs del caché: $e');
+      debugPrint('Error al cargar FAQs del caché: $e');
       return null;
     }
   }
@@ -41,7 +44,7 @@ class FAQLocalDatasource {
       final encoded = jsonEncode(faqs.map((faq) => _toJson(faq)).toList());
       await _prefs.setString(key, encoded);
     } catch (e) {
-      print('Error al guardar FAQs en caché: $e');
+      debugPrint('Error al guardar FAQs en caché: $e');
     }
   }
 
@@ -51,7 +54,7 @@ class FAQLocalDatasource {
       final key = '$_keyPrefix$locale';
       await _prefs.remove(key);
     } catch (e) {
-      print('Error al limpiar caché de FAQs: $e');
+      debugPrint('Error al limpiar caché de FAQs: $e');
     }
   }
 
@@ -65,7 +68,7 @@ class FAQLocalDatasource {
         }
       }
     } catch (e) {
-      print('Error al limpiar todos los cachés de FAQs: $e');
+      debugPrint('Error al limpiar todos los cachés de FAQs: $e');
     }
   }
 

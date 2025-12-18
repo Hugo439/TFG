@@ -20,7 +20,8 @@ class HomeView extends StatelessWidget {
       title: l10n.homeTitle,
       subtitle: l10n.homeSubtitle,
       selectedIndex: 1,
-      onNavChange: (index) => NavigationController.navigateToIndex(context, index, 1),
+      onNavChange: (index) =>
+          NavigationController.navigateToIndex(context, index, 1),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -37,7 +38,7 @@ class HomeView extends StatelessWidget {
             l10n.homeDescription,
             style: TextStyle(
               fontSize: 14,
-              color: colorScheme.onSurface.withOpacity(0.6),
+              color: colorScheme.onSurface.withValues(alpha: 0.6),
             ),
           ),
           const SizedBox(height: 24),
@@ -99,6 +100,7 @@ class HomeView extends StatelessWidget {
           icon: Icons.dashboard,
           title: l10n.homeCardStatsTitle,
           subtitle: l10n.homeCardStatsSubtitle,
+          onTap: () => Navigator.of(context).pushNamed(Routes.statistics),
         );
       case 4:
         return MenuCard(

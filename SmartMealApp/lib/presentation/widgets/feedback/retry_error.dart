@@ -17,7 +17,7 @@ class RetryError extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = context.l10n;
-    
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -37,14 +37,11 @@ class RetryError extends StatelessWidget {
           textAlign: TextAlign.center,
           style: TextStyle(
             fontSize: 12,
-            color: colorScheme.onSurface.withOpacity(0.6),
+            color: colorScheme.onSurface.withValues(alpha: 0.6),
           ),
         ),
         const SizedBox(height: 16),
-        ElevatedButton(
-          onPressed: onRetry,
-          child: Text(l10n.errorRetry),
-        ),
+        ElevatedButton(onPressed: onRetry, child: Text(l10n.errorRetry)),
       ],
     );
   }

@@ -12,10 +12,7 @@ class SplashState {
   const SplashState({this.status = SplashStatus.idle, this.error});
 
   SplashState copyWith({SplashStatus? status, String? error}) {
-    return SplashState(
-      status: status ?? this.status,
-      error: error,
-    );
+    return SplashState(status: status ?? this.status, error: error);
   }
 }
 
@@ -34,12 +31,16 @@ class SplashViewModel extends ChangeNotifier {
     try {
       await _initializeApp(const NoParams());
       await Future.delayed(const Duration(seconds: 1));
-      
+
       final isAuthenticated = await _checkAuthStatus(const NoParams());
-      
-      _update(_state.copyWith(
-        status: isAuthenticated ? SplashStatus.authenticated : SplashStatus.notAuthenticated,
-      ));
+
+      _update(
+        _state.copyWith(
+          status: isAuthenticated
+              ? SplashStatus.authenticated
+              : SplashStatus.notAuthenticated,
+        ),
+      );
     } catch (e) {
       _update(_state.copyWith(status: SplashStatus.error, error: e.toString()));
     }

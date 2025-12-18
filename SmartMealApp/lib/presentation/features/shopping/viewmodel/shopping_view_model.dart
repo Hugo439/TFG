@@ -30,8 +30,8 @@ class ShoppingState {
 
   int get totalItems => items.length;
   int get checkedItems => items.where((item) => item.isChecked).length;
-  
-  List<ShoppingItem> get uncheckedItems => 
+
+  List<ShoppingItem> get uncheckedItems =>
       items.where((item) => !item.isChecked).toList();
 
   ShoppingState copyWith({
@@ -76,27 +76,30 @@ class ShoppingViewModel extends ChangeNotifier {
   ShoppingState get state => _state;
 
   Future<void> loadShoppingItems({bool preserveInfoMessage = false}) async {
-    _update(_state.copyWith(
-      status: ShoppingStatus.loading,
-      error: null,
-      infoMessage: preserveInfoMessage ? _state.infoMessage : null,
-    ));
-    
+    _update(
+      _state.copyWith(
+        status: ShoppingStatus.loading,
+        error: null,
+        infoMessage: preserveInfoMessage ? _state.infoMessage : null,
+      ),
+    );
+
     try {
       final items = await _getShoppingItems(const NoParams());
       final total = await _getTotalPrice(const NoParams());
-      
-      _update(_state.copyWith(
-        status: ShoppingStatus.loaded,
-        items: items,
-        totalPrice: total,
-        infoMessage: preserveInfoMessage ? _state.infoMessage : null,
-      ));
+
+      _update(
+        _state.copyWith(
+          status: ShoppingStatus.loaded,
+          items: items,
+          totalPrice: total,
+          infoMessage: preserveInfoMessage ? _state.infoMessage : null,
+        ),
+      );
     } catch (e) {
-      _update(_state.copyWith(
-        status: ShoppingStatus.error,
-        error: e.toString(),
-      ));
+      _update(
+        _state.copyWith(status: ShoppingStatus.error, error: e.toString()),
+      );
     }
   }
 
@@ -115,19 +118,22 @@ class ShoppingViewModel extends ChangeNotifier {
     // Optimistic UI: actualizar localmente sin recargar toda la lista
     final previousState = _state;
     final updatedItems = _state.items
-        .map((item) => item.id == id ? item.copyWith(isChecked: isChecked) : item)
+        .map(
+          (item) => item.id == id ? item.copyWith(isChecked: isChecked) : item,
+        )
         .toList();
 
-    _update(_state.copyWith(
-      items: updatedItems,
-      totalPrice: _calculateTotal(updatedItems),
-    ));
+    _update(
+      _state.copyWith(
+        items: updatedItems,
+        totalPrice: _calculateTotal(updatedItems),
+      ),
+    );
 
     try {
-      await _toggleShoppingItem(ToggleShoppingItemParams(
-        id: id,
-        isChecked: isChecked,
-      ));
+      await _toggleShoppingItem(
+        ToggleShoppingItemParams(id: id, isChecked: isChecked),
+      );
       return true;
     } catch (e) {
       // Revertir si falla
@@ -136,11 +142,15 @@ class ShoppingViewModel extends ChangeNotifier {
     }
   }
 
-
-
   Future<bool> generateFromMenus() async {
-    _update(_state.copyWith(status: ShoppingStatus.loading, error: null, infoMessage: null));
-    
+    _update(
+      _state.copyWith(
+        status: ShoppingStatus.loading,
+        error: null,
+        infoMessage: null,
+      ),
+    );
+
     try {
       await _generateFromMenus(const NoParams());
       await loadShoppingItems();
@@ -148,17 +158,15 @@ class ShoppingViewModel extends ChangeNotifier {
     } on MenuAlreadyGeneratedException catch (e) {
       // Es un aviso, no un error: menú ya fue pasado
       // No recargamos items (ya están), solo establecemos el mensaje
-      _update(_state.copyWith(
-        status: ShoppingStatus.loaded,
-        infoMessage: e.message,
-      ));
+      _update(
+        _state.copyWith(status: ShoppingStatus.loaded, infoMessage: e.message),
+      );
       return false;
     } catch (e) {
       // Error real
-      _update(_state.copyWith(
-        status: ShoppingStatus.error,
-        error: e.toString(),
-      ));
+      _update(
+        _state.copyWith(status: ShoppingStatus.error, error: e.toString()),
+      );
       return false;
     }
   }
@@ -168,14 +176,16 @@ class ShoppingViewModel extends ChangeNotifier {
     final currentUser = _auth.currentUser;
     if (currentUser == null) return;
     final previousState = _state;
-    
+
     try {
       // Optimistic: remover localmente y notificar
       final remaining = _state.items.where((item) => !item.isChecked).toList();
-      _update(_state.copyWith(
-        items: remaining,
-        totalPrice: _calculateTotal(remaining),
-      ));
+      _update(
+        _state.copyWith(
+          items: remaining,
+          totalPrice: _calculateTotal(remaining),
+        ),
+      );
 
       await _deleteCheckedItems.call(currentUser.uid);
     } catch (e) {
@@ -193,10 +203,9 @@ class ShoppingViewModel extends ChangeNotifier {
     final updated = _state.items
         .map((item) => item.copyWith(isChecked: checked))
         .toList();
-    _update(_state.copyWith(
-      items: updated,
-      totalPrice: _calculateTotal(updated),
-    ));
+    _update(
+      _state.copyWith(items: updated, totalPrice: _calculateTotal(updated)),
+    );
 
     try {
       await _setAllChecked(checked);

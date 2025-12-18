@@ -5,18 +5,18 @@ class MenuItemDescription extends ValueObject<String> {
 
   static String _validate(String value) {
     final trimmed = value.trim();
-    
+
     if (trimmed.isEmpty) {
       throw ArgumentError('La descripción no puede estar vacía');
     }
-    
+
     if (trimmed.length > 500) {
       throw ArgumentError('La descripción no puede exceder 500 caracteres');
     }
-    
+
     return trimmed;
   }
-  
+
   static MenuItemDescription? tryParse(String? value) {
     if (value == null || value.trim().isEmpty) return null;
     try {

@@ -5,10 +5,7 @@ class AiMenuResponseModel {
   final List<RecipeDataModel> recipes;
   final Map<String, DayMenuDataModel> weeklyMenu;
 
-  AiMenuResponseModel({
-    required this.recipes,
-    required this.weeklyMenu,
-  });
+  AiMenuResponseModel({required this.recipes, required this.weeklyMenu});
 
   factory AiMenuResponseModel.fromJson(Map<String, dynamic> json) {
     final recipesJson = json['recipes'] as List;
@@ -18,14 +15,11 @@ class AiMenuResponseModel {
 
     final weeklyMenuJson = json['weeklyMenu'] as Map<String, dynamic>;
     final weeklyMenu = <String, DayMenuDataModel>{};
-    
+
     weeklyMenuJson.forEach((day, data) {
       weeklyMenu[day] = DayMenuDataModel.fromJson(data as Map<String, dynamic>);
     });
 
-    return AiMenuResponseModel(
-      recipes: recipes,
-      weeklyMenu: weeklyMenu,
-    );
+    return AiMenuResponseModel(recipes: recipes, weeklyMenu: weeklyMenu);
   }
 }

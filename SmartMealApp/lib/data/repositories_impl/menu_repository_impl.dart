@@ -7,7 +7,7 @@ class MenuRepositoryImpl implements MenuRepository {
   final MenuDataSource _dataSource;
 
   MenuRepositoryImpl({required MenuDataSource dataSource})
-      : _dataSource = dataSource;
+    : _dataSource = dataSource;
 
   @override
   Future<List<MenuItem>> getMenuItems() async {
@@ -52,8 +52,6 @@ class MenuRepositoryImpl implements MenuRepository {
   @override
   Future<List<MenuItem>> getLatestWeeklyMenu() async {
     final rawData = await _dataSource.getLatestWeeklyMenu();
-    return rawData
-        .map((data) => MenuItemMapper.fromFirestore(data))
-        .toList();
+    return rawData.map((data) => MenuItemMapper.fromFirestore(data)).toList();
   }
 }

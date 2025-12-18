@@ -3,14 +3,16 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 
 class GeminiStepsDatasource {
-  static const String _workerUrl = 'https://groq-worker.smartmealgroq.workers.dev';
+  static const String _workerUrl =
+      'https://groq-worker.smartmealgroq.workers.dev/gemini';
 
   Future<List<String>> generateRecipeSteps({
     required String recipeName,
     required List<String> ingredients,
     required String description,
   }) async {
-    final prompt = '''
+    final prompt =
+        '''
 Eres un chef experto. Genera los pasos de preparación para esta receta:
 
 NOMBRE: $recipeName
@@ -84,7 +86,6 @@ Responde ÚNICAMENTE con un JSON en este formato (sin markdown):
       }
 
       return List<String>.from(decoded['steps'] as List);
-
     } catch (e) {
       if (kDebugMode) {
         debugPrint('[GeminiSteps] Error: $e');

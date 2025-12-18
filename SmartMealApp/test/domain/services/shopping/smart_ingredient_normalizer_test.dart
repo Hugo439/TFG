@@ -53,7 +53,7 @@ void main() {
       test('combina múltiples normalizaciones', () {
         // "HUEVOS FRESCOS" → minúsculas → quitar ruido → plural → "huevo"
         expect(normalizer.normalize('HUEVOS FRESCOS'), equals('huevo'));
-        
+
         // "Tomates Ecológicos" → minúsculas → quitar ruido → plural → "tomate"
         expect(normalizer.normalize('Tomates Ecológicos'), equals('tomate'));
       });
@@ -66,8 +66,14 @@ void main() {
 
     group('similarity()', () {
       test('detecta palabras idénticas', () {
-        expect(SmartIngredientNormalizer.similarity('huevo', 'huevo'), equals(100));
-        expect(SmartIngredientNormalizer.similarity('leche', 'leche'), equals(100));
+        expect(
+          SmartIngredientNormalizer.similarity('huevo', 'huevo'),
+          equals(100),
+        );
+        expect(
+          SmartIngredientNormalizer.similarity('leche', 'leche'),
+          equals(100),
+        );
       });
 
       test('detecta similitudes altas', () {
@@ -84,13 +90,19 @@ void main() {
     group('findBestMatch()', () {
       test('encuentra coincidencia exacta', () {
         final candidates = ['huevo', 'leche', 'queso'];
-        final match = SmartIngredientNormalizer.findBestMatch('huevo', candidates);
+        final match = SmartIngredientNormalizer.findBestMatch(
+          'huevo',
+          candidates,
+        );
         expect(match, equals('huevo'));
       });
 
       test('encuentra coincidencia fuzzy', () {
         final candidates = ['huevo', 'leche', 'queso'];
-        final match = SmartIngredientNormalizer.findBestMatch('huevos', candidates);
+        final match = SmartIngredientNormalizer.findBestMatch(
+          'huevos',
+          candidates,
+        );
         expect(match, equals('huevo'));
       });
 
@@ -106,7 +118,10 @@ void main() {
 
       test('selecciona mejor coincidencia', () {
         final candidates = ['queso', 'quesadilla', 'queso fresco'];
-        final match = SmartIngredientNormalizer.findBestMatch('queso', candidates);
+        final match = SmartIngredientNormalizer.findBestMatch(
+          'queso',
+          candidates,
+        );
         expect(match, isNotNull);
       });
 

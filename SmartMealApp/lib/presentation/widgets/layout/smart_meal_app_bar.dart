@@ -30,9 +30,12 @@ class SmartMealAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: colorScheme.surfaceContainerHighest,
       elevation: 0,
       centerTitle: centerTitle,
-      leadingWidth: 72,
+      leadingWidth: 56,
       leading: Padding(
-        padding: const EdgeInsets.only(left: 12.0, top: 8.0), // Padding asimétrico
+        padding: const EdgeInsets.only(
+          left: 12.0,
+          top: 8.0,
+        ), // Padding asimétrico
         child: leading ?? _DefaultAvatar(colorScheme: colorScheme),
       ),
       title: Padding(
@@ -58,8 +61,8 @@ class SmartMealAppBar extends StatelessWidget implements PreferredSizeWidget {
           tooltip: 'Notificaciones',
           onPressed: onNotification,
           icon: Icon(Icons.notifications_none, color: colorScheme.onSurface),
-          splashColor: colorScheme.primary.withOpacity(0.1),
-          highlightColor: colorScheme.primary.withOpacity(0.05),
+          splashColor: colorScheme.primary.withValues(alpha: 0.1),
+          highlightColor: colorScheme.primary.withValues(alpha: 0.05),
         ),
       ),
     ];
@@ -119,8 +122,9 @@ class _TitleBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final column = Column(
-      crossAxisAlignment:
-          center ? CrossAxisAlignment.center : CrossAxisAlignment.start,
+      crossAxisAlignment: center
+          ? CrossAxisAlignment.center
+          : CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
@@ -129,7 +133,7 @@ class _TitleBlock extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
           style: TextStyle(
             color: colorScheme.onSurface,
-            fontSize: 18,
+            fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -139,7 +143,7 @@ class _TitleBlock extends StatelessWidget {
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
           style: TextStyle(
-            color: colorScheme.onSurface.withOpacity(0.8),
+            color: colorScheme.onSurface.withValues(alpha: 0.8),
             fontSize: 14,
             fontWeight: FontWeight.w600,
           ),

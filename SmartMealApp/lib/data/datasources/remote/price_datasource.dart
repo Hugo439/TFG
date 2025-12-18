@@ -13,12 +13,20 @@ abstract class PriceDatasource {
 class FirestorePriceDatasource implements PriceDatasource {
   final FirebaseFirestore _firestore;
   final Map<String, Map<String, PriceRange>> _cache = {};
-  
+
   //TODO: poner bien el nombre de las categorias
   // Mapeo de categorías alternativas si la primera no existe
   static const _categoryAliases = {
-    'frutas_y_verduras': ['frutas_verduras', 'frutas y verduras', 'frutas-y-verduras'],
-    'carnes_y_pescados': ['carnes_pescados', 'carnes y pescados', 'carnes-y-pescados'],
+    'frutas_y_verduras': [
+      'frutas_verduras',
+      'frutas y verduras',
+      'frutas-y-verduras',
+    ],
+    'carnes_y_pescados': [
+      'carnes_pescados',
+      'carnes y pescados',
+      'carnes-y-pescados',
+    ],
     'lacteos': ['lacteo', 'lácteos'],
     'panaderia': ['pan', 'panadería'],
     'bebidas': ['bebida'],
@@ -33,7 +41,7 @@ class FirestorePriceDatasource implements PriceDatasource {
       // Buscar en caché primero
       if (_cache.containsKey(category)) {
         if (kDebugMode) {
-          print('💾 [PriceDatasource] Precios en caché para: $category');
+          debugPrint('💾 [PriceDatasource] Precios en caché para: $category');
         }
         return _cache[category]!;
       }
@@ -43,31 +51,35 @@ class FirestorePriceDatasource implements PriceDatasource {
       if (_categoryAliases.containsKey(category)) {
         categoriesToTry.addAll(_categoryAliases[category]!);
       }
-      
+
       QuerySnapshot? query;
       String? foundCategory;
-      
+
       for (final cat in categoriesToTry) {
         query = await _firestore
             .collection('price_catalog')
             .where('category', isEqualTo: cat)
             .get();
-        
+
         if (query.docs.isNotEmpty) {
           foundCategory = cat;
           break;
         }
       }
-      
+
       if (query == null || query.docs.isEmpty) {
         if (kDebugMode) {
-          print('⚠️ [PriceDatasource] Categoría no encontrada: $category (intentadas: ${categoriesToTry.join(", ")})');
+          debugPrint(
+            '⚠️ [PriceDatasource] Categoría no encontrada: $category (intentadas: ${categoriesToTry.join(", ")})',
+          );
         }
         return {};
       }
 
       if (kDebugMode && foundCategory != category) {
-        print('ℹ️ [PriceDatasource] Categoría mapeada: $category → $foundCategory');
+        debugPrint(
+          'ℹ️ [PriceDatasource] Categoría mapeada: $category → $foundCategory',
+        );
       }
 
       // Convertir a PriceRange
@@ -85,15 +97,17 @@ class FirestorePriceDatasource implements PriceDatasource {
 
       // Guardar en caché
       _cache[category] = prices;
-      
+
       if (kDebugMode) {
-        print('✅ [PriceDatasource] Precios cargados para: $category (${prices.length} ingredientes)');
+        debugPrint(
+          '✅ [PriceDatasource] Precios cargados para: $category (${prices.length} ingredientes)',
+        );
       }
 
       return prices;
     } catch (e) {
       if (kDebugMode) {
-        print('❌ [PriceDatasource] Error obteniendo precios: $e');
+        debugPrint('❌ [PriceDatasource] Error obteniendo precios: $e');
       }
       return {};
     }
@@ -106,16 +120,18 @@ class FirestorePriceDatasource implements PriceDatasource {
   }) async {
     try {
       final prices = await getPrices(category);
-      
+
       // Buscar ingrediente en la categoría
       PriceRange? priceRange;
       final n = ingredientName.toLowerCase();
-      
+
       for (final key in prices.keys) {
         if (n.contains(key) || key.contains(n)) {
           priceRange = prices[key];
           if (kDebugMode && priceRange != null) {
-            print('💰 [PriceDatasource] Precio encontrado: $key = €${priceRange.avg}');
+            debugPrint(
+              '💰 [PriceDatasource] Precio encontrado: $key = €${priceRange.avg}',
+            );
           }
           break;
         }
@@ -123,7 +139,9 @@ class FirestorePriceDatasource implements PriceDatasource {
 
       if (priceRange == null) {
         if (kDebugMode) {
-          print('⚠️ [PriceDatasource] Precio no encontrado para: $ingredientName en $category');
+          debugPrint(
+            '⚠️ [PriceDatasource] Precio no encontrado para: $ingredientName en $category',
+          );
         }
         return 0;
       }
@@ -131,7 +149,7 @@ class FirestorePriceDatasource implements PriceDatasource {
       return priceRange.avg;
     } catch (e) {
       if (kDebugMode) {
-        print('❌ [PriceDatasource] Error estimando precio: $e');
+        debugPrint('❌ [PriceDatasource] Error estimando precio: $e');
       }
       return 0;
     }
@@ -152,7 +170,7 @@ class FirestorePriceDatasource implements PriceDatasource {
   void clearCache() {
     _cache.clear();
     if (kDebugMode) {
-      print('🗑️ [PriceDatasource] Caché limpiado');
+      debugPrint('🗑️ [PriceDatasource] Caché limpiado');
     }
   }
 }

@@ -62,7 +62,8 @@ class PriceRange {
   }
 
   @override
-  String toString() => 'PriceRange(min: €$min, max: €$max, avg: €$avg, unit: ${unit.name})';
+  String toString() =>
+      'PriceRange(min: €$min, max: €$max, avg: €$avg, unit: ${unit.name})';
 }
 
 class PriceDatabase {
@@ -82,30 +83,47 @@ class PriceDatabase {
   /// Precios específicos por ingrediente (€ por unidad o €/kg)
   static const Map<String, PriceInfo> specificPrices = {
     // ===== HUEVOS Y LÁCTEOS =====
-    'huevo': PriceInfo(pricePerUnit: 0.25, unitType: UnitType.piece),  // €0.25/huevo
-    'leche': PriceInfo(pricePerUnit: 1.20, unitType: UnitType.liter),  // €1.20/L
-    'yogur': PriceInfo(pricePerUnit: 3.50, unitType: UnitType.weight), // €3.50/kg
-    'queso': PriceInfo(pricePerUnit: 12.00, unitType: UnitType.weight), // €12/kg
-    
+    'huevo': PriceInfo(
+      pricePerUnit: 0.25,
+      unitType: UnitType.piece,
+    ), // €0.25/huevo
+    'leche': PriceInfo(pricePerUnit: 1.20, unitType: UnitType.liter), // €1.20/L
+    'yogur': PriceInfo(
+      pricePerUnit: 3.50,
+      unitType: UnitType.weight,
+    ), // €3.50/kg
+    'queso': PriceInfo(
+      pricePerUnit: 12.00,
+      unitType: UnitType.weight,
+    ), // €12/kg
     // ===== CARNES =====
-    'pollo': PriceInfo(pricePerUnit: 8.00, unitType: UnitType.weight),  // €8/kg
+    'pollo': PriceInfo(pricePerUnit: 8.00, unitType: UnitType.weight), // €8/kg
     'pavo': PriceInfo(pricePerUnit: 10.00, unitType: UnitType.weight),
     'carne res': PriceInfo(pricePerUnit: 18.00, unitType: UnitType.weight),
-    
+
     // ===== PESCADOS =====
     'salmon': PriceInfo(pricePerUnit: 20.00, unitType: UnitType.weight),
     'atun': PriceInfo(pricePerUnit: 15.00, unitType: UnitType.weight),
     'bacalao': PriceInfo(pricePerUnit: 16.00, unitType: UnitType.weight),
-    
+
     // ===== FRUTAS Y VERDURAS =====
-    'aguacate': PriceInfo(pricePerUnit: 2.50, unitType: UnitType.piece), // €2.50/unidad
-    'platano': PriceInfo(pricePerUnit: 2.00, unitType: UnitType.weight), // €2/kg
+    'aguacate': PriceInfo(
+      pricePerUnit: 2.50,
+      unitType: UnitType.piece,
+    ), // €2.50/unidad
+    'platano': PriceInfo(
+      pricePerUnit: 2.00,
+      unitType: UnitType.weight,
+    ), // €2/kg
     'tomate': PriceInfo(pricePerUnit: 3.00, unitType: UnitType.weight),
     'patata': PriceInfo(pricePerUnit: 1.50, unitType: UnitType.weight),
-    
+
     // ===== PANADERÍA =====
     'pan': PriceInfo(pricePerUnit: 1.50, unitType: UnitType.piece),
-    'tortilla': PriceInfo(pricePerUnit: 0.40, unitType: UnitType.piece), // €0.40/tortilla
+    'tortilla': PriceInfo(
+      pricePerUnit: 0.40,
+      unitType: UnitType.piece,
+    ), // €0.40/tortilla
   };
 
   static double getEstimatedPrice({
@@ -117,7 +135,9 @@ class PriceDatabase {
     bool applySeasonalAdjustment = true,
   }) {
     // PASO 1: Normalizar nombre
-    final normalizedName = SmartIngredientNormalizer().normalize(ingredientName);
+    final normalizedName = SmartIngredientNormalizer().normalize(
+      ingredientName,
+    );
 
     // PASO 2: Intentar obtener desde caché
     if (useCache) {
@@ -136,7 +156,7 @@ class PriceDatabase {
 
     // PASO 3: Buscar precio específico (con fuzzy matching)
     double basePrice;
-    
+
     if (specificPrices.containsKey(normalizedName)) {
       final info = specificPrices[normalizedName]!;
       basePrice = _calculatePrice(
@@ -191,11 +211,7 @@ class PriceDatabase {
         unitKind: unitKind,
       );
 
-      _cache.set(
-        cacheKey,
-        finalPrice,
-        source: 'calculated',
-      );
+      _cache.set(cacheKey, finalPrice, source: 'calculated');
     }
 
     return finalPrice;
@@ -245,8 +261,5 @@ class PriceInfo {
   final double pricePerUnit;
   final UnitType unitType;
 
-  const PriceInfo({
-    required this.pricePerUnit,
-    required this.unitType,
-  });
+  const PriceInfo({required this.pricePerUnit, required this.unitType});
 }

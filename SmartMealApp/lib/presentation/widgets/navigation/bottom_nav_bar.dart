@@ -20,13 +20,11 @@ class BottomNavBar extends StatelessWidget {
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerHighest,
         border: Border(
-          top: BorderSide(
-            color: colorScheme.outline.withOpacity(0.2),
-          ),
+          top: BorderSide(color: colorScheme.outline.withValues(alpha: 0.2)),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, -2),
           ),
@@ -39,7 +37,7 @@ class BottomNavBar extends StatelessWidget {
         elevation: 0,
         type: BottomNavigationBarType.fixed,
         selectedItemColor: colorScheme.primary,
-        unselectedItemColor: colorScheme.onSurface.withOpacity(0.6),
+        unselectedItemColor: colorScheme.onSurface.withValues(alpha: 0.6),
         selectedIconTheme: const IconThemeData(size: 24),
         unselectedIconTheme: const IconThemeData(size: 22),
         showSelectedLabels: true,

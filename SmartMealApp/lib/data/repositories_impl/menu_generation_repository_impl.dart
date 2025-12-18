@@ -51,10 +51,35 @@ class MenuGenerationRepositoryImpl implements MenuGenerationRepository {
     // Saneado por tipo/rango/duplicados antes de mapear
     final sanitizedResponse = _sanitizeWeeklyMenu(response);
 
+    // Asegurar que TODAS las recetas tengan pasos
+    for (final recipe in sanitizedResponse.recipes) {
+      if (recipe.steps.isEmpty) {
+        try {
+          final steps = await _geminiDatasource.generateRecipeSteps(
+            recipeName: recipe.name,
+            ingredients: recipe.ingredients,
+            description: recipe.description,
+          );
+          recipe.steps.addAll(steps);
+        } catch (e) {
+          if (kDebugMode) {
+            debugPrint(
+              '[GeminiMenu] Error generando pasos para "${recipe.name}": $e',
+            );
+          }
+        }
+      }
+    }
+
     final now = DateTime.now();
     final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
-    final weekStart = DateTime(startOfWeek.year, startOfWeek.month, startOfWeek.day);
-    final menuName = 'Menú Semanal ${weekStart.day}/${weekStart.month}/${weekStart.year}';
+    final weekStart = DateTime(
+      startOfWeek.year,
+      startOfWeek.month,
+      startOfWeek.day,
+    );
+    final menuName =
+        'Menú Semanal ${weekStart.day}/${weekStart.month}/${weekStart.year}';
 
     return AiMenuMapper.toEntity(
       model: sanitizedResponse,
@@ -89,7 +114,15 @@ class MenuGenerationRepositoryImpl implements MenuGenerationRepository {
     }
 
     final sanitized = Map<String, DayMenuDataModel>.from(model.weeklyMenu);
-    final dayOrder = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'];
+    final dayOrder = [
+      'lunes',
+      'martes',
+      'miércoles',
+      'jueves',
+      'viernes',
+      'sábado',
+      'domingo',
+    ];
 
     for (final day in dayOrder) {
       final original = sanitized[day];
@@ -152,7 +185,15 @@ class MenuGenerationRepositoryImpl implements MenuGenerationRepository {
   bool _isValidWeeklyMenu(AiMenuResponseModel model) {
     final recipes = model.recipes;
     final days = model.weeklyMenu;
-    final expectedDays = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'];
+    final expectedDays = [
+      'lunes',
+      'martes',
+      'miércoles',
+      'jueves',
+      'viernes',
+      'sábado',
+      'domingo',
+    ];
     for (final d in expectedDays) {
       final dayData = days[d];
       if (dayData == null) return false;
@@ -183,7 +224,15 @@ class MenuGenerationRepositoryImpl implements MenuGenerationRepository {
   void _logInvalidWeeklyMenu(AiMenuResponseModel model) {
     final recipes = model.recipes;
     final days = model.weeklyMenu;
-    final expectedDays = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'];
+    final expectedDays = [
+      'lunes',
+      'martes',
+      'miércoles',
+      'jueves',
+      'viernes',
+      'sábado',
+      'domingo',
+    ];
 
     for (final d in expectedDays) {
       final dayData = days[d];
@@ -191,7 +240,12 @@ class MenuGenerationRepositoryImpl implements MenuGenerationRepository {
         debugPrint(' - Día "$d" ausente en weeklyMenu');
         continue;
       }
-      final indices = <int?>[dayData.breakfast, dayData.lunch, dayData.snack, dayData.dinner];
+      final indices = <int?>[
+        dayData.breakfast,
+        dayData.lunch,
+        dayData.snack,
+        dayData.dinner,
+      ];
       final labels = ['breakfast', 'lunch', 'snack', 'dinner'];
 
       for (int i = 0; i < indices.length; i++) {
@@ -208,7 +262,9 @@ class MenuGenerationRepositoryImpl implements MenuGenerationRepository {
         }
         final type = recipes[idx].mealType.toLowerCase();
         if (type != label) {
-          debugPrint(' - Día "$d": $label apunta a receta tipo "$type" (índice $idx)');
+          debugPrint(
+            ' - Día "$d": $label apunta a receta tipo "$type" (índice $idx)',
+          );
         }
       }
 

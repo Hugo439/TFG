@@ -14,7 +14,11 @@ class UserPriceOverride {
     required this.createdAt,
   });
 
-  factory UserPriceOverride.fromMap(Map<String, dynamic> map, String userId, String ingredientId) {
+  factory UserPriceOverride.fromMap(
+    Map<String, dynamic> map,
+    String userId,
+    String ingredientId,
+  ) {
     return UserPriceOverride(
       userId: userId,
       ingredientId: ingredientId,

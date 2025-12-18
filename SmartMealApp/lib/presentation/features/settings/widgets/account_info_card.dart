@@ -4,15 +4,12 @@ import 'package:smartmeal/domain/entities/user_profile.dart';
 class AccountInfoCard extends StatelessWidget {
   final UserProfile profile;
 
-  const AccountInfoCard({
-    super.key,
-    required this.profile,
-  });
+  const AccountInfoCard({super.key, required this.profile});
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -24,7 +21,7 @@ class AccountInfoCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: colorScheme.primary.withOpacity(0.3),
+            color: colorScheme.primary.withValues(alpha: 0.3),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -66,7 +63,7 @@ class AccountInfoCard extends StatelessWidget {
                   profile.emailValue,
                   style: TextStyle(
                     fontSize: 14,
-                    color: colorScheme.onPrimary.withOpacity(0.9),
+                    color: colorScheme.onPrimary.withValues(alpha: 0.9),
                   ),
                 ),
               ],

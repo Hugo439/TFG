@@ -13,8 +13,7 @@ class SaveCredentialsParams {
   });
 }
 
-class SaveCredentialsUseCase 
-    implements UseCase<void, SaveCredentialsParams> {
+class SaveCredentialsUseCase implements UseCase<void, SaveCredentialsParams> {
   final AuthRepository repository;
 
   SaveCredentialsUseCase(this.repository);
@@ -22,10 +21,7 @@ class SaveCredentialsUseCase
   @override
   Future<void> call(SaveCredentialsParams params) async {
     if (params.remember) {
-      return await repository.saveCredentials(
-        params.email,
-        params.password,
-      );
+      return await repository.saveCredentials(params.email, params.password);
     } else {
       return await repository.clearCredentials();
     }

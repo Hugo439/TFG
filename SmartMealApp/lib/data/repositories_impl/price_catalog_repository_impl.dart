@@ -12,7 +12,9 @@ class PriceCatalogRepositoryImpl implements PriceCatalogRepository {
   PriceCatalogRepositoryImpl(this._datasource);
 
   @override
-  Future<Either<Failure, PriceEntry?>> getPriceEntry(String normalizedName) async {
+  Future<Either<Failure, PriceEntry?>> getPriceEntry(
+    String normalizedName,
+  ) async {
     try {
       final model = await _datasource.getPriceEntry(normalizedName);
       return Right(model?.toEntity());
@@ -25,7 +27,9 @@ class PriceCatalogRepositoryImpl implements PriceCatalogRepository {
   }
 
   @override
-  Future<Either<Failure, List<PriceEntry>>> getPricesByCategory(String category) async {
+  Future<Either<Failure, List<PriceEntry>>> getPricesByCategory(
+    String category,
+  ) async {
     try {
       final models = await _datasource.getPricesByCategory(category);
       return Right(models.map((m) => m.toEntity()).toList());
@@ -38,7 +42,9 @@ class PriceCatalogRepositoryImpl implements PriceCatalogRepository {
   }
 
   @override
-  Future<Either<Failure, List<PriceEntry>>> searchPrices(String searchTerm) async {
+  Future<Either<Failure, List<PriceEntry>>> searchPrices(
+    String searchTerm,
+  ) async {
     try {
       final models = await _datasource.searchPrices(searchTerm);
       return Right(models.map((m) => m.toEntity()).toList());

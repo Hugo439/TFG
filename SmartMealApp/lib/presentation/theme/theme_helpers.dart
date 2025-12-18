@@ -10,7 +10,7 @@ class ThemeHelpers {
 
   /// Obtener color de texto secundario según tema
   static Color textSecondary(BuildContext context) {
-    return Theme.of(context).colorScheme.onSurface.withOpacity(0.7);
+    return Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.7);
   }
 
   /// Obtener color de fondo primario según tema
@@ -33,14 +33,18 @@ class ThemeHelpers {
   /// Helper para obtener color de categoría según tema
   static Color getCategoryColor(String? category, BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     switch (category) {
       case 'Dudas':
         return isDark ? AppColors.darkCategoryDudas : AppColors.categoryDudas;
       case 'Errores':
-        return isDark ? AppColors.darkCategoryErrores : AppColors.categoryErrores;
+        return isDark
+            ? AppColors.darkCategoryErrores
+            : AppColors.categoryErrores;
       case 'Sugerencias':
-        return isDark ? AppColors.darkCategorySugerencias : AppColors.categorySugerencias;
+        return isDark
+            ? AppColors.darkCategorySugerencias
+            : AppColors.categorySugerencias;
       case 'Cuenta':
         return isDark ? AppColors.darkCategoryCuenta : AppColors.categoryCuenta;
       case 'Menús':
@@ -55,7 +59,7 @@ class ThemeHelpers {
   /// Helper para obtener color de estado según tema
   static Color getStatusColor(String? status, BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    
+
     switch (status) {
       case 'respondido':
         return isDark ? AppColors.darkSuccess : AppColors.success;

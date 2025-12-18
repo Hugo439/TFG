@@ -8,7 +8,7 @@ import 'package:smartmeal/l10n/l10n_ext.dart';
 class LoginForm extends StatefulWidget {
   final VoidCallback? onSuccess;
   final String? prefilledEmail;
-  
+
   const LoginForm({super.key, this.onSuccess, this.prefilledEmail});
 
   @override
@@ -95,10 +95,14 @@ class _LoginFormState extends State<LoginForm> {
             prefixIcon: Icons.lock_outline,
             suffix: IconButton(
               icon: Icon(
-                vm.obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                vm.obscurePassword
+                    ? Icons.visibility_off_outlined
+                    : Icons.visibility_outlined,
                 color: colorScheme.primary,
               ),
-              onPressed: context.read<LoginViewModel>().togglePasswordVisibility,
+              onPressed: context
+                  .read<LoginViewModel>()
+                  .togglePasswordVisibility,
             ),
           ),
           if (_getErrorText(context, vm.errorCode) != null) ...[
@@ -123,7 +127,7 @@ class _LoginFormState extends State<LoginForm> {
                   Text(
                     l10n.loginRememberMe,
                     style: TextStyle(
-                      color: colorScheme.onSurface, 
+                      color: colorScheme.onSurface,
                       fontSize: 14,
                     ),
                   ),

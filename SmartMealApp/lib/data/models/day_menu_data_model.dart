@@ -4,12 +4,7 @@ class DayMenuDataModel {
   final int? snack;
   final int? dinner;
 
-  DayMenuDataModel({
-    this.breakfast,
-    this.lunch,
-    this.snack,
-    this.dinner,
-  });
+  DayMenuDataModel({this.breakfast, this.lunch, this.snack, this.dinner});
 
   factory DayMenuDataModel.fromJson(Map<String, dynamic> json) {
     return DayMenuDataModel(

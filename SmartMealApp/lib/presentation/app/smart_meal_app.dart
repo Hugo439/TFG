@@ -24,12 +24,11 @@ class SmartMealApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             theme: AppTheme.lightTheme,
             darkTheme: AppTheme.darkTheme,
-            themeMode: themeProvider.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+            themeMode: themeProvider.isDarkMode
+                ? ThemeMode.dark
+                : ThemeMode.light,
             locale: localeProvider.locale,
-            supportedLocales: const [
-              Locale('es'),
-              Locale('en'),
-            ],
+            supportedLocales: const [Locale('es'), Locale('en')],
             localizationsDelegates: const [
               AppLocalizations.delegate,
               GlobalMaterialLocalizations.delegate,

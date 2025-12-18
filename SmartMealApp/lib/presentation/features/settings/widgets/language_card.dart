@@ -27,17 +27,14 @@ class LanguageCard extends StatelessWidget {
           color: colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: colorScheme.outline.withOpacity(0.2),
+            color: colorScheme.outline.withValues(alpha: 0.2),
             width: 1,
           ),
         ),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         child: Row(
           children: [
-            Text(
-              flag,
-              style: const TextStyle(fontSize: 32),
-            ),
+            Text(flag, style: const TextStyle(fontSize: 32)),
             const SizedBox(width: 16),
             Expanded(
               child: Column(
@@ -56,17 +53,13 @@ class LanguageCard extends StatelessWidget {
                     description,
                     style: TextStyle(
                       fontSize: 13,
-                      color: colorScheme.onSurface.withOpacity(0.6),
+                      color: colorScheme.onSurface.withValues(alpha: 0.6),
                     ),
                   ),
                 ],
               ),
             ),
-            Icon(
-              Icons.arrow_forward_ios,
-              color: colorScheme.primary,
-              size: 16,
-            ),
+            Icon(Icons.arrow_forward_ios, color: colorScheme.primary, size: 16),
           ],
         ),
       ),

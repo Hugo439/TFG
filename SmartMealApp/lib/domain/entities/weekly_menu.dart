@@ -1,6 +1,14 @@
 import 'package:smartmeal/domain/entities/day_menu.dart';
 
-enum DayOfWeek { monday, tuesday, wednesday, thursday, friday, saturday, sunday }
+enum DayOfWeek {
+  monday,
+  tuesday,
+  wednesday,
+  thursday,
+  friday,
+  saturday,
+  sunday,
+}
 
 class WeeklyMenu {
   final String id;
@@ -21,9 +29,10 @@ class WeeklyMenu {
     this.updatedAt,
   });
 
-  int get totalWeeklyCalories => days.fold(0, (sum, day) => sum + day.totalCalories);
+  int get totalWeeklyCalories =>
+      days.fold(0, (sum, day) => sum + day.totalCalories);
 
-    double get avgDailyCalories {
+  double get avgDailyCalories {
     if (days.isEmpty) return 0;
     return totalWeeklyCalories / days.length;
   }

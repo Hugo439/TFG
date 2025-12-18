@@ -93,7 +93,9 @@ class SeasonalPricingService {
 
   /// Obtiene el multiplicador estacional para un ingrediente
   static double getSeasonalMultiplier(String ingredientName, [DateTime? date]) {
-    final normalizedName = SmartIngredientNormalizer().normalize(ingredientName);
+    final normalizedName = SmartIngredientNormalizer().normalize(
+      ingredientName,
+    );
     final season = getCurrentSeason(date);
 
     // Buscar coincidencia exacta

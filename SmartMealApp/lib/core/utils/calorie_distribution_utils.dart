@@ -22,7 +22,7 @@ class MealCalorieDistribution {
   });
 
   /// Calcula distribución de calorías por tipo de comida según objetivo diario
-  /// 
+  ///
   /// Distribución típica nutricional:
   /// - Breakfast: 25-30% de calorías diarias
   /// - Lunch: 35-40% de calorías diarias

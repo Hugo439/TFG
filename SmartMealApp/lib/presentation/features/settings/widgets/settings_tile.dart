@@ -21,7 +21,7 @@ class SettingsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -35,7 +35,7 @@ class SettingsTile extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: colorScheme.primary.withOpacity(0.1),
+                  color: colorScheme.primary.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Icon(
@@ -63,17 +63,14 @@ class SettingsTile extends StatelessWidget {
                         subtitle!,
                         style: TextStyle(
                           fontSize: 13,
-                          color: colorScheme.onSurface.withOpacity(0.6),
+                          color: colorScheme.onSurface.withValues(alpha: 0.6),
                         ),
                       ),
                     ],
                   ],
                 ),
               ),
-              if (trailing != null) ...[
-                const SizedBox(width: 8),
-                trailing!,
-              ],
+              if (trailing != null) ...[const SizedBox(width: 8), trailing!],
             ],
           ),
         ),

@@ -70,14 +70,18 @@ class _ShoppingContent extends StatelessWidget {
       title: l10n.shoppingTitle,
       subtitle: l10n.shoppingSubtitle,
       selectedIndex: 2,
-      onNavChange: (index) => NavigationController.navigateToIndex(context, index, 2),
+      onNavChange: (index) =>
+          NavigationController.navigateToIndex(context, index, 2),
       actions: [
         Builder(
           builder: (context) {
-            final allChecked = state.items.isNotEmpty && state.items.every((i) => i.isChecked);
+            final allChecked =
+                state.items.isNotEmpty && state.items.every((i) => i.isChecked);
             return IconButton(
               icon: Icon(allChecked ? Icons.remove_done : Icons.done_all),
-              tooltip: allChecked ? l10n.shoppingUncheckAllTooltip : l10n.shoppingCheckAllTooltip,
+              tooltip: allChecked
+                  ? l10n.shoppingUncheckAllTooltip
+                  : l10n.shoppingCheckAllTooltip,
               onPressed: state.items.isEmpty
                   ? null
                   : () async {
@@ -216,7 +220,8 @@ class _ShoppingContent extends StatelessWidget {
                       onTap: () async {
                         final result = await Navigator.of(context).push(
                           MaterialPageRoute(
-                            builder: (_) => AddShoppingItemView(itemToEdit: item),
+                            builder: (_) =>
+                                AddShoppingItemView(itemToEdit: item),
                           ),
                         );
                         if (result == true) {

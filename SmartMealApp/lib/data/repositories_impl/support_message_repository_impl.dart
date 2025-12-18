@@ -8,7 +8,7 @@ class SupportMessageRepositoryImpl implements SupportMessageRepository {
   final FirebaseFirestore firestore;
 
   SupportMessageRepositoryImpl({FirebaseFirestore? firestoreInstance})
-      : firestore = firestoreInstance ?? FirebaseFirestore.instance;
+    : firestore = firestoreInstance ?? FirebaseFirestore.instance;
 
   @override
   Future<List<SupportMessage>> getMessagesByUser(String userId) async {
@@ -19,9 +19,11 @@ class SupportMessageRepositoryImpl implements SupportMessageRepository {
         .get();
 
     return query.docs
-        .map((doc) => SupportMessageMapper.toEntity(
-              SupportMessageModel.fromMap(doc.data(), id: doc.id),
-            ))
+        .map(
+          (doc) => SupportMessageMapper.toEntity(
+            SupportMessageModel.fromMap(doc.data(), id: doc.id),
+          ),
+        )
         .toList();
   }
 

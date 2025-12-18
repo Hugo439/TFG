@@ -5,13 +5,11 @@ class ToggleShoppingItemParams {
   final String id;
   final bool isChecked;
 
-  const ToggleShoppingItemParams({
-    required this.id,
-    required this.isChecked,
-  });
+  const ToggleShoppingItemParams({required this.id, required this.isChecked});
 }
 
-class ToggleShoppingItemUseCase implements UseCase<void, ToggleShoppingItemParams> {
+class ToggleShoppingItemUseCase
+    implements UseCase<void, ToggleShoppingItemParams> {
   final ShoppingRepository repository;
 
   ToggleShoppingItemUseCase(this.repository);

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:smartmeal/domain/entities/recipe.dart';
-import 'package:smartmeal/domain/usecases/menus/get_recipe_by_id_usecase.dart';
+import 'package:smartmeal/domain/usecases/recipes/get_recipe_by_id_usecase.dart';
 import 'package:smartmeal/domain/usecases/recipes/generate_recipe_steps_usecase.dart';
 import 'package:smartmeal/domain/usecases/recipes/update_recipe_usecase.dart';
 import 'package:smartmeal/core/di/service_locator.dart';
 
 class RecipeDetailViewModel extends ChangeNotifier {
   final GetRecipeByIdUseCase _getRecipeByIdUseCase = sl<GetRecipeByIdUseCase>();
-  final GenerateRecipeStepsUseCase _generateStepsUseCase = sl<GenerateRecipeStepsUseCase>();
+  final GenerateRecipeStepsUseCase _generateStepsUseCase =
+      sl<GenerateRecipeStepsUseCase>();
   final UpdateRecipeUseCase _updateRecipeUseCase = sl<UpdateRecipeUseCase>();
 
   Recipe? _recipe;
@@ -44,10 +45,7 @@ class RecipeDetailViewModel extends ChangeNotifier {
 
       final steps = await _generateStepsUseCase(params);
 
-      _recipe = _recipe!.copyWith(
-        steps: steps,
-        updatedAt: DateTime.now(),
-      );
+      _recipe = _recipe!.copyWith(steps: steps, updatedAt: DateTime.now());
 
       await _updateRecipeUseCase(UpdateRecipeParams(_recipe!));
 

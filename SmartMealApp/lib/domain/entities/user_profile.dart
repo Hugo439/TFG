@@ -34,7 +34,7 @@ class UserProfile {
     this.age,
     this.gender,
   });
-  
+
   // Helper getters para acceso directo a valores primitivos
   String get displayNameValue => displayName.value;
   String get emailValue => email.value;
@@ -45,10 +45,10 @@ class UserProfile {
   String? get allergiesValue => allergies?.value;
   int? get ageValue => age?.value;
   String? get genderValue => gender?.value;
-  
+
   // Cálculo de IMC
   double get bmi => weight.calculateBMI(height);
-  
+
   // Clasificación de IMC
   String get bmiCategory {
     if (bmi < 18.5) return 'Bajo peso';

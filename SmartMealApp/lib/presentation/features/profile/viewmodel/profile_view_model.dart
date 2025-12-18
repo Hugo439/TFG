@@ -54,7 +54,9 @@ class ProfileViewModel extends ChangeNotifier {
       final profile = await _getProfile(const NoParams());
       _update(_state.copyWith(status: ProfileStatus.loaded, profile: profile));
     } catch (e) {
-      _update(_state.copyWith(status: ProfileStatus.error, error: e.toString()));
+      _update(
+        _state.copyWith(status: ProfileStatus.error, error: e.toString()),
+      );
     }
   }
 

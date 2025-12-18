@@ -14,17 +14,18 @@ class LogoBox extends StatelessWidget {
       height: height,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: colorScheme.surface.withOpacity(0.9),
+        color: colorScheme.surface.withValues(alpha: 0.9),
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
-            color: colorScheme.shadow.withOpacity(0.1),
+            color: colorScheme.shadow.withValues(alpha: 0.1),
             blurRadius: 8,
             offset: const Offset(0, 3),
           ),
         ],
       ),
-      child: child ??
+      child:
+          child ??
           Image.asset(
             'assets/branding/logo.png',
             height: height * 0.8,

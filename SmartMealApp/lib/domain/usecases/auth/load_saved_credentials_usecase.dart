@@ -1,7 +1,7 @@
 import 'package:smartmeal/core/usecases/usecase.dart';
 import 'package:smartmeal/domain/repositories/auth_repository.dart';
 
-class LoadSavedCredentialsUseCase 
+class LoadSavedCredentialsUseCase
     implements UseCase<Map<String, String>?, NoParams> {
   final AuthRepository repository;
 

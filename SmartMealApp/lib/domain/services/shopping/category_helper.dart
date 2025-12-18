@@ -3,9 +3,9 @@ import 'package:smartmeal/domain/value_objects/shopping_item_category.dart';
 class CategoryHelper {
   ShoppingItemCategory guessCategory(String ingredientName) {
     final n = ingredientName.toLowerCase();
-    
+
     // ===== LÁCTEOS =====
-    if (n.contains('queso') || 
+    if (n.contains('queso') ||
         n.contains('feta') ||
         n.contains('yogur') ||
         n.contains('leche') ||
@@ -19,10 +19,10 @@ class CategoryHelper {
     }
 
     // ===== CARNES Y PESCADOS =====
-    if (n.contains('pollo') || 
-        n.contains('pavo') || 
-        n.contains('carne') || 
-        n.contains('cerdo') || 
+    if (n.contains('pollo') ||
+        n.contains('pavo') ||
+        n.contains('carne') ||
+        n.contains('cerdo') ||
         n.contains('ternera') ||
         n.contains('salmon') ||
         n.contains('atun') ||
@@ -38,8 +38,8 @@ class CategoryHelper {
     }
 
     // ===== FRUTAS Y VERDURAS =====
-    if (n.contains('manzana') || 
-        n.contains('platano') || 
+    if (n.contains('manzana') ||
+        n.contains('platano') ||
         n.contains('naranja') ||
         n.contains('kiwi') ||
         n.contains('pera') ||
@@ -54,8 +54,8 @@ class CategoryHelper {
         n.contains('aguacate') ||
         n.contains('limon') ||
         n.contains('lima') ||
-        n.contains('tomate') || 
-        n.contains('cebolla') || 
+        n.contains('tomate') ||
+        n.contains('cebolla') ||
         n.contains('lechuga') ||
         n.contains('espinaca') ||
         n.contains('brocoli') ||
@@ -84,8 +84,8 @@ class CategoryHelper {
     }
 
     // ===== PANADERÍA =====
-    if (n.contains('pan') || 
-        n.contains('baguette') || 
+    if (n.contains('pan') ||
+        n.contains('baguette') ||
         n.contains('hogaza') ||
         n.contains('tortilla') ||
         n.contains('tostada') ||
@@ -149,9 +149,7 @@ class CategoryHelper {
     }
 
     // Proteínas en polvo
-    if (n.contains('proteina') || 
-        n.contains('whey') ||
-        n.contains('suero')) {
+    if (n.contains('proteina') || n.contains('whey') || n.contains('suero')) {
       return ShoppingItemCategory.otros;
     }
 

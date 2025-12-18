@@ -12,26 +12,35 @@ class MissingPriceFirestoreDatasource {
 
   Future<void> trackMissingPrice(MissingPriceEntryModel model) async {
     try {
-      final docRef = _firestore.collection(_collection).doc(model.normalizedName);
+      final docRef = _firestore
+          .collection(_collection)
+          .doc(model.normalizedName);
       final doc = await docRef.get();
 
       if (doc.exists) {
         // Incrementar contador
-        final existingModel = MissingPriceEntryModel.fromFirestore(doc.data()!, doc.id);
+        final existingModel = MissingPriceEntryModel.fromFirestore(
+          doc.data()!,
+          doc.id,
+        );
         await docRef.update({
           'requestCount': existingModel.requestCount + 1,
           'lastRequested': DateTime.now().toIso8601String(),
         });
 
         if (kDebugMode) {
-          print('📊 [MissingPriceDatasource] Incrementado contador: ${model.normalizedName}');
+          print(
+            '📊 [MissingPriceDatasource] Incrementado contador: ${model.normalizedName}',
+          );
         }
       } else {
         // Crear nuevo registro
         await docRef.set(model.toFirestore());
 
         if (kDebugMode) {
-          print('📊 [MissingPriceDatasource] Nuevo registro: ${model.normalizedName}');
+          print(
+            '📊 [MissingPriceDatasource] Nuevo registro: ${model.normalizedName}',
+          );
         }
       }
     } catch (e) {
@@ -42,7 +51,9 @@ class MissingPriceFirestoreDatasource {
     }
   }
 
-  Future<List<MissingPriceEntryModel>> getTopMissingPrices({int limit = 20}) async {
+  Future<List<MissingPriceEntryModel>> getTopMissingPrices({
+    int limit = 20,
+  }) async {
     try {
       final query = await _firestore
           .collection(_collection)
@@ -51,11 +62,15 @@ class MissingPriceFirestoreDatasource {
           .get();
 
       if (kDebugMode) {
-        print('📊 [MissingPriceDatasource] Top ${query.docs.length} precios faltantes');
+        print(
+          '📊 [MissingPriceDatasource] Top ${query.docs.length} precios faltantes',
+        );
       }
 
       return query.docs
-          .map((doc) => MissingPriceEntryModel.fromFirestore(doc.data(), doc.id))
+          .map(
+            (doc) => MissingPriceEntryModel.fromFirestore(doc.data(), doc.id),
+          )
           .toList();
     } catch (e) {
       if (kDebugMode) {
@@ -73,7 +88,9 @@ class MissingPriceFirestoreDatasource {
           .get();
 
       return query.docs
-          .map((doc) => MissingPriceEntryModel.fromFirestore(doc.data(), doc.id))
+          .map(
+            (doc) => MissingPriceEntryModel.fromFirestore(doc.data(), doc.id),
+          )
           .toList();
     } catch (e) {
       if (kDebugMode) {

@@ -17,7 +17,7 @@ abstract class AuthRepository {
   Future<void> signOut();
   Future<void> deleteAccount();
   User? getCurrentUser();
-  
+
   Future<void> saveCredentials(String email, String password);
   Future<void> clearCredentials();
   Future<Map<String, String>?> getSavedCredentials();

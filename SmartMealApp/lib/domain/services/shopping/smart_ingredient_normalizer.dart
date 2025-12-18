@@ -3,13 +3,56 @@ import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 class SmartIngredientNormalizer {
   // Palabras de ruido
   static const _noiseWords = {
-    'virgen', 'extra', 'ecologico', 'ecologicos', 'ecológico', 'ecológicos', 
-    'bio', 'organico', 'organicos', 'orgánico', 'orgánicos',
-    'fresco', 'frescos', 'congelado', 'congelados', 'natural', 'naturales', 'light',
-    'sin', 'lactosa', 'desnatado', 'semidesnatado',
-    'de', 'corral', 'campero', 'iberico', 'ibérico',
-    'troceado', 'fileteado', 'rodajas', 'rebanadas',
-    'kg', 'g', 'gr', 'ml', 'l', 'ud', 'uds', 'unidad', 'unidades',
+    'virgen',
+    'extra',
+    'ecologico',
+    'ecologicos',
+    'ecológico',
+    'ecológicos',
+    'bio',
+    'organico',
+    'organicos',
+    'orgánico',
+    'orgánicos',
+    'fresco',
+    'frescos',
+    'congelado',
+    'congelados',
+    'natural',
+    'naturales',
+    'light',
+    'sin',
+    'lactosa',
+    'desnatado',
+    'semidesnatado',
+    'de',
+    'corral',
+    'campero',
+    'iberico',
+    'ibérico',
+    'troceado',
+    'fileteado',
+    'rodajas',
+    'rebanadas',
+    'kg',
+    'g',
+    'gr',
+    'ml',
+    'l',
+    'ud',
+    'uds',
+    'unidad',
+    'unidades',
+    'lomo',
+    'asado',
+    'asada',
+    'asados',
+    'asadas',
+    'frito',
+    'cocido',
+    'cocida',
+    'cocidos',
+    'cocidas',
   };
 
   // Plural → singular
@@ -42,13 +85,14 @@ class SmartIngredientNormalizer {
   static const _synonyms = {
     // ⚠️  IMPORTANTE: Ordenar por especificidad (más específico primero)
     // Así "claras huevo" se reemplaza ANTES que "claras" solo
-    'claras de huevo': 'huevo',           // Exacto: 3 palabras
-    'clara de huevo': 'huevo',            // Singular exacto: 3 palabras
-    'claras huevo': 'huevo',              // Sin "de": 2 palabras (ANTES de "claras" solo)
-    'clara huevo': 'huevo',               // Clara singular + huevo: 2 palabras
-    'claras': 'huevo',                    // Fallback: solo claras (1 palabra)
-    'clara': 'huevo',                     // Clara singular solo (1 palabra)
-    'pechuga pollo': 'pollo',             // 2 palabras (ANTES de otros singles)
+    'claras de huevo': 'huevo', // Exacto: 3 palabras
+    'clara de huevo': 'huevo', // Singular exacto: 3 palabras
+    'claras huevo': 'huevo', // Sin "de": 2 palabras (ANTES de "claras" solo)
+    'clara huevo': 'huevo', // Clara singular + huevo: 2 palabras
+    'claras': 'huevo', // Fallback: solo claras (1 palabra)
+    'clara': 'huevo', // Clara singular solo (1 palabra)
+    'pechuga pollo': 'pollo', // 2 palabras (ANTES de otros singles)
+    'pavo pechuga': 'pechuga pavo',
     'porotos': 'alubia',
     'frijoles': 'alubia',
     'judias': 'alubia',
@@ -64,7 +108,11 @@ class SmartIngredientNormalizer {
   String normalize(String raw) {
     var s = raw.toLowerCase().trim();
     if (s.isEmpty) return '';
-    
+
+    // Eliminar contenido entre paréntesis y otros delimitadores
+    s = s.replaceAll(RegExp(r'\(.*?\)'), ' ');
+    s = s.replaceAll(RegExp(r'\[.*?\]|\{.*?\}'), ' ');
+
     s = _stripAccents(s);
     s = _convertPluralToSingular(s); // Hacer primero plural→singular
     s = _replaceSynonyms(s);
@@ -76,7 +124,7 @@ class SmartIngredientNormalizer {
 
   String _stripAccents(String s) {
     const withAccents = 'áéíóúüñç';
-    const without =    'aeiouunc';
+    const without = 'aeiouunc';
     for (var i = 0; i < withAccents.length; i++) {
       s = s.replaceAll(withAccents[i], without[i]);
     }
@@ -111,7 +159,7 @@ class SmartIngredientNormalizer {
     int minScore = 80,
   }) {
     if (input.isEmpty) return null;
-    
+
     final normalizer = SmartIngredientNormalizer();
     // Normalize input without calling normalize() to avoid recursion
     var normalizedInput = input.toLowerCase().trim();
@@ -120,9 +168,9 @@ class SmartIngredientNormalizer {
     normalizedInput = normalizer._removeStopWords(normalizedInput);
     normalizedInput = normalizer._convertPluralToSingular(normalizedInput);
     normalizedInput = normalizedInput.replaceAll(RegExp(r'\s+'), ' ').trim();
-    
+
     if (normalizedInput.isEmpty) return null;
-    
+
     int best = 0;
     String? bestMatch;
     for (final c in candidates) {
@@ -132,11 +180,15 @@ class SmartIngredientNormalizer {
       normalizedCandidate = normalizer._stripAccents(normalizedCandidate);
       normalizedCandidate = normalizer._replaceSynonyms(normalizedCandidate);
       normalizedCandidate = normalizer._removeStopWords(normalizedCandidate);
-      normalizedCandidate = normalizer._convertPluralToSingular(normalizedCandidate);
-      normalizedCandidate = normalizedCandidate.replaceAll(RegExp(r'\s+'), ' ').trim();
-      
+      normalizedCandidate = normalizer._convertPluralToSingular(
+        normalizedCandidate,
+      );
+      normalizedCandidate = normalizedCandidate
+          .replaceAll(RegExp(r'\s+'), ' ')
+          .trim();
+
       if (normalizedCandidate.isEmpty) continue;
-      
+
       final score = tokenSetRatio(normalizedInput, normalizedCandidate);
       if (score > best && score >= minScore) {
         best = score;
@@ -156,14 +208,14 @@ class SmartIngredientNormalizer {
     normalizedA = normalizer._removeStopWords(normalizedA);
     normalizedA = normalizer._convertPluralToSingular(normalizedA);
     normalizedA = normalizedA.replaceAll(RegExp(r'\s+'), ' ').trim();
-    
+
     var normalizedB = b.toLowerCase().trim();
     normalizedB = normalizer._stripAccents(normalizedB);
     normalizedB = normalizer._replaceSynonyms(normalizedB);
     normalizedB = normalizer._removeStopWords(normalizedB);
     normalizedB = normalizer._convertPluralToSingular(normalizedB);
     normalizedB = normalizedB.replaceAll(RegExp(r'\s+'), ' ').trim();
-    
+
     return tokenSetRatio(normalizedA, normalizedB);
   }
 }

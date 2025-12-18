@@ -24,7 +24,9 @@ class WeeklyMenuCalendar extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        ...menu.days.map((day) => DayMenuCard(day: day, onRecipeTap: onRecipeTap)).toList(),
+        ...menu.days.map(
+          (day) => DayMenuCard(day: day, onRecipeTap: onRecipeTap),
+        ),
       ],
     );
   }

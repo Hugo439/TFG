@@ -29,10 +29,10 @@ class RegisterView extends StatelessWidget {
             onPressed: () => Navigator.of(context).pop(),
           ),
           title: Text(
-            l10n.registerTitle, 
+            l10n.registerTitle,
             style: TextStyle(
-              color: colorScheme.onSurface, 
-              fontSize: 20, 
+              color: colorScheme.onSurface,
+              fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -40,7 +40,11 @@ class RegisterView extends StatelessWidget {
         body: Center(
           child: SingleChildScrollView(
             padding: EdgeInsets.symmetric(
-              horizontal: width > 1000 ? 48 : width > 800 ? 32 : 16,
+              horizontal: width > 1000
+                  ? 48
+                  : width > 800
+                  ? 32
+                  : 16,
               vertical: 24,
             ),
             child: ConstrainedBox(

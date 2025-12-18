@@ -32,7 +32,7 @@ class RecipeRepositoryImpl implements RecipeRepository {
       final model = RecipeMapper.fromEntity(recipe);
       // FIX: Extraer userId del ID de la receta (formato: {userId}_recipe_{timestamp}_{index})
       final userId = recipe.id.split('_')[0];
-      
+
       await _firestore
           .collection('users')
           .doc(userId)
@@ -61,7 +61,10 @@ class RecipeRepositoryImpl implements RecipeRepository {
   }
 
   @override
-  Future<List<Recipe>> getRecipesByMealType(MealType mealType, String userId) async {
+  Future<List<Recipe>> getRecipesByMealType(
+    MealType mealType,
+    String userId,
+  ) async {
     try {
       final mealTypeString = mealTypeToString(mealType);
       final snapshot = await _firestore
@@ -79,17 +82,18 @@ class RecipeRepositoryImpl implements RecipeRepository {
   }
 
   @override
-  Future<void> updateRecipeSteps(String recipeId, String userId, List<String> steps) async {
+  Future<void> updateRecipeSteps(
+    String recipeId,
+    String userId,
+    List<String> steps,
+  ) async {
     try {
       await _firestore
           .collection('users')
           .doc(userId)
           .collection('recipes')
           .doc(recipeId)
-          .update({
-        'steps': steps,
-        'updatedAt': FieldValue.serverTimestamp(),
-      });
+          .update({'steps': steps, 'updatedAt': FieldValue.serverTimestamp()});
     } catch (e) {
       throw Exception('Error al actualizar pasos de receta: $e');
     }

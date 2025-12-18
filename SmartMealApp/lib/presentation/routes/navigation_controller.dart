@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:smartmeal/presentation/routes/routes.dart';
 
 class NavigationController {
-  static void navigateToIndex(BuildContext context, int index, int currentIndex) {
+  static void navigateToIndex(
+    BuildContext context,
+    int index,
+    int currentIndex,
+  ) {
     if (index == currentIndex) return; // Ya estamos aquí
 
     switch (index) {

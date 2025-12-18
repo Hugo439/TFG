@@ -5,14 +5,14 @@ import 'package:smartmeal/presentation/widgets/branding/app_logo.dart';
 class AnimatedLogo extends StatefulWidget {
   final double height;
   final double innerRatio; // 0..1: cuánto ocupa el logo dentro del marco
-  final bool useFrame;     // usar o no el LogoBox
+  final bool useFrame; // usar o no el LogoBox
   final Duration duration;
 
   const AnimatedLogo({
     super.key,
     this.height = 110,
-    this.innerRatio = 0.95,                 // responsive por defecto
-    this.useFrame = true,                   // con marco por defecto
+    this.innerRatio = 0.95, // responsive por defecto
+    this.useFrame = true, // con marco por defecto
     this.duration = const Duration(milliseconds: 900),
   });
 
@@ -20,7 +20,8 @@ class AnimatedLogo extends StatefulWidget {
   State<AnimatedLogo> createState() => _AnimatedLogoState();
 }
 
-class _AnimatedLogoState extends State<AnimatedLogo> with SingleTickerProviderStateMixin {
+class _AnimatedLogoState extends State<AnimatedLogo>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _c;
   late final Animation<double> _scale, _fade;
 
@@ -34,7 +35,9 @@ class _AnimatedLogoState extends State<AnimatedLogo> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    Widget content = AppLogo(height: widget.height * (widget.useFrame ? widget.innerRatio : 1.0));
+    Widget content = AppLogo(
+      height: widget.height * (widget.useFrame ? widget.innerRatio : 1.0),
+    );
     if (widget.useFrame) {
       content = LogoBox(height: widget.height, child: content);
     }

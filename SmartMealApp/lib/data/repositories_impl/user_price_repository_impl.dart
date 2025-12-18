@@ -31,7 +31,9 @@ class UserPriceRepositoryImpl implements UserPriceRepository {
   }
 
   @override
-  Future<Either<Failure, List<UserPriceOverride>>> getAllUserOverrides(String userId) async {
+  Future<Either<Failure, List<UserPriceOverride>>> getAllUserOverrides(
+    String userId,
+  ) async {
     try {
       final models = await _datasource.getAllUserOverrides(userId);
       return Right(models.map((m) => m.toEntity()).toList());
@@ -44,7 +46,9 @@ class UserPriceRepositoryImpl implements UserPriceRepository {
   }
 
   @override
-  Future<Either<Failure, void>> saveUserPriceOverride(UserPriceOverride override) async {
+  Future<Either<Failure, void>> saveUserPriceOverride(
+    UserPriceOverride override,
+  ) async {
     try {
       final model = UserPriceOverrideModel.fromEntity(override);
       await _datasource.saveUserPriceOverride(model);

@@ -5,9 +5,10 @@ import 'package:smartmeal/data/models/ai_menu_response_model.dart';
 import 'package:smartmeal/core/utils/calorie_distribution_utils.dart';
 
 class GeminiMenuDatasource {
-  static const String _workerUrl = 'https://groq-worker.smartmealgroq.workers.dev';
-  static const int _maxRetries = 3;
-  static const Duration _retryDelay = Duration(seconds: 2);
+  static const String _workerUrl =
+      'https://groq-worker.smartmealgroq.workers.dev/gemini';
+  static const int _maxRetries = 5;
+  static const Duration _initialRetryDelay = Duration(seconds: 3);
 
   GeminiMenuDatasource();
 
@@ -24,7 +25,8 @@ class GeminiMenuDatasource {
     final dailyCalories = targetCaloriesPerMeal * 4;
     final distribution = MealCalorieDistribution.fromDailyTarget(dailyCalories);
 
-    final prompt = '''
+    final prompt =
+        '''
 Eres un nutricionista experto. Genera un menú semanal COMPLETO en formato JSON.
 
 DATOS DEL USUARIO:
@@ -38,73 +40,32 @@ CALORÍAS POR TIPO DE COMIDA:
 - Snack: ${distribution.snack.min}-${distribution.snack.max} kcal
 - Dinner: ${distribution.dinner.min}-${distribution.dinner.max} kcal
 
-INSTRUCCIONES GENERALES:
-1. Crea 28 recetas DIFERENTES y REALISTAS
-2. Calcula calorías reales según ingredientes y cantidades
-3. Varía proteínas, métodos de cocción, ingredientes mediterráneos
+REQUISITOS:
+1. $recipesCount recetas diferentes
+2. Calorías reales según ingredientes
+3. Variedad de proteínas y técnicas culinarias
 
-INSTRUCCIONES PARA INGREDIENTES (CRÍTICO):
-Los ingredientes DEBEN estar en formato: "[cantidad] [unidad] [nombre base]"
+FORMATO INGREDIENTES:
+"[cantidad] [unidad] [nombre]"
+- Unidades: g, kg, ml, l, ud
+- Solo nombre base (sin adjetivos, colores, estados)
+- NO usar paréntesis ni comentarios. Evita cualquier "(...)".
+- Ejemplos: "200 g pollo pechuga", "40 ml aceite oliva", "2 ud huevo"
 
-UNIDADES OBLIGATORIAS:
-- Peso: "g" o "kg"
-- Volumen: "ml" o "l"
-- Conteo: "ud"
-- PROHIBIDO: "taza", "cucharada", "puñado", "al gusto"
+ÍNDICES:
+- 0-6: breakfast
+- 7-13: lunch
+- 14-20: snack
+- 21-27: dinner
 
-NOMBRES DE INGREDIENTES - REGLAS ESTRICTAS:
-✓ USA SOLO el nombre base del ingrediente
-✓ NO incluyas: colores (rojo, verde), estados (fresco, cocido, asado), marcas
-✓ Si hay variedad, especifica solo lo esencial: "pollo pechuga", "arroz integral", "lentejas rojas"
+PASOS:
+4-6 pasos por receta, claros y concisos, sin números
 
-EJEMPLOS DE FORMATO CORRECTO:
-- "200 g pollo pechuga"
-- "250 ml leche almendras"
-- "100 g tomate"
-- "2 ud huevo"
-- "150 g brocoli"
-- "40 ml aceite oliva"
-- "150 g arroz integral"
-- "100 g lentejas rojas"
-
-EJEMPLOS DE CONVERSIONES OBLIGATORIAS:
-- ❌ "aceite de oliva virgen extra" → ✅ "40 ml aceite oliva"
-- ❌ "pechuga de pollo asada" → ✅ "200 g pollo pechuga"
-- ❌ "tomate cherry fresco" → ✅ "100 g tomate"
-- ❌ "brócoli al vapor" → ✅ "150 g brocoli"
-- ❌ "espinacas frescas" → ✅ "100 g espinacas"
-- ❌ "yogur griego natural (10% grasa)" → ✅ "300 g yogur griego"
-- ❌ "pan sin gluten" → ✅ "2 ud pan"
-- ❌ "pico de gallo (tomate, cebolla, cilantro)" → ✅ "100 g tomate", "30 g cebolla", "5 g cilantro" (ingredientes separados)
-- ❌ "jugo de medio limón" → ✅ "30 ml limon"
-- ❌ "carne picada de res magra" → ✅ "150 g carne res"
-
-PROHIBIDO EN NOMBRES DE INGREDIENTES:
-- Adjetivos: "virgen", "extra", "fresco", "natural", "ligero", "bajo en sodio"
-- Estados de cocción: "cocido", "asado", "al vapor", "desmenuzado", "ahumado"
-- Tamaños: "mediano", "grande", "pequeño"
-- Especificaciones entre paréntesis: "(con piel)", "(sin vaina)", "(colores varios)", "(10% grasa)"
-- Artículos al final: NO "de pollo", sino "pollo"
-
-ESTRUCTURA DE ÍNDICES (CRÍTICO):
-- Índices 0-6: "mealType": "breakfast"
-- Índices 7-13: "mealType": "lunch"
-- Índices 14-20: "mealType": "snack"
-- Índices 21-27: "mealType": "dinner"
-
-MENÚ SEMANAL:
-Asigna 4 índices diferentes por día:
-- breakfast: índice 0-6
-- lunch: índice 7-13
-- snack: índice 14-20
-- dinner: índice 21-27
-
-Responde ÚNICAMENTE con este JSON (sin markdown, sin comentarios):
-
+JSON (sin markdown):
 {
   "recipes": [
-    {"name": "...", "description": "...", "ingredients": ["200 g pollo pechuga", "100 g tomate", ...], "calories": numero, "mealType": "breakfast"},
-    ... (28 recetas totales)
+    {"name": "...", "description": "...", "ingredients": ["200 g pollo pechuga", ...], "calories": numero, "mealType": "breakfast", "steps": ["Paso 1", ...]},
+    ... (28 recetas)
   ],
   "weeklyMenu": {
     "lunes": {"breakfast": 0, "lunch": 7, "snack": 14, "dinner": 21},
@@ -134,7 +95,9 @@ Responde ÚNICAMENTE con este JSON (sin markdown, sin comentarios):
 
         if (response.statusCode != 200) {
           if (kDebugMode) {
-            debugPrint('[GeminiWorker] Error ${response.statusCode}: ${response.body}');
+            debugPrint(
+              '[GeminiWorker] Error ${response.statusCode}: ${response.body}',
+            );
           }
           throw Exception('Error del servidor: ${response.statusCode}');
         }
@@ -152,7 +115,7 @@ Responde ÚNICAMENTE con este JSON (sin markdown, sin comentarios):
 
         // Extraer contenido
         final content = data['content'];
-        
+
         if (content == null) {
           throw Exception('Respuesta vacía del worker');
         }
@@ -190,14 +153,18 @@ Responde ÚNICAMENTE con este JSON (sin markdown, sin comentarios):
         // Validación
         if (!result.containsKey('recipes')) {
           if (kDebugMode) {
-            debugPrint('[GeminiWorker] Claves encontradas: ${result.keys.join(', ')}');
+            debugPrint(
+              '[GeminiWorker] Claves encontradas: ${result.keys.join(', ')}',
+            );
           }
           throw Exception("Falta 'recipes' en el JSON");
         }
 
         if (!result.containsKey('weeklyMenu')) {
           if (kDebugMode) {
-            debugPrint('[GeminiWorker] Claves encontradas: ${result.keys.join(', ')}');
+            debugPrint(
+              '[GeminiWorker] Claves encontradas: ${result.keys.join(', ')}',
+            );
           }
           throw Exception("Falta 'weeklyMenu' en el JSON");
         }
@@ -215,16 +182,23 @@ Responde ÚNICAMENTE con este JSON (sin markdown, sin comentarios):
         }
 
         return AiMenuResponseModel.fromJson(result);
-
       } catch (e) {
         lastError = Exception('Intento #$attempt falló: $e');
-        
+
         if (kDebugMode) {
           debugPrint('[GeminiWorker] $lastError');
         }
 
         if (attempt < _maxRetries - 1) {
-          await Future.delayed(_retryDelay);
+          // Exponential backoff: 3s, 6s, 12s, 24s
+          final delaySeconds = _initialRetryDelay.inSeconds * (1 << attempt);
+          final delay = Duration(seconds: delaySeconds);
+          if (kDebugMode) {
+            debugPrint(
+              '[GeminiWorker] Esperando ${delay.inSeconds}s antes del siguiente intento...',
+            );
+          }
+          await Future.delayed(delay);
         }
       }
     }

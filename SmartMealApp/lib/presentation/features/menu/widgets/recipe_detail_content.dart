@@ -14,7 +14,7 @@ class RecipeDetailContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = context.l10n;
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -25,17 +25,19 @@ class RecipeDetailContent extends StatelessWidget {
             borderRadius: BorderRadius.circular(16),
             gradient: LinearGradient(
               colors: [
-                colorScheme.primary.withOpacity(0.12),
-                colorScheme.primary.withOpacity(0.06),
+                colorScheme.primary.withValues(alpha: 0.12),
+                colorScheme.primary.withValues(alpha: 0.06),
               ],
             ),
-            border: Border.all(color: colorScheme.primary.withOpacity(0.15)),
+            border: Border.all(
+              color: colorScheme.primary.withValues(alpha: 0.15),
+            ),
           ),
           child: Row(
             children: [
               CircleAvatar(
                 radius: 26,
-                backgroundColor: colorScheme.primary.withOpacity(0.1),
+                backgroundColor: colorScheme.primary.withValues(alpha: 0.1),
                 child: Icon(
                   recipe.mealType.icon,
                   color: colorScheme.primary,
@@ -51,7 +53,7 @@ class RecipeDetailContent extends StatelessWidget {
                       recipe.mealType.displayName,
                       style: TextStyle(
                         fontSize: 14,
-                        color: colorScheme.onSurface.withOpacity(0.7),
+                        color: colorScheme.onSurface.withValues(alpha: 0.7),
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -68,16 +70,25 @@ class RecipeDetailContent extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   color: colorScheme.surface,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: colorScheme.primary.withOpacity(0.2)),
+                  border: Border.all(
+                    color: colorScheme.primary.withValues(alpha: 0.2),
+                  ),
                 ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(Icons.restaurant_menu, color: colorScheme.primary, size: 18),
+                    Icon(
+                      Icons.restaurant_menu,
+                      color: colorScheme.primary,
+                      size: 18,
+                    ),
                     const SizedBox(width: 6),
                     Text(
                       '${recipe.ingredients.length} ${l10n.recipeIngredients}',
@@ -114,7 +125,7 @@ class RecipeDetailContent extends StatelessWidget {
             style: TextStyle(
               fontSize: 15,
               height: 1.4,
-              color: colorScheme.onSurface.withOpacity(0.85),
+              color: colorScheme.onSurface.withValues(alpha: 0.85),
             ),
           ),
         ),
@@ -133,9 +144,11 @@ class RecipeDetailContent extends StatelessWidget {
             margin: const EdgeInsets.only(bottom: 10),
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             decoration: BoxDecoration(
-              color: colorScheme.primary.withOpacity(0.08),
+              color: colorScheme.primary.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: colorScheme.primary.withOpacity(0.15)),
+              border: Border.all(
+                color: colorScheme.primary.withValues(alpha: 0.15),
+              ),
             ),
             child: Row(
               children: [
@@ -146,7 +159,7 @@ class RecipeDetailContent extends StatelessWidget {
                     item,
                     style: TextStyle(
                       fontSize: 16,
-                      color: colorScheme.onSurface.withOpacity(0.9),
+                      color: colorScheme.onSurface.withValues(alpha: 0.9),
                     ),
                   ),
                 ),
@@ -162,7 +175,7 @@ class RecipeDetailContent extends StatelessWidget {
 
   Widget _buildStepsSection(BuildContext context, ColorScheme colorScheme) {
     final vm = context.watch<RecipeDetailViewModel>();
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -177,7 +190,7 @@ class RecipeDetailContent extends StatelessWidget {
               ),
             ),
             const Spacer(),
-            if (recipe.steps.isEmpty && !vm.isGeneratingSteps)
+            if (!vm.isGeneratingSteps)
               TextButton.icon(
                 onPressed: vm.generateSteps,
                 icon: const Icon(Icons.auto_awesome, size: 18),
@@ -189,7 +202,7 @@ class RecipeDetailContent extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 12),
-        
+
         if (vm.isGeneratingSteps)
           Container(
             padding: const EdgeInsets.all(20),
@@ -211,7 +224,7 @@ class RecipeDetailContent extends StatelessWidget {
                 Text(
                   'Generando pasos con IA...',
                   style: TextStyle(
-                    color: colorScheme.onSurface.withOpacity(0.7),
+                    color: colorScheme.onSurface.withValues(alpha: 0.7),
                   ),
                 ),
               ],
@@ -223,17 +236,22 @@ class RecipeDetailContent extends StatelessWidget {
             decoration: BoxDecoration(
               color: colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: colorScheme.outline.withOpacity(0.1)),
+              border: Border.all(
+                color: colorScheme.outline.withValues(alpha: 0.1),
+              ),
             ),
             child: Row(
               children: [
-                Icon(Icons.info_outline, color: colorScheme.primary.withOpacity(0.6)),
+                Icon(
+                  Icons.info_outline,
+                  color: colorScheme.primary.withValues(alpha: 0.6),
+                ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(
                     'Pulsa "Generar" para crear los pasos de preparación con IA',
                     style: TextStyle(
-                      color: colorScheme.onSurface.withOpacity(0.6),
+                      color: colorScheme.onSurface.withValues(alpha: 0.6),
                       fontSize: 14,
                     ),
                   ),
@@ -242,56 +260,58 @@ class RecipeDetailContent extends StatelessWidget {
             ),
           )
         else
-          ...recipe.steps.map(
-            (step) {
-              final index = recipe.steps.indexOf(step);
-              final cleanStep = step.replaceAll(RegExp(r'^\d+\.\s*'), '');
-              return Container(
-                margin: const EdgeInsets.only(bottom: 10),
-                padding: const EdgeInsets.all(14),
-                decoration: BoxDecoration(
-                  color: colorScheme.surfaceContainerHighest,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: colorScheme.outline.withOpacity(0.08)),
+          ...recipe.steps.map((step) {
+            final index = recipe.steps.indexOf(step);
+            final cleanStep = step.replaceAll(RegExp(r'^\d+\.\s*'), '');
+            return Container(
+              margin: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: colorScheme.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: colorScheme.outline.withValues(alpha: 0.08),
                 ),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    CircleAvatar(
-                      radius: 14,
-                      backgroundColor: colorScheme.primary.withOpacity(0.15),
-                      child: Text(
-                        '${index + 1}',
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: colorScheme.primary,
-                        ),
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CircleAvatar(
+                    radius: 14,
+                    backgroundColor: colorScheme.primary.withValues(
+                      alpha: 0.15,
+                    ),
+                    child: Text(
+                      '${index + 1}',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                        color: colorScheme.primary,
                       ),
                     ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: Text(
-                        cleanStep,
-                        style: TextStyle(
-                          fontSize: 15,
-                          height: 1.4,
-                          color: colorScheme.onSurface.withOpacity(0.9),
-                        ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      cleanStep,
+                      style: TextStyle(
+                        fontSize: 15,
+                        height: 1.4,
+                        color: colorScheme.onSurface.withValues(alpha: 0.9),
                       ),
                     ),
-                  ],
-                ),
-              );
-            },
-          ),
+                  ),
+                ],
+              ),
+            );
+          }),
 
         if (vm.stepsError != null)
           Container(
             margin: const EdgeInsets.only(top: 12),
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: colorScheme.error.withOpacity(0.1),
+              color: colorScheme.error.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(

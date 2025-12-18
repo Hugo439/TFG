@@ -14,7 +14,9 @@ class GetMissingPricesUseCase {
 
   GetMissingPricesUseCase(this._repository);
 
-  Future<Either<Failure, List<MissingPriceEntry>>> call(GetMissingPricesParams params) async {
+  Future<Either<Failure, List<MissingPriceEntry>>> call(
+    GetMissingPricesParams params,
+  ) async {
     try {
       return await _repository.getTopMissingPrices(limit: params.limit);
     } catch (e) {

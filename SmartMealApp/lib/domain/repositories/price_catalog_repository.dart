@@ -8,7 +8,9 @@ abstract class PriceCatalogRepository {
   Future<Either<Failure, PriceEntry?>> getPriceEntry(String normalizedName);
 
   /// Obtiene todas las entradas de una categoría
-  Future<Either<Failure, List<PriceEntry>>> getPricesByCategory(String category);
+  Future<Either<Failure, List<PriceEntry>>> getPricesByCategory(
+    String category,
+  );
 
   /// Busca entradas que coincidan con el término de búsqueda
   Future<Either<Failure, List<PriceEntry>>> searchPrices(String searchTerm);

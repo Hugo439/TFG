@@ -21,7 +21,7 @@ class StatCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: colorScheme.primary.withOpacity(0.08),
+        color: colorScheme.primary.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(
@@ -43,7 +43,7 @@ class StatCard extends StatelessWidget {
                 label,
                 style: TextStyle(
                   fontSize: 13,
-                  color: colorScheme.onSurface.withOpacity(0.7),
+                  color: colorScheme.onSurface.withValues(alpha: 0.7),
                 ),
               ),
             ],

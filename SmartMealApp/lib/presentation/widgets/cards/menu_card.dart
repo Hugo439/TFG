@@ -42,18 +42,61 @@ class MenuCard extends StatelessWidget {
         final small = w < 180;
         final medium = w < 230;
 
-        final iconPlateSize = tiny ? 42.00 : small ? 48.00 : medium ? 54.00 : 60.00;
-        final iconSize = tiny ? 24.00 : small ? 28.00 : medium ? 30.00 : 34.00;
-        final paddingV = tiny ? 12.00 : small ? 14.00 : medium ? 18.00 : 22.00;
-        final paddingH = tiny ? 10.00 : small ? 12.00 : medium ? 14.00 : 18.00;
-        final radius = tiny ? 14.00 : small ? 16.00 : medium ? 20.00 : 22.00;
-        final titleFontBase = tiny ? 13.00 : small ? 14.00 : medium ? 15.00 : 16.00;
-        final subtitleFontBase = tiny ? 11.00 : small ? 11.50 : medium ? 12.00 : 13.00;
+        final iconPlateSize = tiny
+            ? 42.00
+            : small
+            ? 48.00
+            : medium
+            ? 54.00
+            : 60.00;
+        final iconSize = tiny
+            ? 24.00
+            : small
+            ? 28.00
+            : medium
+            ? 30.00
+            : 34.00;
+        final paddingV = tiny
+            ? 12.00
+            : small
+            ? 14.00
+            : medium
+            ? 18.00
+            : 22.00;
+        final paddingH = tiny
+            ? 10.00
+            : small
+            ? 12.00
+            : medium
+            ? 14.00
+            : 18.00;
+        final radius = tiny
+            ? 14.00
+            : small
+            ? 16.00
+            : medium
+            ? 20.00
+            : 22.00;
+        final titleFontBase = tiny
+            ? 13.00
+            : small
+            ? 14.00
+            : medium
+            ? 15.00
+            : 16.00;
+        final subtitleFontBase = tiny
+            ? 11.00
+            : small
+            ? 11.50
+            : medium
+            ? 12.00
+            : 13.00;
 
         final titleFont = textScaler.scale(titleFontBase);
         final subtitleFont = textScaler.scale(subtitleFontBase);
 
-        final cardColor = backgroundColor ??
+        final cardColor =
+            backgroundColor ??
             (highlight
                 ? Color.alphaBlend(
                     cs.primary.withAlpha((255 * 0.18).round()),
@@ -124,7 +167,10 @@ class MenuCard extends StatelessWidget {
         );
 
         final baseContainer = Container(
-          padding: EdgeInsets.symmetric(horizontal: paddingH, vertical: paddingV),
+          padding: EdgeInsets.symmetric(
+            horizontal: paddingH,
+            vertical: paddingV,
+          ),
           decoration: BoxDecoration(
             color: cardColor,
             borderRadius: BorderRadius.circular(radius),
@@ -150,7 +196,9 @@ class MenuCard extends StatelessWidget {
             : AnimatedContainer(
                 duration: const Duration(milliseconds: 180),
                 curve: Curves.easeOut,
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(radius)),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(radius),
+                ),
                 child: baseContainer,
               );
 
@@ -197,10 +245,7 @@ class _IconPlate extends StatelessWidget {
       duration: const Duration(milliseconds: 150),
       width: size,
       height: size,
-      decoration: BoxDecoration(
-        color: background,
-        shape: BoxShape.circle,
-      ),
+      decoration: BoxDecoration(color: background, shape: BoxShape.circle),
       child: Icon(icon, color: color, size: iconSize),
     );
   }

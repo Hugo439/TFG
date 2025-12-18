@@ -25,7 +25,9 @@ class MissingPriceEntry {
       ingredientName: map['ingredientName'] as String? ?? id,
       normalizedName: id,
       category: map['category'] as String,
-      unitKind: UnitKindExtension.fromFirestore(map['unitKind'] as String? ?? 'weight'),
+      unitKind: UnitKindExtension.fromFirestore(
+        map['unitKind'] as String? ?? 'weight',
+      ),
       requestCount: map['requestCount'] as int? ?? 1,
       firstRequested: map['firstRequested'] != null
           ? DateTime.parse(map['firstRequested'] as String)

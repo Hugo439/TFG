@@ -5,10 +5,7 @@ import 'package:smartmeal/domain/value_objects/shopping_item_name.dart';
 import 'package:smartmeal/domain/value_objects/shopping_item_quantity.dart';
 import 'package:smartmeal/domain/value_objects/price.dart';
 
-enum ShoppingErrorCode {
-  requiredFields,
-  saveError,
-}
+enum ShoppingErrorCode { requiredFields, saveError }
 
 class AddShoppingItemViewModel extends ChangeNotifier {
   final AddShoppingItemUseCase _addShoppingItem;
@@ -74,7 +71,9 @@ class AddShoppingItemViewModel extends ChangeNotifier {
   }
 
   Future<bool> save() async {
-    if (_name.trim().isEmpty || _quantity.trim().isEmpty || _price.trim().isEmpty) {
+    if (_name.trim().isEmpty ||
+        _quantity.trim().isEmpty ||
+        _price.trim().isEmpty) {
       _errorCode = ShoppingErrorCode.requiredFields;
       notifyListeners();
       return false;
@@ -93,10 +92,10 @@ class AddShoppingItemViewModel extends ChangeNotifier {
       final usedInMenusList = _usedInMenus.trim().isEmpty
           ? <String>[]
           : _usedInMenus
-              .split(',')
-              .map((e) => e.trim())
-              .where((e) => e.isNotEmpty)
-              .toList();
+                .split(',')
+                .map((e) => e.trim())
+                .where((e) => e.isNotEmpty)
+                .toList();
 
       final item = ShoppingItem(
         id: itemToEdit?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),

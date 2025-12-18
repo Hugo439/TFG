@@ -17,7 +17,7 @@ class MenuManagementCard extends StatelessWidget {
           gradient: LinearGradient(
             colors: [
               colorScheme.primary,
-              colorScheme.primary.withOpacity(0.8),
+              colorScheme.primary.withValues(alpha: 0.8),
             ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
@@ -25,7 +25,7 @@ class MenuManagementCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: colorScheme.primary.withOpacity(0.3),
+              color: colorScheme.primary.withValues(alpha: 0.3),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -60,7 +60,7 @@ class MenuManagementCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
+                color: Colors.white.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(

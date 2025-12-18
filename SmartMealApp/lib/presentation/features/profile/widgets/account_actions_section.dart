@@ -17,7 +17,7 @@ class AccountActionsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = context.l10n;
-    
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -79,7 +79,7 @@ class _ActionButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final color = isDestructive ? colorScheme.error : colorScheme.onSurface;
-    
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(8),
@@ -88,8 +88,8 @@ class _ActionButton extends StatelessWidget {
         decoration: BoxDecoration(
           color: colorScheme.surface,
           borderRadius: BorderRadius.circular(8),
-          border: isDestructive 
-              ? Border.all(color: colorScheme.error, width: 1) 
+          border: isDestructive
+              ? Border.all(color: colorScheme.error, width: 1)
               : null,
         ),
         child: Row(
@@ -108,7 +108,7 @@ class _ActionButton extends StatelessWidget {
             ),
             Icon(
               Icons.chevron_right,
-              color: color.withOpacity(0.5),
+              color: color.withValues(alpha: 0.5),
               size: 20,
             ),
           ],

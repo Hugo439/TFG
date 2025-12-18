@@ -35,7 +35,7 @@ class _EditProfileContent extends StatelessWidget {
 
   String _getErrorMessage(BuildContext context, EditProfileState state) {
     final l10n = context.l10n;
-    
+
     if (state.errorCode != null) {
       switch (state.errorCode!) {
         case EditProfileErrorCode.nameRequired:
@@ -52,9 +52,10 @@ class _EditProfileContent extends StatelessWidget {
           return l10n.editProfileErrorGeneric;
       }
     }
-    
+
     return state.errorMessage ?? l10n.editProfileErrorGeneric;
   }
+
   @override
   Widget build(BuildContext context) {
     final vm = context.watch<EditProfileViewModel>();
@@ -90,7 +91,9 @@ class _EditProfileContent extends StatelessWidget {
               child: GestureDetector(
                 onTap: () async {
                   final picker = ImagePicker();
-                  final picked = await picker.pickImage(source: ImageSource.gallery);
+                  final picked = await picker.pickImage(
+                    source: ImageSource.gallery,
+                  );
                   if (picked != null && context.mounted) {
                     final success = await vm.uploadPhoto(picked.path);
                     if (success && context.mounted) {
@@ -98,9 +101,9 @@ class _EditProfileContent extends StatelessWidget {
                         SnackBar(content: Text(l10n.editProfilePhotoUpdated)),
                       );
                     } else if (vm.photoError != null && context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(vm.photoError!)),
-                      );
+                      ScaffoldMessenger.of(
+                        context,
+                      ).showSnackBar(SnackBar(content: Text(vm.photoError!)));
                     }
                   }
                 },
@@ -110,7 +113,9 @@ class _EditProfileContent extends StatelessWidget {
                     CircleAvatar(
                       radius: 50,
                       backgroundColor: colorScheme.primary,
-                      backgroundImage: vm.photoUrl != null ? NetworkImage(vm.photoUrl!) : null,
+                      backgroundImage: vm.photoUrl != null
+                          ? NetworkImage(vm.photoUrl!)
+                          : null,
                       child: vm.photoUrl == null
                           ? Text(
                               vm.displayName.isNotEmpty
@@ -144,7 +149,10 @@ class _EditProfileContent extends StatelessWidget {
                         decoration: BoxDecoration(
                           color: colorScheme.primary,
                           shape: BoxShape.circle,
-                          border: Border.all(color: colorScheme.surface, width: 2),
+                          border: Border.all(
+                            color: colorScheme.surface,
+                            width: 2,
+                          ),
                         ),
                         child: Icon(
                           Icons.camera_alt,
@@ -227,7 +235,9 @@ class _EditProfileContent extends StatelessWidget {
                     initialValue: vm.weightKg,
                     onChanged: vm.setWeightKg,
                     prefixIcon: Icons.monitor_weight_outlined,
-                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    keyboardType: const TextInputType.numberWithOptions(
+                      decimal: true,
+                    ),
                   ),
                 ),
               ],
@@ -237,10 +247,7 @@ class _EditProfileContent extends StatelessWidget {
             // Objetivos y Preferencias
             _SectionTitle(title: l10n.editProfileGoalsPreferences),
             const SizedBox(height: 12),
-            _GoalDropdown(
-              value: vm.goal,
-              onChanged: vm.setGoal,
-            ),
+            _GoalDropdown(value: vm.goal, onChanged: vm.setGoal),
             const SizedBox(height: 12),
             FilledTextField(
               label: l10n.editProfileAllergiesLabel,
@@ -256,7 +263,7 @@ class _EditProfileContent extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: colorScheme.error.withOpacity(0.1),
+                  color: colorScheme.error.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text(
@@ -300,7 +307,7 @@ class _SectionTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Text(
       title,
       style: TextStyle(
@@ -316,24 +323,19 @@ class _GoalDropdown extends StatelessWidget {
   final String value;
   final ValueChanged<String> onChanged;
 
-  const _GoalDropdown({
-    required this.value,
-    required this.onChanged,
-  });
+  const _GoalDropdown({required this.value, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = context.l10n;
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: colorScheme.outline.withOpacity(0.2),
-        ),
+        border: Border.all(color: colorScheme.outline.withValues(alpha: 0.2)),
       ),
       child: DropdownButtonHideUnderline(
         child: DropdownButton<String>(
@@ -346,9 +348,16 @@ class _GoalDropdown extends StatelessWidget {
               value: 'Perder peso',
               child: Row(
                 children: [
-                  Icon(Icons.flag_outlined, color: colorScheme.primary, size: 20),
+                  Icon(
+                    Icons.flag_outlined,
+                    color: colorScheme.primary,
+                    size: 20,
+                  ),
                   const SizedBox(width: 12),
-                  Text(l10n.registerGoalLoseWeight, style: TextStyle(color: colorScheme.onSurface)),
+                  Text(
+                    l10n.registerGoalLoseWeight,
+                    style: TextStyle(color: colorScheme.onSurface),
+                  ),
                 ],
               ),
             ),
@@ -356,9 +365,16 @@ class _GoalDropdown extends StatelessWidget {
               value: 'Ganar masa muscular',
               child: Row(
                 children: [
-                  Icon(Icons.flag_outlined, color: colorScheme.primary, size: 20),
+                  Icon(
+                    Icons.flag_outlined,
+                    color: colorScheme.primary,
+                    size: 20,
+                  ),
                   const SizedBox(width: 12),
-                  Text(l10n.registerGoalGainMuscle, style: TextStyle(color: colorScheme.onSurface)),
+                  Text(
+                    l10n.registerGoalGainMuscle,
+                    style: TextStyle(color: colorScheme.onSurface),
+                  ),
                 ],
               ),
             ),
@@ -366,9 +382,16 @@ class _GoalDropdown extends StatelessWidget {
               value: 'Mantener peso',
               child: Row(
                 children: [
-                  Icon(Icons.flag_outlined, color: colorScheme.primary, size: 20),
+                  Icon(
+                    Icons.flag_outlined,
+                    color: colorScheme.primary,
+                    size: 20,
+                  ),
                   const SizedBox(width: 12),
-                  Text(l10n.registerGoalMaintainWeight, style: TextStyle(color: colorScheme.onSurface)),
+                  Text(
+                    l10n.registerGoalMaintainWeight,
+                    style: TextStyle(color: colorScheme.onSurface),
+                  ),
                 ],
               ),
             ),
@@ -376,9 +399,16 @@ class _GoalDropdown extends StatelessWidget {
               value: 'Alimentación saludable',
               child: Row(
                 children: [
-                  Icon(Icons.flag_outlined, color: colorScheme.primary, size: 20),
+                  Icon(
+                    Icons.flag_outlined,
+                    color: colorScheme.primary,
+                    size: 20,
+                  ),
                   const SizedBox(width: 12),
-                  Text(l10n.registerGoalHealthyEating, style: TextStyle(color: colorScheme.onSurface)),
+                  Text(
+                    l10n.registerGoalHealthyEating,
+                    style: TextStyle(color: colorScheme.onSurface),
+                  ),
                 ],
               ),
             ),

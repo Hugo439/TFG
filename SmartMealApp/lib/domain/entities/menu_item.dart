@@ -23,7 +23,7 @@ class MenuItem {
   // Helper getters
   String get nameValue => name.value;
   String get descriptionValue => description.value;
-  
+
   MenuItem copyWith({
     String? id,
     MenuItemName? name,

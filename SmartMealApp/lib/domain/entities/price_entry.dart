@@ -25,7 +25,9 @@ class PriceEntry {
       id: id,
       displayName: map['displayName'] as String? ?? id,
       category: map['category'] as String,
-      unitKind: UnitKindExtension.fromFirestore(map['unitKind'] as String? ?? 'weight'),
+      unitKind: UnitKindExtension.fromFirestore(
+        map['unitKind'] as String? ?? 'weight',
+      ),
       priceRef: (map['priceRef'] as num).toDouble(),
       brand: map['brand'] as String?,
       lastUpdated: map['lastUpdated'] != null

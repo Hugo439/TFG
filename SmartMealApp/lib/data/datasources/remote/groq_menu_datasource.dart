@@ -5,7 +5,8 @@ import 'package:smartmeal/data/models/ai_menu_response_model.dart';
 import 'package:smartmeal/core/utils/calorie_distribution_utils.dart';
 
 class GroqMenuDatasource {
-  static const String _backendUrl = 'https://groq-worker.smartmealgroq.workers.dev';
+  static const String _backendUrl =
+      'https://groq-worker.smartmealgroq.workers.dev/gemini';
   static const int _maxRetries = 3;
   static const Duration _retryDelay = Duration(seconds: 2);
 
@@ -26,7 +27,8 @@ class GroqMenuDatasource {
     final dailyCalories = targetCaloriesPerMeal * 4;
     final distribution = MealCalorieDistribution.fromDailyTarget(dailyCalories);
 
-    final prompt = '''
+    final prompt =
+        '''
 Eres un nutricionista experto. Debes generar un menú semanal COMPLETO y VÁLIDO para un usuario.
 
 DATOS DEL USUARIO:
@@ -173,16 +175,19 @@ Genera el menú semanal ahora:
           throw Exception("Error del worker de Cloudflare: $errorMsg");
         }
 
-        final content = data['choices']?[0]?['message']?['content']
-            ?? data['content']
-            ?? response.body;
+        final content =
+            data['choices']?[0]?['message']?['content'] ??
+            data['content'] ??
+            response.body;
 
         String clean = content.trim();
         final start = clean.indexOf('{');
         final end = clean.lastIndexOf('}') + 1;
 
         if (start == -1 || end <= start) {
-          throw Exception("Respuesta inválida del modelo - no se encontró JSON válido");
+          throw Exception(
+            "Respuesta inválida del modelo - no se encontró JSON válido",
+          );
         }
 
         final jsonStr = clean.substring(start, end);
@@ -198,7 +203,9 @@ Genera el menú semanal ahora:
         if (!result.containsKey('recipes')) {
           if (kDebugMode) {
             debugPrint('[GroqMenu] ERROR: Respuesta no contiene "recipes"');
-            debugPrint('[GroqMenu] Claves encontradas: ${result.keys.join(', ')}');
+            debugPrint(
+              '[GroqMenu] Claves encontradas: ${result.keys.join(', ')}',
+            );
           }
           throw Exception("El JSON no contiene 'recipes'");
         }
@@ -206,7 +213,9 @@ Genera el menú semanal ahora:
         if (!result.containsKey('weeklyMenu')) {
           if (kDebugMode) {
             debugPrint('[GroqMenu] ERROR: Respuesta no contiene "weeklyMenu"');
-            debugPrint('[GroqMenu] Claves encontradas: ${result.keys.join(', ')}');
+            debugPrint(
+              '[GroqMenu] Claves encontradas: ${result.keys.join(', ')}',
+            );
           }
           throw Exception("El JSON no contiene 'weeklyMenu'");
         }
@@ -226,10 +235,9 @@ Genera el menú semanal ahora:
         }
 
         return AiMenuResponseModel.fromJson(result);
-
       } catch (e) {
         lastError = Exception('Error en intento #$attempt: $e');
-        
+
         if (kDebugMode) {
           debugPrint('[GroqMenu] ${lastError.toString()}');
         }

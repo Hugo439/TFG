@@ -69,15 +69,14 @@ class LoginViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      await _signIn(SignInParams(
-        email: email,
-        password: password,
-      ));
-      await _saveCreds(SaveCredentialsParams(
-        email: email,
-        password: password,
-        remember: _rememberMe,
-      ));
+      await _signIn(SignInParams(email: email, password: password));
+      await _saveCreds(
+        SaveCredentialsParams(
+          email: email,
+          password: password,
+          remember: _rememberMe,
+        ),
+      );
 
       _email = email;
       _password = password;

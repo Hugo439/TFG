@@ -13,8 +13,8 @@ class UserRepositoryImpl implements UserRepository {
   UserRepositoryImpl({
     required FirebaseAuthDataSource authDataSource,
     required FirestoreDataSource firestoreDataSource,
-  })  : _authDataSource = authDataSource,
-        _firestoreDataSource = firestoreDataSource;
+  }) : _authDataSource = authDataSource,
+       _firestoreDataSource = firestoreDataSource;
 
   @override
   Future<UserProfile> getUserProfile() async {
@@ -44,7 +44,7 @@ class UserRepositoryImpl implements UserRepository {
 
     // Acceder al value del Value Object DisplayName
     await _authDataSource.updateDisplayName(profile.displayName.value);
-    
+
     // Si hay photoUrl, actualizar en Firebase Auth también
     if (profile.photoUrl != null) {
       await _authDataSource.updatePhotoURL(profile.photoUrl!);
@@ -68,13 +68,13 @@ class UserRepositoryImpl implements UserRepository {
   Future<String> uploadProfilePhoto(String filePath, String userId) async {
     try {
       final file = File(filePath);
-      final storageRef = FirebaseStorage.instance
-          .ref()
-          .child('profile_photos/$userId/${DateTime.now().millisecondsSinceEpoch}.jpg');
-      
+      final storageRef = FirebaseStorage.instance.ref().child(
+        'profile_photos/$userId/${DateTime.now().millisecondsSinceEpoch}.jpg',
+      );
+
       final uploadTask = await storageRef.putFile(file);
       final photoUrl = await uploadTask.ref.getDownloadURL();
-      
+
       return photoUrl;
     } catch (e) {
       throw Exception('Error al subir foto de perfil: $e');

@@ -9,14 +9,14 @@ class RegisterPrompt extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = context.l10n;
-    
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          l10n.loginNoAccount, 
+          l10n.loginNoAccount,
           style: TextStyle(
-            color: colorScheme.onSurface.withOpacity(0.6), 
+            color: colorScheme.onSurface.withValues(alpha: 0.6),
             fontSize: 14,
           ),
         ),
@@ -33,4 +33,3 @@ class RegisterPrompt extends StatelessWidget {
     );
   }
 }
-

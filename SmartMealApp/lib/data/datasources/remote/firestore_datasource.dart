@@ -4,7 +4,7 @@ class FirestoreDataSource {
   final FirebaseFirestore _firestore;
 
   FirestoreDataSource({FirebaseFirestore? firestore})
-      : _firestore = firestore ?? FirebaseFirestore.instance;
+    : _firestore = firestore ?? FirebaseFirestore.instance;
 
   Future<Map<String, dynamic>?> getUserProfile(String uid) async {
     final doc = await _firestore.collection('users').doc(uid).get();
@@ -25,8 +25,6 @@ class FirestoreDataSource {
   }
 
   Future<void> saveFCMToken(String uid, String token) async {
-    await _firestore.collection('users').doc(uid).update({
-      'fcmToken': token,
-    });
+    await _firestore.collection('users').doc(uid).update({'fcmToken': token});
   }
 }

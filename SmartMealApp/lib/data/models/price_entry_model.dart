@@ -29,7 +29,8 @@ class PriceEntryModel {
       unitKind: map['unitKind'] as String? ?? 'weight',
       priceRef: (map['priceRef'] as num).toDouble(),
       brand: map['brand'] as String?,
-      lastUpdated: map['lastUpdated'] as String? ?? DateTime.now().toIso8601String(),
+      lastUpdated:
+          map['lastUpdated'] as String? ?? DateTime.now().toIso8601String(),
     );
   }
 

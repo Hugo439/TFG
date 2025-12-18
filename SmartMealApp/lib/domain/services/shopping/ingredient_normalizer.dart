@@ -196,6 +196,7 @@ class IngredientNormalizer {
       // ===== FRUTOS SECAS =====
       'almendras': 'almendras',
       'nueces': 'nueces',
+      'nuez': 'nueces',
       'anacardos': 'anacardos',
       'cashew': 'anacardos',
       'pistachos': 'pistachos',
@@ -296,7 +297,7 @@ class IngredientNormalizer {
       'caldo vegetales': 'caldo vegetales',
       'caldo res': 'caldo res',
 
-            // ===== HUEVOS =====
+      // ===== HUEVOS =====
       'huevos': 'huevo',
       'huevo': 'huevo',
 
@@ -404,7 +405,7 @@ class IngredientNormalizer {
 
   String _stripAccents(String input) {
     const withAccent = 'áàäâãéèëêíìïîóòöôõúùüûñç';
-    const without =   'aaaaaeeeeiiiiooooouuuunc';
+    const without = 'aaaaaeeeeiiiiooooouuuunc';
     final out = StringBuffer();
     for (final ch in input.characters) {
       final idx = withAccent.indexOf(ch);

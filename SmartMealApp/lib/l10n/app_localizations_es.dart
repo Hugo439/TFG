@@ -509,6 +509,116 @@ class AppLocalizationsEs extends AppLocalizations {
   String get settingsTermsAndConditions => 'Términos y Condiciones';
 
   @override
+  String get privacyHeading => 'Política de Privacidad de SmartMeal';
+
+  @override
+  String privacyUpdated(Object date) {
+    return 'Última actualización: $date';
+  }
+
+  @override
+  String get privacySection1Title => '1. Información que recopilamos';
+
+  @override
+  String get privacySection1Body =>
+      'Recopilamos datos básicos de cuenta (email) y datos de uso necesarios para el funcionamiento de la app (por ejemplo, menús guardados, lista de la compra y preferencias).';
+
+  @override
+  String get privacySection2Title => '2. Uso de la información';
+
+  @override
+  String get privacySection2Body =>
+      'Usamos tus datos para ofrecerte la funcionalidad de SmartMeal: generar menús, calcular estadísticas y enviar notificaciones si lo autorizas.';
+
+  @override
+  String get privacySection3Title => '3. Almacenamiento y seguridad';
+
+  @override
+  String get privacySection3Body =>
+      'Almacenamos la información en Firebase. Tomamos medidas razonables para proteger tus datos, pero ningún sistema es 100% seguro.';
+
+  @override
+  String get privacySection4Title => '4. Compartición de datos';
+
+  @override
+  String get privacySection4Body =>
+      'No vendemos tus datos. Podemos compartir información con proveedores de servicios estrictamente necesarios para operar la app (por ejemplo, Firebase).';
+
+  @override
+  String get privacySection5Title => '5. Tus derechos';
+
+  @override
+  String get privacySection5Body =>
+      'Puedes solicitar acceso, rectificación o eliminación de tu cuenta desde Ajustes. Para otras solicitudes, contacta con soporte.';
+
+  @override
+  String get privacySection6Title => '6. Contacto';
+
+  @override
+  String get privacySection6Body =>
+      'Si tienes dudas sobre esta política, utiliza la sección de Soporte en la app.';
+
+  @override
+  String get termsHeading => 'Términos y Condiciones de SmartMeal';
+
+  @override
+  String termsUpdated(Object date) {
+    return 'Última actualización: $date';
+  }
+
+  @override
+  String get termsSection1Title => '1. Aceptación de los términos';
+
+  @override
+  String get termsSection1Body =>
+      'Al utilizar SmartMeal aceptas estos términos. Si no estás de acuerdo, no uses la app.';
+
+  @override
+  String get termsSection2Title => '2. Uso de la aplicación';
+
+  @override
+  String get termsSection2Body =>
+      'SmartMeal está destinada a uso personal. No garantizamos resultados nutricionales o médicos; utiliza la app como apoyo, no como asesoramiento profesional.';
+
+  @override
+  String get termsSection3Title => '3. Contenido generado';
+
+  @override
+  String get termsSection3Body =>
+      'El contenido (menús, recetas) se genera para tu uso personal. No nos hacemos responsables del uso indebido.';
+
+  @override
+  String get termsSection4Title => '4. Limitación de responsabilidad';
+
+  @override
+  String get termsSection4Body =>
+      'SmartMeal se ofrece \"tal cual\". No seremos responsables por daños indirectos o consecuentes derivados del uso de la app.';
+
+  @override
+  String get termsSection5Title => '5. Cambios en los términos';
+
+  @override
+  String get termsSection5Body =>
+      'Podemos actualizar estos términos. Te notificaremos cambios relevantes y la fecha de actualización.';
+
+  @override
+  String get statsGoalTitle => 'Objetivo calórico';
+
+  @override
+  String statsGoalRatio(Object current, Object target) {
+    return '$current kcal / $target kcal';
+  }
+
+  @override
+  String statsGoalPercent(Object percent) {
+    return '$percent% del objetivo';
+  }
+
+  @override
+  String get statsGoalNoData =>
+      'Completa tu perfil para calcular tu objetivo calórico.';
+
+  @override
   String get settingsAccountSection => 'Cuenta';
 
   @override
@@ -1027,6 +1137,11 @@ class AppLocalizationsEs extends AppLocalizations {
   @override
   String shoppingEditPriceCurrentPrice(String price) {
     return 'Precio actual: $price€';
+  }
+
+  @override
+  String shoppingEditPriceUnitInfo(String unit) {
+    return 'Este precio se aplica por $unit';
   }
 
   @override

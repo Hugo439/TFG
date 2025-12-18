@@ -13,33 +13,48 @@ class RecipeListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = context.l10n;
-    
+
     return ListTile(
       leading: Icon(recipe.mealType.icon, color: colorScheme.primary),
       title: Text(
         recipe.name.value,
-        style: TextStyle(fontWeight: FontWeight.w500, color: colorScheme.onSurface),
+        style: TextStyle(
+          fontWeight: FontWeight.w500,
+          color: colorScheme.onSurface,
+        ),
       ),
       subtitle: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             '${recipe.calories} kcal',
-            style: TextStyle(fontSize: 12, color: colorScheme.onSurface.withOpacity(0.6)),
+            style: TextStyle(
+              fontSize: 12,
+              color: colorScheme.onSurface.withValues(alpha: 0.6),
+            ),
           ),
           if (recipe.description.value.isNotEmpty)
             Text(
               recipe.description.value,
-              style: TextStyle(fontSize: 12, color: colorScheme.onSurface.withOpacity(0.7)),
+              style: TextStyle(
+                fontSize: 12,
+                color: colorScheme.onSurface.withValues(alpha: 0.7),
+              ),
             ),
           if (recipe.ingredients.isNotEmpty)
             Text(
               '${l10n.recipeIngredientsPrefix}: ${recipe.ingredients.join(', ')}',
-              style: TextStyle(fontSize: 12, color: colorScheme.onSurface.withOpacity(0.7)),
+              style: TextStyle(
+                fontSize: 12,
+                color: colorScheme.onSurface.withValues(alpha: 0.7),
+              ),
             ),
         ],
       ),
-      trailing: Icon(Icons.chevron_right, color: colorScheme.onSurface.withOpacity(0.4)),
+      trailing: Icon(
+        Icons.chevron_right,
+        color: colorScheme.onSurface.withValues(alpha: 0.4),
+      ),
       onTap: onTap,
     );
   }

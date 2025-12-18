@@ -12,7 +12,10 @@ class PriceCatalogFirestoreDatasource {
 
   Future<PriceEntryModel?> getPriceEntry(String normalizedName) async {
     try {
-      final doc = await _firestore.collection(_collection).doc(normalizedName).get();
+      final doc = await _firestore
+          .collection(_collection)
+          .doc(normalizedName)
+          .get();
 
       if (!doc.exists) {
         if (kDebugMode) {
@@ -24,7 +27,9 @@ class PriceCatalogFirestoreDatasource {
       return PriceEntryModel.fromFirestore(doc.data()!, doc.id);
     } catch (e) {
       if (kDebugMode) {
-        print('❌ [PriceCatalogDatasource] Error obteniendo $normalizedName: $e');
+        print(
+          '❌ [PriceCatalogDatasource] Error obteniendo $normalizedName: $e',
+        );
       }
       rethrow;
     }
@@ -38,7 +43,9 @@ class PriceCatalogFirestoreDatasource {
           .get();
 
       if (kDebugMode) {
-        print('📦 [PriceCatalogDatasource] Obtenidos ${query.docs.length} precios para $category');
+        print(
+          '📦 [PriceCatalogDatasource] Obtenidos ${query.docs.length} precios para $category',
+        );
       }
 
       return query.docs
@@ -46,7 +53,9 @@ class PriceCatalogFirestoreDatasource {
           .toList();
     } catch (e) {
       if (kDebugMode) {
-        print('❌ [PriceCatalogDatasource] Error obteniendo categoría $category: $e');
+        print(
+          '❌ [PriceCatalogDatasource] Error obteniendo categoría $category: $e',
+        );
       }
       rethrow;
     }
@@ -61,7 +70,8 @@ class PriceCatalogFirestoreDatasource {
       final results = query.docs
           .where((doc) {
             final name = doc.id.toLowerCase();
-            final displayName = (doc.data()['displayName'] as String?  ?? '').toLowerCase();
+            final displayName = (doc.data()['displayName'] as String? ?? '')
+                .toLowerCase();
             final term = searchTerm.toLowerCase();
             return name.contains(term) || displayName.contains(term);
           })
@@ -69,7 +79,9 @@ class PriceCatalogFirestoreDatasource {
           .toList();
 
       if (kDebugMode) {
-        print('🔍 [PriceCatalogDatasource] Búsqueda "$searchTerm": ${results.length} resultados');
+        print(
+          '🔍 [PriceCatalogDatasource] Búsqueda "$searchTerm": ${results.length} resultados',
+        );
       }
 
       return results;
@@ -108,7 +120,9 @@ class PriceCatalogFirestoreDatasource {
       }
     } catch (e) {
       if (kDebugMode) {
-        print('❌ [PriceCatalogDatasource] Error eliminando $normalizedName: $e');
+        print(
+          '❌ [PriceCatalogDatasource] Error eliminando $normalizedName: $e',
+        );
       }
       rethrow;
     }

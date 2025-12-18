@@ -18,10 +18,10 @@ class AppConstants {
   static const double defaultPadding = 16.0;
   static const double defaultBorderRadius = 12.0;
   static const int splashDuration = 1; // segundos
-  
+
   // Collections Firestore
   static const String usersCollection = 'users';
-  
+
   // Error Messages
   static const String errorNoAuth = 'Usuario no autenticado';
   static const String errorProfileNotFound = 'Perfil no encontrado';

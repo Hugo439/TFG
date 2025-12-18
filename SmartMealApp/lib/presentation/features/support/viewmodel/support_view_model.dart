@@ -36,7 +36,7 @@ class SupportViewModel extends ChangeNotifier {
   bool success = false;
 
   SupportViewModel({
-    this.getSupportMessagesUseCase, 
+    this.getSupportMessagesUseCase,
     this.supportMessageRepository,
     this.faqLocalDatasource,
   });
@@ -52,7 +52,7 @@ class SupportViewModel extends ChangeNotifier {
       debugPrint('getSupportMessagesUseCase es null');
       return;
     }
-    
+
     _loadingHistory = true;
     historyError = null;
     notifyListeners();
@@ -76,12 +76,12 @@ class SupportViewModel extends ChangeNotifier {
     XFile? attachment,
   ) async {
     if (supportMessageRepository == null) return false;
-    
+
     // VALIDAR usando Value Objects
     try {
       final messageVO = SupportMessageContent(message);
       final categoryVO = SupportCategory(category);
-      
+
       _loadingForm = true;
       formError = null;
       success = false;
@@ -90,9 +90,9 @@ class SupportViewModel extends ChangeNotifier {
       String? attachmentUrl;
       if (attachment != null) {
         try {
-          final storageRef = FirebaseStorage.instance
-              .ref()
-              .child('support_attachments/${DateTime.now().millisecondsSinceEpoch}_${attachment.name}');
+          final storageRef = FirebaseStorage.instance.ref().child(
+            'support_attachments/${DateTime.now().millisecondsSinceEpoch}_${attachment.name}',
+          );
           final uploadTask = await storageRef.putFile(File(attachment.path));
           attachmentUrl = await uploadTask.ref.getDownloadURL();
         } catch (e) {
@@ -129,7 +129,6 @@ class SupportViewModel extends ChangeNotifier {
       _loadingForm = false;
       notifyListeners();
       return true;
-      
     } on ArgumentError catch (e) {
       // Captura errores de validación de Value Objects
       formError = e.message;
@@ -159,7 +158,7 @@ class SupportViewModel extends ChangeNotifier {
           .collection('faqs')
           .orderBy('order')
           .get();
-      
+
       final faqModels = query.docs
           .map((doc) => FAQModel.fromMap(doc.data(), doc.id))
           .toList();

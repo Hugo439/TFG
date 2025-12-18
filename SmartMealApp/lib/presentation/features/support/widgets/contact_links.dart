@@ -6,11 +6,7 @@ class ContactLinks extends StatelessWidget {
   final String email;
   final String whatsapp;
 
-  const ContactLinks({
-    super.key,
-    required this.email,
-    required this.whatsapp,
-  });
+  const ContactLinks({super.key, required this.email, required this.whatsapp});
 
   Future<void> _launchEmail() async {
     final uri = Uri(
@@ -18,7 +14,7 @@ class ContactLinks extends StatelessWidget {
       path: email,
       query: 'subject=Soporte SmartMeal',
     );
-    
+
     try {
       final launched = await launchUrl(uri);
       if (!launched) {
@@ -30,8 +26,10 @@ class ContactLinks extends StatelessWidget {
   }
 
   Future<void> _launchWhatsApp() async {
-    final uri = Uri.parse('https://wa.me/$whatsapp?text=Hola,%20necesito%20soporte%20SmartMeal');
-    
+    final uri = Uri.parse(
+      'https://wa.me/$whatsapp?text=Hola,%20necesito%20soporte%20SmartMeal',
+    );
+
     try {
       final launched = await launchUrl(
         uri,

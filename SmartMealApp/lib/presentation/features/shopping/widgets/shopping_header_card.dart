@@ -3,10 +3,7 @@ import 'package:flutter/material.dart';
 class ShoppingHeaderCard extends StatelessWidget {
   final String subtitle;
 
-  const ShoppingHeaderCard({
-    super.key,
-    required this.subtitle,
-  });
+  const ShoppingHeaderCard({super.key, required this.subtitle});
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +15,7 @@ class ShoppingHeaderCard extends StatelessWidget {
         gradient: LinearGradient(
           colors: [
             colorScheme.primary,
-            colorScheme.primary.withOpacity(0.8),
+            colorScheme.primary.withValues(alpha: 0.8),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -26,7 +23,7 @@ class ShoppingHeaderCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: colorScheme.primary.withOpacity(0.3),
+            color: colorScheme.primary.withValues(alpha: 0.3),
             blurRadius: 8,
             offset: const Offset(0, 4),
           ),
@@ -49,10 +46,7 @@ class ShoppingHeaderCard extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   subtitle,
-                  style: TextStyle(
-                    color: colorScheme.onPrimary,
-                    fontSize: 14,
-                  ),
+                  style: TextStyle(color: colorScheme.onPrimary, fontSize: 14),
                 ),
               ],
             ),
@@ -61,7 +55,7 @@ class ShoppingHeaderCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.white.withValues(alpha: 0.2),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Icon(

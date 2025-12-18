@@ -16,10 +16,8 @@ class AddShoppingItemView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => AddShoppingItemViewModel(
-        sl<AddShoppingItemUseCase>(),
-        itemToEdit,
-      ),
+      create: (_) =>
+          AddShoppingItemViewModel(sl<AddShoppingItemUseCase>(), itemToEdit),
       child: const _AddShoppingItemContent(),
     );
   }
@@ -63,7 +61,7 @@ class _AddShoppingItemContent extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: colorScheme.primary.withOpacity(0.2),
+                  color: colorScheme.primary.withValues(alpha: 0.2),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
@@ -126,7 +124,9 @@ class _AddShoppingItemContent extends StatelessWidget {
               initialValue: vm.price,
               onChanged: vm.setPrice,
               prefixIcon: Icons.euro,
-              keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              keyboardType: const TextInputType.numberWithOptions(
+                decimal: true,
+              ),
             ),
             const SizedBox(height: 16),
 
@@ -140,10 +140,7 @@ class _AddShoppingItemContent extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            _CategoryDropdown(
-              value: vm.category,
-              onChanged: vm.setCategory,
-            ),
+            _CategoryDropdown(value: vm.category, onChanged: vm.setCategory),
             const SizedBox(height: 16),
 
             // Para qué menús
@@ -170,15 +167,15 @@ class _AddShoppingItemContent extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: colorScheme.error.withOpacity(0.1),
+                  color: colorScheme.error.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
                   vm.errorCode == ShoppingErrorCode.requiredFields
                       ? l10n.shoppingFormRequiredError
                       : vm.errorCode == ShoppingErrorCode.saveError
-                          ? l10n.shoppingSaveError
-                          : vm.errorDetails ?? '',
+                      ? l10n.shoppingSaveError
+                      : vm.errorDetails ?? '',
                   style: TextStyle(color: colorScheme.error),
                 ),
               ),
@@ -187,7 +184,9 @@ class _AddShoppingItemContent extends StatelessWidget {
 
             // Save button
             PrimaryButton(
-              text: isEdit ? l10n.shoppingEditItemButton : l10n.shoppingAddItemButton,
+              text: isEdit
+                  ? l10n.shoppingEditItemButton
+                  : l10n.shoppingAddItemButton,
               isLoading: vm.loading,
               onPressed: () async {
                 final success = await vm.save();
@@ -217,16 +216,13 @@ class _CategoryDropdown extends StatelessWidget {
   final String value;
   final ValueChanged<String> onChanged;
 
-  const _CategoryDropdown({
-    required this.value,
-    required this.onChanged,
-  });
+  const _CategoryDropdown({required this.value, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = context.l10n;
-    
+
     // Mapa de valores internos a claves de traducción
     final categories = {
       'Frutas y Verduras': l10n.shoppingCategoryFruits,

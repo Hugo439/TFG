@@ -26,11 +26,11 @@ class IngredientAggregator {
 
   void addPortion(parser.IngredientPortion portion, String menuName) {
     if (portion.name.trim().isEmpty) return;
-    
+
     // Normalizar el nombre ANTES de agregar
     final normalizedName = _normalizeName(portion.name);
     final key = normalizedName;
-    
+
     _acc.putIfAbsent(key, () => _IngredientAgg(name: normalizedName));
 
     final group = _acc[key]!;
@@ -63,7 +63,7 @@ class PriceEstimator {
   final GetIngredientPriceUseCase getIngredientPriceUseCase;
   final GetPricesByCategoryUseCase getPricesByCategoryUseCase;
   final String? userId;
-  
+
   // Caché local: categoría -> mapa de precios de la categoría
   final Map<String, Map<String, PriceRange>> _categoryCache = {};
 
@@ -120,7 +120,7 @@ class PriceEstimator {
     );
     // Normalizar claves a lower-case
     final normalized = {
-      for (final entry in prices.entries) entry.key.toLowerCase(): entry.value
+      for (final entry in prices.entries) entry.key.toLowerCase(): entry.value,
     };
     _categoryCache[category] = normalized;
     return normalized;
@@ -142,12 +142,12 @@ class PriceEstimator {
   }
 
   double _calculatePrice(double pricePerUnit, double base, UnitKind kind) {
-    final unitStr = kind == UnitKind.weight 
-        ? 'weight' 
-        : kind == UnitKind.volume 
-            ? 'volume' 
-            : 'unit';
-    
+    final unitStr = kind == UnitKind.weight
+        ? 'weight'
+        : kind == UnitKind.volume
+        ? 'volume'
+        : 'unit';
+
     if (unitStr == 'weight') {
       final kg = base / 1000.0;
       return (pricePerUnit * kg).clamp(0.1, 100.0);
@@ -178,9 +178,9 @@ class _IngredientAgg {
   UnitKind? unitKind;
 
   _IngredientAgg({required this.name})
-      : usedInMenus = [],
-        totalBase = 0,
-        unitKind = null;
+    : usedInMenus = [],
+      totalBase = 0,
+      unitKind = null;
 
   void addQuantity(double value, UnitKind kind) {
     unitKind ??= kind;
@@ -202,5 +202,6 @@ class _IngredientAgg {
     return '${_format(totalBase)} uds';
   }
 
-  String _format(double v) => v % 1 == 0 ? v.toStringAsFixed(0) : v.toStringAsFixed(2);
+  String _format(double v) =>
+      v % 1 == 0 ? v.toStringAsFixed(0) : v.toStringAsFixed(2);
 }

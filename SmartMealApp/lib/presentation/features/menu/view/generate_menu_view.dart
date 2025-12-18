@@ -8,6 +8,7 @@ import 'package:smartmeal/domain/usecases/menus/generate_weekly_menu_usecase.dar
 import 'package:smartmeal/presentation/features/menu/viewmodel/generate_menu_view_model.dart';
 import 'package:smartmeal/presentation/features/menu/widgets/weekly_menu_calendar.dart';
 import 'package:smartmeal/domain/repositories/weekly_menu_repository.dart';
+import 'package:smartmeal/domain/repositories/statistics_repository.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
 
 class GenerateMenuView extends StatelessWidget {
@@ -22,6 +23,7 @@ class GenerateMenuView extends StatelessWidget {
         sl<GenerateWeeklyMenuUseCase>(),
         sl<WeeklyMenuRepository>(),
         sl<SaveMenuRecipesUseCase>(),
+        sl<StatisticsRepository>(),
       ),
       child: const _GenerateMenuContent(),
     );
@@ -86,7 +88,7 @@ class _GenerateMenuContent extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(32),
               decoration: BoxDecoration(
-                color: colorScheme.primary.withOpacity(0.1),
+                color: colorScheme.primary.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(
@@ -114,7 +116,7 @@ class _GenerateMenuContent extends StatelessWidget {
               l10n.generateMenuDescription,
               style: TextStyle(
                 fontSize: 16,
-                color: colorScheme.onSurface.withOpacity(0.7),
+                color: colorScheme.onSurface.withValues(alpha: 0.7),
                 height: 1.5,
               ),
               textAlign: TextAlign.center,
@@ -160,10 +162,10 @@ class _GenerateMenuContent extends StatelessWidget {
                 padding: const EdgeInsets.all(16),
                 margin: const EdgeInsets.only(bottom: 24),
                 decoration: BoxDecoration(
-                  color: colorScheme.error.withOpacity(0.1),
+                  color: colorScheme.error.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: colorScheme.error.withOpacity(0.3),
+                    color: colorScheme.error.withValues(alpha: 0.3),
                   ),
                 ),
                 child: Row(
@@ -191,7 +193,7 @@ class _GenerateMenuContent extends StatelessWidget {
                   backgroundColor: colorScheme.primary,
                   foregroundColor: colorScheme.onPrimary,
                   elevation: 2,
-                  shadowColor: colorScheme.primary.withOpacity(0.3),
+                  shadowColor: colorScheme.primary.withValues(alpha: 0.3),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
@@ -243,7 +245,7 @@ class _GenerateMenuContent extends StatelessWidget {
               Text(
                 l10n.generateMenuWaitMessage,
                 style: TextStyle(
-                  color: colorScheme.onSurface.withOpacity(0.6),
+                  color: colorScheme.onSurface.withValues(alpha: 0.6),
                   fontSize: 14,
                 ),
                 textAlign: TextAlign.center,
@@ -252,7 +254,7 @@ class _GenerateMenuContent extends StatelessWidget {
               Text(
                 l10n.generateMenuAutoMessage,
                 style: TextStyle(
-                  color: colorScheme.onSurface.withOpacity(0.6),
+                  color: colorScheme.onSurface.withValues(alpha: 0.6),
                   fontSize: 14,
                 ),
                 textAlign: TextAlign.center,
@@ -283,22 +285,18 @@ class _GenerateMenuContent extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        colorScheme.primary.withOpacity(0.1),
-                        colorScheme.primary.withOpacity(0.05),
+                        colorScheme.primary.withValues(alpha: 0.1),
+                        colorScheme.primary.withValues(alpha: 0.05),
                       ],
                     ),
                     borderRadius: BorderRadius.circular(16),
                     border: Border.all(
-                      color: colorScheme.primary.withOpacity(0.3),
+                      color: colorScheme.primary.withValues(alpha: 0.3),
                     ),
                   ),
                   child: Row(
                     children: [
-                      Icon(
-                        Icons.preview,
-                        color: colorScheme.primary,
-                        size: 40,
-                      ),
+                      Icon(Icons.preview, color: colorScheme.primary, size: 40),
                       const SizedBox(width: 16),
                       Expanded(
                         child: Column(
@@ -316,7 +314,9 @@ class _GenerateMenuContent extends StatelessWidget {
                             Text(
                               menu.name,
                               style: TextStyle(
-                                color: colorScheme.onSurface.withOpacity(0.7),
+                                color: colorScheme.onSurface.withValues(
+                                  alpha: 0.7,
+                                ),
                                 fontSize: 14,
                               ),
                             ),
@@ -366,7 +366,7 @@ class _GenerateMenuContent extends StatelessWidget {
             color: colorScheme.surfaceContainerHighest,
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: Colors.black.withValues(alpha: 0.05),
                 blurRadius: 4,
                 offset: const Offset(0, -2),
               ),
@@ -380,7 +380,9 @@ class _GenerateMenuContent extends StatelessWidget {
                   LinearProgressIndicator(
                     value: vm.state.progress,
                     backgroundColor: colorScheme.surfaceContainerHighest,
-                    valueColor: AlwaysStoppedAnimation<Color>(colorScheme.primary),
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      colorScheme.primary,
+                    ),
                   ),
                   const SizedBox(height: 16),
                 ],
@@ -402,29 +404,33 @@ class _GenerateMenuContent extends StatelessWidget {
                     Expanded(
                       flex: 2,
                       child: ElevatedButton.icon(
-                        onPressed: isSaving ? null : () async {
-                          try {
-                            await vm.saveGeneratedMenu();
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(l10n.menuSaveSuccess),
-                                  backgroundColor: Colors.green,
-                                ),
-                              );
-                              Navigator.of(context).pop(true);
-                            }
-                          } catch (e) {
-                            if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('${l10n.menuSaveError}: $e'),
-                                  backgroundColor: Colors.red,
-                                ),
-                              );
-                            }
-                          }
-                        },
+                        onPressed: isSaving
+                            ? null
+                            : () async {
+                                try {
+                                  await vm.saveGeneratedMenu();
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(l10n.menuSaveSuccess),
+                                        backgroundColor: Colors.green,
+                                      ),
+                                    );
+                                    Navigator.of(context).pop(true);
+                                  }
+                                } catch (e) {
+                                  if (context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                          '${l10n.menuSaveError}: $e',
+                                        ),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                  }
+                                }
+                              },
                         icon: const Icon(Icons.check),
                         label: Text(l10n.generateMenuAccept),
                         style: ElevatedButton.styleFrom(
@@ -454,11 +460,7 @@ class _GenerateMenuContent extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.check_circle,
-              color: Colors.green,
-              size: 100,
-            ),
+            Icon(Icons.check_circle, color: Colors.green, size: 100),
             const SizedBox(height: 24),
             Text(
               l10n.menuSaveSuccess,
@@ -499,14 +501,10 @@ class _GenerateMenuContent extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: colorScheme.primary.withOpacity(0.1),
+              color: colorScheme.primary.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(
-              icon,
-              color: colorScheme.primary,
-              size: 28,
-            ),
+            child: Icon(icon, color: colorScheme.primary, size: 28),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -526,7 +524,7 @@ class _GenerateMenuContent extends StatelessWidget {
                   description,
                   style: TextStyle(
                     fontSize: 14,
-                    color: colorScheme.onSurface.withOpacity(0.7),
+                    color: colorScheme.onSurface.withValues(alpha: 0.7),
                   ),
                 ),
               ],
@@ -568,7 +566,7 @@ class _GenerateMenuContent extends StatelessWidget {
             label,
             style: TextStyle(
               fontSize: 12,
-              color: colorScheme.onSurface.withOpacity(0.6),
+              color: colorScheme.onSurface.withValues(alpha: 0.6),
             ),
           ),
         ],

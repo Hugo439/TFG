@@ -11,10 +11,14 @@ abstract class UserPriceRepository {
   });
 
   /// Obtiene todos los overrides de un usuario
-  Future<Either<Failure, List<UserPriceOverride>>> getAllUserOverrides(String userId);
+  Future<Either<Failure, List<UserPriceOverride>>> getAllUserOverrides(
+    String userId,
+  );
 
   /// Guarda o actualiza un override de precio
-  Future<Either<Failure, void>> saveUserPriceOverride(UserPriceOverride override);
+  Future<Either<Failure, void>> saveUserPriceOverride(
+    UserPriceOverride override,
+  );
 
   /// Elimina un override de precio
   Future<Either<Failure, void>> deleteUserPriceOverride({

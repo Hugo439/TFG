@@ -20,11 +20,14 @@ class SettingsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => SettingsViewModel(
-        sl<GetUserProfileUseCase>(),
-        sl<SignOutUseCase>(),
-        sl<DeleteAccountUseCase>(),
-      )..loadProfile(),
+      create: (_) =>
+          SettingsViewModel(
+              sl<GetUserProfileUseCase>(),
+              sl<SignOutUseCase>(),
+              sl<DeleteAccountUseCase>(),
+            )
+            ..loadProfile()
+            ..loadPreferences(),
       child: const _SettingsContent(),
     );
   }
@@ -135,14 +138,10 @@ class _SettingsContent extends StatelessWidget {
                         subtitle: l10n.settingsHelpCenterSubtitle,
                         trailing: Icon(
                           Icons.chevron_right,
-                          color: colorScheme.onSurface.withOpacity(0.6),
+                          color: colorScheme.onSurface.withValues(alpha: 0.6),
                         ),
                         onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(l10n.settingsComingSoon),
-                            ),
-                          );
+                          Navigator.of(context).pushNamed(Routes.support);
                         },
                       ),
                       SettingsTile(
@@ -151,7 +150,7 @@ class _SettingsContent extends StatelessWidget {
                         subtitle: l10n.settingsContactSupportSubtitle,
                         trailing: Icon(
                           Icons.chevron_right,
-                          color: colorScheme.onSurface.withOpacity(0.6),
+                          color: colorScheme.onSurface.withValues(alpha: 0.6),
                         ),
                         onTap: () {
                           Navigator.of(context).pushNamed(Routes.support);
@@ -163,7 +162,7 @@ class _SettingsContent extends StatelessWidget {
                         subtitle: l10n.settingsAboutSubtitle,
                         trailing: Icon(
                           Icons.chevron_right,
-                          color: colorScheme.onSurface.withOpacity(0.6),
+                          color: colorScheme.onSurface.withValues(alpha: 0.6),
                         ),
                         onTap: () {
                           _showAboutDialog(context);
@@ -181,14 +180,10 @@ class _SettingsContent extends StatelessWidget {
                         title: l10n.settingsPrivacyPolicy,
                         trailing: Icon(
                           Icons.chevron_right,
-                          color: colorScheme.onSurface.withOpacity(0.6),
+                          color: colorScheme.onSurface.withValues(alpha: 0.6),
                         ),
                         onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(l10n.settingsComingSoon),
-                            ),
-                          );
+                          Navigator.of(context).pushNamed('/privacy');
                         },
                       ),
                       SettingsTile(
@@ -196,14 +191,10 @@ class _SettingsContent extends StatelessWidget {
                         title: l10n.settingsTermsAndConditions,
                         trailing: Icon(
                           Icons.chevron_right,
-                          color: colorScheme.onSurface.withOpacity(0.6),
+                          color: colorScheme.onSurface.withValues(alpha: 0.6),
                         ),
                         onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(l10n.settingsComingSoon),
-                            ),
-                          );
+                          Navigator.of(context).pushNamed('/terms');
                         },
                       ),
                     ],
@@ -275,7 +266,7 @@ class _SettingsContent extends StatelessWidget {
   }) {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = context.l10n;
-    
+
     return showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -289,7 +280,9 @@ class _SettingsContent extends StatelessWidget {
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
             style: TextButton.styleFrom(
-              foregroundColor: isDestructive ? colorScheme.error : colorScheme.primary,
+              foregroundColor: isDestructive
+                  ? colorScheme.error
+                  : colorScheme.primary,
             ),
             child: Text(confirmText ?? l10n.commonAccept),
           ),
@@ -301,12 +294,16 @@ class _SettingsContent extends StatelessWidget {
   void _showAboutDialog(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = context.l10n;
-    
+
     showAboutDialog(
       context: context,
       applicationName: 'SmartMeal',
       applicationVersion: '1.0.0',
-      applicationIcon: Icon(Icons.restaurant_menu, size: 48, color: colorScheme.primary),
+      applicationIcon: Icon(
+        Icons.restaurant_menu,
+        size: 48,
+        color: colorScheme.primary,
+      ),
       children: [
         Text(l10n.settingsAboutDescription),
         const SizedBox(height: 16),
@@ -333,7 +330,10 @@ class _SettingsContent extends StatelessWidget {
           child: SafeArea(
             child: SingleChildScrollView(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 24,
+                ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [

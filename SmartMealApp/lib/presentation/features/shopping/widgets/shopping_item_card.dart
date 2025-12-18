@@ -44,7 +44,7 @@ class ShoppingItemCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final l10n = context.l10n;
-    
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -52,10 +52,10 @@ class ShoppingItemCard extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: item.isChecked
-              ? colorScheme.primary.withOpacity(0.1)
+              ? colorScheme.primary.withValues(alpha: 0.1)
               : (colorScheme.brightness == Brightness.dark
-                  ? colorScheme.surfaceContainerHighest
-                  : colorScheme.tertiary),
+                    ? colorScheme.surfaceContainerHighest
+                    : colorScheme.tertiary),
           borderRadius: BorderRadius.circular(12),
           border: item.isChecked
               ? Border.all(color: colorScheme.primary, width: 1)
@@ -85,7 +85,7 @@ class ShoppingItemCard extends StatelessWidget {
                     '${item.name.value} (${item.quantity.value})',
                     style: TextStyle(
                       color: item.isChecked
-                          ? colorScheme.onSurface.withOpacity(0.6)
+                          ? colorScheme.onSurface.withValues(alpha: 0.6)
                           : colorScheme.onSurface,
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
@@ -99,7 +99,7 @@ class ShoppingItemCard extends StatelessWidget {
                     Text(
                       '${l10n.shoppingFor}: ${item.usedInMenus.join(", ")}',
                       style: TextStyle(
-                        color: colorScheme.onSurface.withOpacity(0.6),
+                        color: colorScheme.onSurface.withValues(alpha: 0.6),
                         fontSize: 12,
                       ),
                       maxLines: 1,
@@ -120,7 +120,7 @@ class ShoppingItemCard extends StatelessWidget {
                       item.price.formatted,
                       style: TextStyle(
                         color: item.isChecked
-                            ? colorScheme.onSurface.withOpacity(0.6)
+                            ? colorScheme.onSurface.withValues(alpha: 0.6)
                             : colorScheme.onSurface,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -155,7 +155,7 @@ class ShoppingItemCard extends StatelessWidget {
                 Text(
                   _getLocalizedCategory(context, item.category),
                   style: TextStyle(
-                    color: colorScheme.onSurface.withOpacity(0.6),
+                    color: colorScheme.onSurface.withValues(alpha: 0.6),
                     fontSize: 11,
                   ),
                 ),

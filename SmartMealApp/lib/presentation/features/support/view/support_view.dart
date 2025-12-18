@@ -20,8 +20,14 @@ class SupportView extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (_) {
         final vm = SupportViewModel(
-          getSupportMessagesUseCase: Provider.of<GetSupportMessagesUseCase>(context, listen: false),
-          supportMessageRepository: Provider.of<SupportMessageRepository>(context, listen: false),
+          getSupportMessagesUseCase: Provider.of<GetSupportMessagesUseCase>(
+            context,
+            listen: false,
+          ),
+          supportMessageRepository: Provider.of<SupportMessageRepository>(
+            context,
+            listen: false,
+          ),
           faqLocalDatasource: sl<FAQLocalDatasource>(),
         );
         vm.loadMessages(vm.userId);
@@ -56,13 +62,13 @@ class _SupportContentState extends State<_SupportContent> {
 
   Future<void> _sendMessage() async {
     final vm = Provider.of<SupportViewModel>(context, listen: false);
-    
+
     final success = await vm.sendSupportMessage(
       controller.text,
       selectedCategory,
       attachment,
     );
-    
+
     if (success && mounted) {
       // Limpiar formulario después de enviar
       controller.clear();
@@ -70,7 +76,7 @@ class _SupportContentState extends State<_SupportContent> {
         selectedCategory = null;
         attachment = null;
       });
-      
+
       // Mostrar mensaje de éxito
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -134,7 +140,7 @@ class _SupportContentState extends State<_SupportContent> {
                 context.l10n.supportDescription,
                 style: TextStyle(
                   fontSize: 14,
-                  color: colorScheme.onSurface.withOpacity(0.7),
+                  color: colorScheme.onSurface.withValues(alpha: 0.7),
                 ),
               ),
               const SizedBox(height: 32),
@@ -144,7 +150,8 @@ class _SupportContentState extends State<_SupportContent> {
                 error: vm.formError,
                 success: vm.success,
                 selectedCategory: selectedCategory,
-                onCategoryChanged: (cat) => setState(() => selectedCategory = cat),
+                onCategoryChanged: (cat) =>
+                    setState(() => selectedCategory = cat),
                 attachment: attachment,
                 onPickAttachment: pickAttachment,
                 onSend: _sendMessage,
@@ -181,7 +188,8 @@ class _SupportContentState extends State<_SupportContent> {
               FAQList(faqs: vm.faqs),
               const SizedBox(height: 32),
               ContactLinks(
-                email: 'hugolaroca@gmail.com', //TODO: Cambiar email 'soporte@smartmeal.com'
+                email:
+                    'hugolaroca@gmail.com', //TODO: Cambiar email 'soporte@smartmeal.com'
                 whatsapp: '34640879075',
               ),
             ],

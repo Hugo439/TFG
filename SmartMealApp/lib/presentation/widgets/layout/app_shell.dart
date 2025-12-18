@@ -39,11 +39,13 @@ class _AppShellState extends State<AppShell> {
   void initState() {
     super.initState();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      if (!mounted) return;
       final theme = Theme.of(context);
       final colorScheme = theme.colorScheme;
       final l10n = context.l10n;
-      
-      final title = message.notification?.title ?? l10n.notificationDefaultTitle;
+
+      final title =
+          message.notification?.title ?? l10n.notificationDefaultTitle;
       final body = message.notification?.body ?? l10n.notificationDefaultBody;
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -87,6 +89,7 @@ class _AppShellState extends State<AppShell> {
             label: l10n.notificationActionView,
             textColor: colorScheme.primary,
             onPressed: () {
+              if (!mounted) return;
               Navigator.of(context).pushNamed('/support');
             },
           ),
@@ -98,7 +101,11 @@ class _AppShellState extends State<AppShell> {
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.sizeOf(context).width;
-    final horizontal = width > 1000 ? 48.0 : width > 800 ? 32.0 : 16.0;
+    final horizontal = width > 1000
+        ? 48.0
+        : width > 800
+        ? 32.0
+        : 16.0;
 
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -106,7 +113,7 @@ class _AppShellState extends State<AppShell> {
         title: widget.title,
         subtitle: widget.subtitle,
         centerTitle: widget.centerTitle,
-        showNotification: widget.showNotification,
+        showNotification: false,
         onNotification: widget.onNotifications,
         leading: widget.leading,
         actions: widget.actions,

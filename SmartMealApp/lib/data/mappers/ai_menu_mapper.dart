@@ -31,21 +31,27 @@ class AiMenuMapper {
     );
   }
 
-  static List<Recipe> _mapRecipes(List<RecipeDataModel> recipesData, String userId) {
+  static List<Recipe> _mapRecipes(
+    List<RecipeDataModel> recipesData,
+    String userId,
+  ) {
     final recipes = <Recipe>[];
     final timestamp = DateTime.now().millisecondsSinceEpoch;
 
     for (int i = 0; i < recipesData.length; i++) {
       final recipeData = recipesData[i];
-      recipes.add(Recipe(
-        id: '${userId}_recipe_${timestamp}_$i',
-        name: RecipeName(recipeData.name),
-        description: RecipeDescription(recipeData.description),
-        ingredients: recipeData.ingredients,
-        calories: recipeData.calories,
-        mealType: _parseMealType(recipeData.mealType),
-        createdAt: DateTime.now(),
-      ));
+      recipes.add(
+        Recipe(
+          id: '${userId}_recipe_${timestamp}_$i',
+          name: RecipeName(recipeData.name),
+          description: RecipeDescription(recipeData.description),
+          ingredients: recipeData.ingredients,
+          calories: recipeData.calories,
+          mealType: _parseMealType(recipeData.mealType),
+          steps: recipeData.steps,
+          createdAt: DateTime.now(),
+        ),
+      );
     }
     return recipes;
   }
@@ -55,7 +61,15 @@ class AiMenuMapper {
     List<Recipe> recipes,
   ) {
     final days = <DayMenu>[];
-    final dayNames = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'];
+    final dayNames = [
+      'lunes',
+      'martes',
+      'miércoles',
+      'jueves',
+      'viernes',
+      'sábado',
+      'domingo',
+    ];
 
     for (int i = 0; i < dayNames.length; i++) {
       final dayName = dayNames[i];
@@ -71,7 +85,9 @@ class AiMenuMapper {
       for (int j = 0; j < rawIndices.length && j < mealOrder.length; j++) {
         final idx = rawIndices[j];
         final meal = mealOrder[j];
-        if (!mealIndexByType.containsKey(meal) && idx >= 0 && idx < recipes.length) {
+        if (!mealIndexByType.containsKey(meal) &&
+            idx >= 0 &&
+            idx < recipes.length) {
           mealIndexByType[meal] = idx;
         }
       }
@@ -132,10 +148,7 @@ class AiMenuMapper {
         }
       }
 
-      days.add(DayMenu(
-        day: _parseDayOfWeek(i),
-        recipes: dayRecipes,
-      ));
+      days.add(DayMenu(day: _parseDayOfWeek(i), recipes: dayRecipes));
     }
 
     return days;
@@ -158,14 +171,22 @@ class AiMenuMapper {
 
   static DayOfWeek _parseDayOfWeek(int index) {
     switch (index) {
-      case 0: return DayOfWeek.monday;
-      case 1: return DayOfWeek.tuesday;
-      case 2: return DayOfWeek.wednesday;
-      case 3: return DayOfWeek.thursday;
-      case 4: return DayOfWeek.friday;
-      case 5: return DayOfWeek.saturday;
-      case 6: return DayOfWeek.sunday;
-      default: return DayOfWeek.monday;
+      case 0:
+        return DayOfWeek.monday;
+      case 1:
+        return DayOfWeek.tuesday;
+      case 2:
+        return DayOfWeek.wednesday;
+      case 3:
+        return DayOfWeek.thursday;
+      case 4:
+        return DayOfWeek.friday;
+      case 5:
+        return DayOfWeek.saturday;
+      case 6:
+        return DayOfWeek.sunday;
+      default:
+        return DayOfWeek.monday;
     }
   }
 }
