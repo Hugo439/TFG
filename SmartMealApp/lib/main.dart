@@ -2,6 +2,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:smartmeal/actualizar_price_catalog.dart';
 import 'firebase_options.dart';
 import 'presentation/app/smart_meal_app.dart';
 import 'core/di/service_locator.dart';
@@ -22,6 +23,9 @@ void main() async {
   unawaited(FirestoreInitService.initializePriceDatabase());
 
   await FirebaseMessaging.instance.requestPermission();
+
+  await subirCatalogoPreciosRespetandoCampos();// Actualizar catálogo de precios, quitar despues de ejecutar
+
 
   // Inicializar FCM y cargar menús cuando hay un usuario autenticado
   FirebaseAuth.instance.authStateChanges().listen((User? user) {

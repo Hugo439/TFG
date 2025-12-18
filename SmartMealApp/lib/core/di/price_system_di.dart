@@ -6,7 +6,7 @@ import 'package:smartmeal/data/repositories_impl/price_catalog_repository_impl.d
 import 'package:smartmeal/data/repositories_impl/user_price_repository_impl.dart';
 import 'package:smartmeal/data/repositories_impl/missing_price_repository_impl.dart';
 import 'package:smartmeal/data/datasources/remote/price_catalog_firestore_datasource.dart';
-import 'package:smartmeal/data/datasources/remote/user_price_firestore_datasource.dart';
+import 'package:smartmeal/data/datasources/remote/user_price_override_firestore_datasource.dart';
 import 'package:smartmeal/data/datasources/remote/missing_price_firestore_datasource.dart';
 import 'package:smartmeal/domain/services/shopping/price_cache_service.dart';
 import 'package:smartmeal/domain/usecases/shopping/get_ingredient_price_usecase.dart';

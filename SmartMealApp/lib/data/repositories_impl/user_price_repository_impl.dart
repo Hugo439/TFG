@@ -1,7 +1,7 @@
 import 'package:smartmeal/core/errors/failures.dart';
 import 'package:smartmeal/domain/entities/user_price_override.dart';
 import 'package:smartmeal/domain/repositories/user_price_repository.dart';
-import 'package:smartmeal/data/datasources/remote/user_price_firestore_datasource.dart';
+import 'package:smartmeal/data/datasources/remote/user_price_override_firestore_datasource.dart';
 import 'package:smartmeal/data/models/user_price_override_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';

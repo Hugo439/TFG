@@ -253,3 +253,4 @@ Genera el menú semanal ahora:
     throw lastError ?? Exception('Error desconocido generando menú con Groq');
   }
 }
+//TODO: no se usa

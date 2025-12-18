@@ -3,7 +3,7 @@ import 'package:smartmeal/domain/repositories/shopping_repository.dart';
 import 'package:smartmeal/domain/repositories/statistics_repository.dart';
 import 'package:smartmeal/domain/entities/shopping_item.dart';
 import 'package:smartmeal/data/datasources/remote/shopping_datasource.dart';
-import 'package:smartmeal/data/datasources/remote/user_price_firestore_datasource.dart';
+import 'package:smartmeal/data/datasources/remote/user_price_override_firestore_datasource.dart';
 import 'package:smartmeal/data/datasources/local/shopping_local_datasource.dart';
 import 'package:smartmeal/data/mappers/shopping_item_mapper.dart';
 import 'package:smartmeal/domain/value_objects/price.dart';
