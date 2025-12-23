@@ -24,7 +24,7 @@ void main() async {
 
   await FirebaseMessaging.instance.requestPermission();
 
-  await subirCatalogoPreciosRespetandoCampos();// Actualizar catálogo de precios, quitar despues de ejecutar
+  // await subirCatalogoPreciosRespetandoCampos();// Actualizar catálogo de precios, descomentar cuando quieras actualizarlo
 
 
   // Inicializar FCM y cargar menús cuando hay un usuario autenticado
