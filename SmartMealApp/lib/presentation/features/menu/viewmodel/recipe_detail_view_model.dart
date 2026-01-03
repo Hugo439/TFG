@@ -5,6 +5,7 @@ import 'package:smartmeal/domain/usecases/recipes/get_recipe_by_id_usecase.dart'
 import 'package:smartmeal/domain/usecases/recipes/generate_recipe_steps_usecase.dart';
 import 'package:smartmeal/domain/usecases/recipes/update_recipe_usecase.dart';
 import 'package:smartmeal/core/di/service_locator.dart';
+import 'package:smartmeal/core/errors/errors.dart';
 
 class RecipeDetailViewModel extends ChangeNotifier {
   final GetRecipeByIdUseCase _getRecipeByIdUseCase = sl<GetRecipeByIdUseCase>();
@@ -23,7 +24,7 @@ class RecipeDetailViewModel extends ChangeNotifier {
 
   Future<void> loadRecipe(String id) async {
     final userId = FirebaseAuth.instance.currentUser?.uid;
-    if (userId == null) throw Exception('Usuario no autenticado');
+    if (userId == null) throw AuthFailure('Usuario no autenticado');
     final params = GetRecipeByIdParams(id: id, userId: userId);
     _recipe = await _getRecipeByIdUseCase(params);
     notifyListeners();

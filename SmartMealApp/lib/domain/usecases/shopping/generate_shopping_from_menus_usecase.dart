@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:smartmeal/core/usecases/usecase.dart';
-import 'package:smartmeal/core/exceptions/menu_already_generated_exception.dart';
+import 'package:smartmeal/core/errors/menu_already_generated_exception.dart';
 import 'package:smartmeal/domain/repositories/menu_repository.dart';
 import 'package:smartmeal/domain/repositories/shopping_repository.dart';
 import 'package:smartmeal/domain/services/shopping/ingredient_aggregator.dart';

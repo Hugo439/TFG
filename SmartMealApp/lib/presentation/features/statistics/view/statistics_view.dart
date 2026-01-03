@@ -30,12 +30,12 @@ class _StatisticsViewState extends State<StatisticsView> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    final body = vm.loading
+    final body = vm.loading || !vm.hasLoaded
       ? const Center(child: CircularProgressIndicator())
       : vm.error != null
         ? Center(child: Text(vm.error!))
         : vm.summary == null
-          ? const Center(child: Text('No hay datos de estadísticas'))
+          ? Center(child: Text(context.l10n.noDataStats))
           : _buildContent(
             context,
             vm,
@@ -86,9 +86,9 @@ class _StatisticsViewState extends State<StatisticsView> {
                 Expanded(
                   child: MetricCard(
                     icon: Icons.local_fire_department,
-                    title: 'Media diaria',
+                    title: context.l10n.avgDaily,
                     value: s.avgDailyCalories.toStringAsFixed(0),
-                    unit: 'kcal',
+                    unit: context.l10n.kcal,
                     color: theme.brightness == Brightness.dark
                         ? AppColors.darkStatProtein
                         : AppColors.statProtein,
@@ -98,9 +98,9 @@ class _StatisticsViewState extends State<StatisticsView> {
                 Expanded(
                   child: MetricCard(
                     icon: Icons.restaurant,
-                    title: 'Recetas únicas',
+                    title: context.l10n.uniqueRecipes,
                     value: '${s.uniqueRecipesCount}',
-                    unit: 'recetas',
+                    unit: context.l10n.recipesUnit,
                     color: theme.brightness == Brightness.dark
                         ? AppColors.darkStatCarbs
                         : AppColors.statCarbs,
@@ -117,9 +117,9 @@ class _StatisticsViewState extends State<StatisticsView> {
                 Expanded(
                   child: MetricCard(
                     icon: Icons.calendar_today,
-                    title: 'Total semanal',
+                    title: context.l10n.totalWeekly,
                     value: '${s.totalWeeklyCalories}',
-                    unit: 'kcal',
+                    unit: context.l10n.kcal,
                     color: theme.brightness == Brightness.dark
                         ? AppColors.darkStatFats
                         : AppColors.statFats,
@@ -129,9 +129,9 @@ class _StatisticsViewState extends State<StatisticsView> {
                 Expanded(
                   child: MetricCard(
                     icon: Icons.euro,
-                    title: 'Coste estimado',
+                    title: context.l10n.estimatedCost,
                     value: s.estimatedCost.toStringAsFixed(2),
-                    unit: '€',
+                    unit: context.l10n.euro,
                     color: theme.brightness == Brightness.dark
                         ? AppColors.darkStatCost
                         : AppColors.statCost,
@@ -158,7 +158,7 @@ class _StatisticsViewState extends State<StatisticsView> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
-              'Distribución de macros',
+              context.l10n.macroDistribution,
               style: theme.textTheme.titleLarge,
             ),
           ),
@@ -194,7 +194,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _MacroRow(
-                          label: 'Proteína',
+                          label: context.l10n.protein,
                           value: '${s.totalProteinG.toStringAsFixed(0)}g',
                           color: theme.brightness == Brightness.dark
                               ? AppColors.darkStatProtein
@@ -203,7 +203,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                         ),
                         const SizedBox(height: 12),
                         _MacroRow(
-                          label: 'Carbos',
+                          label: context.l10n.carbs,
                           value: '${s.totalCarbsG.toStringAsFixed(0)}g',
                           color: theme.brightness == Brightness.dark
                               ? AppColors.darkStatCarbs
@@ -212,7 +212,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                         ),
                         const SizedBox(height: 12),
                         _MacroRow(
-                          label: 'Grasas',
+                          label: context.l10n.fats,
                           value: '${s.totalFatG.toStringAsFixed(0)}g',
                           color: theme.brightness == Brightness.dark
                               ? AppColors.darkStatFats
@@ -233,7 +233,7 @@ class _StatisticsViewState extends State<StatisticsView> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
-                'Recetas favoritas',
+                context.l10n.favoriteRecipes,
                 style: theme.textTheme.titleLarge,
               ),
             ),
@@ -292,7 +292,7 @@ class _StatisticsViewState extends State<StatisticsView> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
-                          '${recipe.count}x',
+                          '${recipe.count}${context.l10n.times}',
                           style: theme.textTheme.labelMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
@@ -310,7 +310,7 @@ class _StatisticsViewState extends State<StatisticsView> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
-              'Ingredientes más usados',
+              context.l10n.mostUsedIngredients,
               style: theme.textTheme.titleLarge,
             ),
           ),
@@ -398,7 +398,7 @@ class _MacroRow extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(left: 20),
           child: Text(
-            '${avgDaily.toStringAsFixed(1)}g/día',
+            '${avgDaily.toStringAsFixed(1)}${context.l10n.gramsPerDay}',
             style: theme.textTheme.labelSmall?.copyWith(
               color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
             ),

@@ -1,3 +1,5 @@
+import 'package:smartmeal/core/errors/errors.dart';
+
 class DayMenuModel {
   final String day;
   final List<String> recipes;
@@ -11,7 +13,7 @@ class DayMenuModel {
         recipes: List<String>.from(map['recipes'] ?? []),
       );
     } catch (e) {
-      throw Exception('Error al convertir DayMenuModel: $e');
+      throw ServerFailure('Error al convertir DayMenuModel: $e');
     }
   }
 }

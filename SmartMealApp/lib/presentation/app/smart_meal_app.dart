@@ -8,7 +8,9 @@ import '../../l10n/app_localizations.dart';
 import '../routes/routes.dart';
 
 class SmartMealApp extends StatelessWidget {
-  const SmartMealApp({super.key});
+  final GlobalKey<NavigatorState> navigatorKey;
+
+  const SmartMealApp({super.key, required this.navigatorKey});
 
   @override
   Widget build(BuildContext context) {
@@ -35,6 +37,7 @@ class SmartMealApp extends StatelessWidget {
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
+            navigatorKey: navigatorKey,
             initialRoute: Routes.splash,
             onGenerateRoute: Routes.onGenerateRoute,
           );

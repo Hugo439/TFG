@@ -390,7 +390,13 @@
   "@generateMenuAccept": {
     "description": "Botón para aceptar y guardar el menú"
   },
-  
+
+  "menuWeeklyTitle": "Menú Semanal",
+  "menuWeeklySubtitle": "Tu plan nutricional personalizado",
+  "menuTotalWeek": "esta semana",
+
+  "menuAlreadyGenerated": "Los ingredientes de este menú ya se habían añadido a la lista de compra",
+
   "shoppingTitle": "Lista de la Compra",
   "shoppingSubtitle": "Productos",
   "shoppingItemsCount": "{count, plural, =0{Sin productos} one{{count} producto} other{{count} productos}}",
@@ -502,5 +508,32 @@
   "recipeDescription": "Descripción",
   "recipeIngredients": "Ingredientes",
   "recipeTotalCalories": "Calorías totales",
-  "recipeIngredientsPrefix": "Ingredientes"
+  "recipeIngredientsPrefix": "Ingredientes",
+
+  "noDataStats": "No hay datos de estadísticas",
+  "avgDaily": "Media diaria",
+  "kcal": "kcal",
+  "uniqueRecipes": "Recetas únicas",
+  "recipesUnit": "recetas",
+  "totalWeekly": "Total semanal",
+  "estimatedCost": "Coste estimado",
+  "euro": "€",
+  "macroDistribution": "Distribución de macros",
+  "protein": "Proteína",
+  "carbs": "Carbohidratos",
+  "fats": "Grasas",
+  "favoriteRecipes": "Recetas favoritas",
+  "mostUsedIngredients": "Ingredientes más usados",
+  "gramsPerDay": "g/día",
+  "times": "x",
+
+  "caloricGoal": "Objetivo calórico",
+  "highDeficit": "Déficit alto",
+  "onTarget": "En objetivo",
+  "surplus": "Superávit",
+  "percentOfGoal": "% del objetivo",
+  "completeProfileForGoal": "Completa tu perfil para calcular tu objetivo calórico.",
+
+  "notificationsEnabled": "Notificaciones activadas",
+  "notificationsDisabled": "Notificaciones desactivadas"
 }

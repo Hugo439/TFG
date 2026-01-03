@@ -401,6 +401,12 @@
     "description": "Button to accept and save the menu"
   },
 
+  "menuWeeklyTitle": "Weekly Menu",
+  "menuWeeklySubtitle": "Your personalized nutrition plan",
+  "menuTotalWeek": "this week",
+
+  "menuAlreadyGenerated": "The ingredients from this menu have already been added to the shopping list",
+
   "shoppingTitle": "Shopping List",
   "shoppingSubtitle": "Items",
   "shoppingItemsCount": "{count, plural, =0{No items} one{{count} item} other{{count} items}}",
@@ -512,5 +518,32 @@
   "recipeDescription": "Description",
   "recipeIngredients": "Ingredients",
   "recipeTotalCalories": "Total calories",
-  "recipeIngredientsPrefix": "Ingredients"
+  "recipeIngredientsPrefix": "Ingredients",
+
+  "noDataStats": "No statistics data available",
+  "avgDaily": "Daily average",
+  "kcal": "kcal",
+  "uniqueRecipes": "Unique recipes",
+  "recipesUnit": "recipes",
+  "totalWeekly": "Weekly total",
+  "estimatedCost": "Estimated cost",
+  "euro": "€",
+  "macroDistribution": "Macro distribution",
+  "protein": "Protein",
+  "carbs": "Carbs",
+  "fats": "Fats",
+  "favoriteRecipes": "Favorite recipes",
+  "mostUsedIngredients": "Most used ingredients",
+  "gramsPerDay": "g/day",
+  "times": "x",
+
+  "caloricGoal": "Caloric goal",
+  "highDeficit": "High deficit",
+  "onTarget": "On target",
+  "surplus": "Surplus",
+  "percentOfGoal": "% of goal",
+  "completeProfileForGoal": "Complete your profile to calculate your caloric goal.",
+
+  "notificationsEnabled": "Notifications enabled",
+  "notificationsDisabled": "Notifications disabled"
 }

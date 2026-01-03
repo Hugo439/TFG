@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smartmeal/l10n/l10n_ext.dart';
 
 class GoalStatusCard extends StatelessWidget {
   final double avgDaily;
@@ -37,11 +38,11 @@ class GoalStatusCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Objetivo calórico', style: theme.textTheme.titleMedium),
+                Text(context.l10n.caloricGoal, style: theme.textTheme.titleMedium),
                 const SizedBox(height: 4),
                 if (hasData) ...[
                   Text(
-                    '${avgDaily.toStringAsFixed(0)} kcal / ${target!.toDouble().toStringAsFixed(0)} kcal',
+                    '${avgDaily.toStringAsFixed(0)} ${context.l10n.kcal} / ${target!.toDouble().toStringAsFixed(0)} ${context.l10n.kcal}',
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.colorScheme.onSurface.withValues(alpha: 0.8),
                     ),
@@ -62,7 +63,7 @@ class GoalStatusCard extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
-                          status!,
+                          _getLocalizedStatus(status!, context),
                           style: theme.textTheme.labelMedium?.copyWith(
                             color: _statusColor(status!, theme),
                             fontWeight: FontWeight.w600,
@@ -71,7 +72,7 @@ class GoalStatusCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        '${percent!.toStringAsFixed(0)}% del objetivo',
+                        '${percent!.toStringAsFixed(0)}${context.l10n.percentOfGoal}',
                         style: theme.textTheme.labelMedium?.copyWith(
                           color: theme.colorScheme.onSurface.withValues(
                             alpha: 0.7,
@@ -82,7 +83,7 @@ class GoalStatusCard extends StatelessWidget {
                   ),
                 ] else ...[
                   Text(
-                    'Completa tu perfil para calcular tu objetivo calórico.',
+                    context.l10n.completeProfileForGoal,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
                     ),
@@ -98,13 +99,26 @@ class GoalStatusCard extends StatelessWidget {
 
   Color _statusColor(String status, ThemeData theme) {
     switch (status) {
-      case 'Déficit alto':
+      case 'highDeficit':
         return theme.colorScheme.tertiary;
-      case 'En objetivo':
+      case 'onTarget':
         return theme.colorScheme.primary;
-      case 'Superávit':
+      case 'surplus':
       default:
         return theme.colorScheme.error;
+    }
+  }
+
+  String _getLocalizedStatus(String status, BuildContext context) {
+    switch (status) {
+      case 'highDeficit':
+        return context.l10n.highDeficit;
+      case 'onTarget':
+        return context.l10n.onTarget;
+      case 'surplus':
+        return context.l10n.surplus;
+      default:
+        return status;
     }
   }
 }

@@ -9,6 +9,7 @@ import 'package:smartmeal/domain/usecases/menus/save_menu_recipes_usecase.dart';
 import 'package:smartmeal/domain/usecases/menus/generate_weekly_menu_usecase.dart';
 import 'package:smartmeal/domain/repositories/weekly_menu_repository.dart';
 import 'package:smartmeal/domain/repositories/statistics_repository.dart';
+import 'package:smartmeal/core/errors/errors.dart';
 
 enum GenerateMenuStatus { idle, generating, preview, saving, success, error }
 
@@ -74,7 +75,7 @@ class GenerateMenuViewModel extends ChangeNotifier {
       _updateProgress(0.1);
       final currentUser = await _getCurrentUser(const NoParams());
       if (currentUser == null) {
-        throw Exception('Usuario no autenticado');
+        throw AuthFailure('Usuario no autenticado');
       }
 
       if (kDebugMode) {
@@ -147,7 +148,7 @@ class GenerateMenuViewModel extends ChangeNotifier {
   /// Guarda el menú generado (recetas + menú semanal)
   Future<void> saveGeneratedMenu() async {
     if (_state.generatedMenu == null) {
-      throw Exception('No hay menú para guardar');
+      throw NotFoundFailure('No hay menú para guardar');
     }
 
     _state = _state.copyWith(

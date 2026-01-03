@@ -6,6 +6,8 @@ class AppConstants {
     'Ganar masa muscular',
     'Alimentación saludable',
   ];
+  static const int aaaa = 123 
+  
 
   // Validation
   static const int minPasswordLength = 6;

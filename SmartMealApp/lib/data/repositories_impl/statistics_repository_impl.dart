@@ -139,15 +139,20 @@ class StatisticsRepositoryImpl implements StatisticsRepository {
 
   // Refresca estadísticas en segundo plano y actualiza caché local
   Future<void> refreshStatistics(String userId) async {
-    WeeklyMenu? menu;
-    final allMenus = await _weeklyMenuRepository.getWeeklyMenus(userId);
-    if (allMenus.isNotEmpty) {
-      allMenus.sort((a, b) => b.weekStartDate.compareTo(a.weekStartDate));
-      menu = allMenus.first;
+    try {
+      final summary = await _calculateStatisticsSummary(userId);
+      if (summary != null) {
+        // Obtener la fecha del menú más reciente
+        final allMenus = await _weeklyMenuRepository.getWeeklyMenus(userId);
+        if (allMenus.isNotEmpty) {
+          allMenus.sort((a, b) => b.weekStartDate.compareTo(a.weekStartDate));
+          final menuDate = allMenus.first.weekStartDate;
+          await _localDS.saveLatest(StatisticsCacheModel.fromSummary(summary, menuDate));
+        }
+      }
+    } catch (e) {
+      // Silenciar errores en refresh
     }
-    if (menu == null) return;
-    final summary = await getStatisticsSummary(userId);
-    await _localDS.saveLatest(StatisticsCacheModel.fromSummary(summary, menu.weekStartDate));
   }
 
   @override
@@ -156,11 +161,30 @@ class StatisticsRepositoryImpl implements StatisticsRepository {
     final cached = await _localDS.getLatest();
     if (cached != null) {
       // Lanzar actualización en segundo plano
-      refreshStatistics(userId);
+      unawaited(refreshStatistics(userId));
       return cached.toSummary();
     }
 
     //  Si no hay caché, calcular normalmente
+    final summary = await _calculateStatisticsSummary(userId);
+    return summary ?? const StatisticsSummary(
+      mealTypeCounts: {
+        MealType.breakfast: 0,
+        MealType.lunch: 0,
+        MealType.snack: 0,
+        MealType.dinner: 0,
+      },
+      topIngredients: [],
+      topRecipes: [],
+      totalWeeklyCalories: 0,
+      avgDailyCalories: 0,
+      uniqueRecipesCount: 0,
+      totalIngredientsCount: 0,
+      estimatedCost: 0,
+    );
+  }
+
+  Future<StatisticsSummary?> _calculateStatisticsSummary(String userId) async {
     WeeklyMenu? menu;
     final allMenus = await _weeklyMenuRepository.getWeeklyMenus(userId);
     if (allMenus.isNotEmpty) {
@@ -170,32 +194,7 @@ class StatisticsRepositoryImpl implements StatisticsRepository {
 
     // Sin menús todavía
     if (menu == null) {
-      return const StatisticsSummary(
-        mealTypeCounts: {
-          MealType.breakfast: 0,
-          MealType.lunch: 0,
-          MealType.snack: 0,
-          MealType.dinner: 0,
-        },
-        topIngredients: [],
-        topRecipes: [],
-        totalWeeklyCalories: 0,
-        avgDailyCalories: 0,
-        uniqueRecipesCount: 0,
-        totalIngredientsCount: 0,
-        estimatedCost: 0,
-      );
-    }
-
-    // Verificar si hay caché válido (mismo menú)
-    try {
-      final cached = await _getCachedStatistics(userId);
-      if (cached != null &&
-          _isSameMenuDate(cached.menuDate, menu.weekStartDate)) {
-        return cached.toSummary();
-      }
-    } catch (e) {
-      // Si hay error al recuperar caché, continuar con cálculo normal
+      return null;
     }
 
     // Conteo por tipo de comida
@@ -271,11 +270,8 @@ class StatisticsRepositoryImpl implements StatisticsRepository {
       totalFatG: macros['fat']!,
     );
 
-    // Guardar en caché local y remoto de forma asincrónica
+    // Guardar en caché local de forma asincrónica
     unawaited(_localDS.saveLatest(StatisticsCacheModel.fromSummary(summary, menu.weekStartDate)));
-    _cacheStatistics(userId, summary, menu.weekStartDate);
-
-
 
     return summary;
   }

@@ -12,7 +12,10 @@ import 'domain/repositories/support_message_repository.dart';
 import 'core/services/fcm_service.dart';
 import 'presentation/features/menu/viewmodel/menu_view_model.dart';
 import 'package:smartmeal/core/services/firestore_init_service.dart';
+import 'presentation/routes/routes.dart';
 import 'dart:async' show unawaited;
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,7 +54,21 @@ void main() async {
           create: (_) => sl<SupportMessageRepository>(),
         ),
       ],
-      child: const SmartMealApp(),
+      child: SmartMealApp(navigatorKey: navigatorKey),
     ),
   );
+
+  // Configurar handlers de notificaciones después de que la app esté construida
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    sl<FCMService>().setupNotificationHandlers((String? type) {
+      if (type == 'support') {
+        // Usar Future.delayed para asegurar que la navegación ocurra después del frame
+        Future.delayed(const Duration(milliseconds: 100), () {
+          if (navigatorKey.currentState != null) {
+            navigatorKey.currentState!.pushNamed(Routes.support);
+          }
+        });
+      }
+    });
+  });
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:smartmeal/core/usecases/usecase.dart';
-import 'package:smartmeal/core/exceptions/menu_already_generated_exception.dart';
+import 'package:smartmeal/core/errors/menu_already_generated_exception.dart';
 import 'package:smartmeal/domain/entities/shopping_item.dart';
 import 'package:smartmeal/domain/usecases/shopping/get_shopping_items_usecase.dart';
 import 'package:smartmeal/domain/usecases/shopping/add_shopping_item_usecase.dart';
@@ -10,6 +10,8 @@ import 'package:smartmeal/domain/usecases/shopping/generate_shopping_from_menus_
 import 'package:smartmeal/domain/usecases/shopping/delete_checked_shopping_items_usecase.dart';
 import 'package:smartmeal/domain/usecases/shopping/set_all_shopping_items_checked_usecase.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
+import 'package:smartmeal/l10n/l10n_ext.dart';
 
 enum ShoppingStatus { idle, loading, loaded, error, info }
 
@@ -21,7 +23,7 @@ class ShoppingState {
   final String? infoMessage;
 
   const ShoppingState({
-    this.status = ShoppingStatus.idle,
+    this.status = ShoppingStatus.loading,
     this.items = const [],
     this.totalPrice = 0.0,
     this.error,
@@ -142,7 +144,7 @@ class ShoppingViewModel extends ChangeNotifier {
     }
   }
 
-  Future<bool> generateFromMenus() async {
+  Future<bool> generateFromMenus(BuildContext context) async {
     _update(
       _state.copyWith(
         status: ShoppingStatus.loading,
@@ -157,9 +159,9 @@ class ShoppingViewModel extends ChangeNotifier {
       return true;
     } on MenuAlreadyGeneratedException catch (e) {
       // Es un aviso, no un error: menú ya fue pasado
-      // No recargamos items (ya están), solo establecemos el mensaje
+      // Usar mensaje localizado
       _update(
-        _state.copyWith(status: ShoppingStatus.loaded, infoMessage: e.message),
+        _state.copyWith(status: ShoppingStatus.info, infoMessage: context.l10n.menuAlreadyGenerated),
       );
       return false;
     } catch (e) {

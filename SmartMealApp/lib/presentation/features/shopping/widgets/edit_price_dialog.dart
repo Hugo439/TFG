@@ -6,6 +6,7 @@ import 'package:smartmeal/domain/entities/shopping_item.dart';
 import 'package:smartmeal/domain/usecases/shopping/save_user_price_override_usecase.dart';
 import 'package:smartmeal/domain/services/shopping/price_database.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
+import 'package:smartmeal/core/errors/errors.dart';
 
 class EditPriceDialog extends StatefulWidget {
   final ShoppingItem item;
@@ -100,7 +101,7 @@ class _EditPriceDialogState extends State<EditPriceDialog> {
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user == null) {
-        throw Exception('Usuario no autenticado');
+        throw AuthFailure('Usuario no autenticado');
       }
 
       final useCase = sl<SaveUserPriceOverrideUseCase>();

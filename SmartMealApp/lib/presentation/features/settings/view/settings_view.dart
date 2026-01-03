@@ -97,7 +97,14 @@ class _SettingsContent extends StatelessWidget {
                         subtitle: l10n.settingsNotificationsSubtitle,
                         trailing: Switch(
                           value: state.notificationsEnabled,
-                          onChanged: vm.toggleNotifications,
+                          onChanged: (value) async {
+                            await vm.toggleNotifications(value);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(value ? context.l10n.notificationsEnabled : context.l10n.notificationsDisabled),
+                              ),
+                            );
+                          },
                           activeThumbColor: colorScheme.primary,
                         ),
                       ),

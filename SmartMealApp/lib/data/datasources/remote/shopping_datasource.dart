@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:smartmeal/data/models/shopping_item_model.dart';
+import 'package:smartmeal/core/errors/errors.dart';
 
 class ShoppingDataSource {
   final FirebaseFirestore firestore;
@@ -11,7 +12,7 @@ class ShoppingDataSource {
 
   Future<List<ShoppingItemModel>> getShoppingItems() async {
     final userId = auth.currentUser?.uid;
-    if (userId == null) throw Exception('Usuario no autenticado');
+    if (userId == null) throw AuthFailure('Usuario no autenticado');
 
     final snapshot = await firestore
         .collection('users')
@@ -27,7 +28,7 @@ class ShoppingDataSource {
 
   Future<void> addShoppingItem(String id, Map<String, dynamic> data) async {
     final userId = auth.currentUser?.uid;
-    if (userId == null) throw Exception('Usuario no autenticado');
+    if (userId == null) throw AuthFailure('Usuario no autenticado');
 
     await firestore
         .collection('users')
@@ -36,11 +37,11 @@ class ShoppingDataSource {
         .doc(id)
         .set(data);
   }
-
+  
   // Escribir múltiples items en una sola transacción (más rápido)
   Future<void> addShoppingItemsBatch(List<Map<String, dynamic>> items) async {
     final userId = auth.currentUser?.uid;
-    if (userId == null) throw Exception('Usuario no autenticado');
+    if (userId == null) throw AuthFailure('Usuario no autenticado');
 
     if (items.isEmpty) return;
 
@@ -65,7 +66,7 @@ class ShoppingDataSource {
 
   Future<void> updateShoppingItem(String id, Map<String, dynamic> data) async {
     final userId = auth.currentUser?.uid;
-    if (userId == null) throw Exception('Usuario no autenticado');
+    if (userId == null) throw AuthFailure('Usuario no autenticado');
 
     await firestore
         .collection('users')
@@ -77,7 +78,7 @@ class ShoppingDataSource {
 
   Future<void> deleteShoppingItem(String id) async {
     final userId = auth.currentUser?.uid;
-    if (userId == null) throw Exception('Usuario no autenticado');
+    if (userId == null) throw AuthFailure('Usuario no autenticado');
 
     await firestore
         .collection('users')
@@ -159,7 +160,7 @@ class ShoppingDataSource {
 
   Future<void> setAllChecked(bool checked) async {
     final userId = auth.currentUser?.uid;
-    if (userId == null) throw Exception('Usuario no autenticado');
+    if (userId == null) throw AuthFailure('Usuario no autenticado');
 
     final snap = await firestore
         .collection('users')

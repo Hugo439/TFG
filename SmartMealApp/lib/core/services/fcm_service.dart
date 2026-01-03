@@ -59,4 +59,24 @@ class FCMService {
       // Ignorar errores, no deben romper la app
     }
   }
+
+  /// Configura listeners para manejar taps en notificaciones
+  void setupNotificationHandlers(Function(String? type) onNotificationTap) {
+    // Manejar mensaje inicial (cuando la app se abre desde una notificación terminada)
+    _messaging.getInitialMessage().then((RemoteMessage? message) {
+      if (message != null) {
+        _handleNotificationTap(message, onNotificationTap);
+      }
+    });
+
+    // Cuando la app está en background y se toca la notificación
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      _handleNotificationTap(message, onNotificationTap);
+    });
+  }
+
+  void _handleNotificationTap(RemoteMessage message, Function(String? type) onNotificationTap) {
+    final type = message.data['type'] as String?;
+    onNotificationTap(type);
+  }
 }

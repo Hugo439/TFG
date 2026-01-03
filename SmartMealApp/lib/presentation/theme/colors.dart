@@ -72,8 +72,8 @@ class AppColors {
   static const Color darkPrimaryText = Color(0xFFFFFFFF); // #ffffff
   static const Color darkSecondaryText = Color(0xFFCBCBCB); // #cbcbcb
 
-  static const Color darkPrimaryBackground = Color(0xFF1B1B1B); // #1b1b1b
-  static const Color darkSecondaryBackground = Color(0xFF464646); // #464646
+  static const Color darkPrimaryBackground = Color(0xFF0D1117); // Fondo primario
+  static const Color darkSecondaryBackground = Color(0xFF161B22); // Fondo secundario
 
   static const Color darkAccent1 = Color(0xFFA5D6A7); // #a5d6a7
   static const Color darkAccent2 = Color(0xFF7CB342); // #7cb342
@@ -112,4 +112,14 @@ class AppColors {
   static const Color darkCategoryCuenta = Color(0xFFFFB74D); // Naranja claro
   static const Color darkCategoryMenus = Color(0xFF81C784); // Verde claro
   static const Color darkCategoryOtro = Color(0xFFBDBDBD); // Gris claro
+
+  // Nuevos colores para dark mode mejorado
+  static const Color darkSurface = Color(0xFF161B22); // Superficie
+  static const Color darkSurfaceContainer = Color(0xFF21262D); // Contenedor
+  static const Color darkSurfaceContainerHigh = Color(0xFF30363D); // Contenedor alto
+  static const Color darkSurfaceContainerHighest = Color(0xFF484F58); // Contenedor más alto
+  static const Color darkOnSurface = Color(0xFFE6EDF3); // Texto en superficie
+  static const Color darkOnSurfaceVariant = Color(0xFF7D8590); // Texto variante
+  static const Color darkOutline = Color(0xFF6E7681); // Bordes
+  static const Color darkOutlineVariant = Color(0xFF30363D); // Bordes variantes
 }

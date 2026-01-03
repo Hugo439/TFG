@@ -15,6 +15,7 @@ import 'package:smartmeal/domain/value_objects/age.dart';
 import 'package:smartmeal/domain/value_objects/gender.dart';
 import 'package:smartmeal/data/mappers/user_profile_mapper.dart';
 import 'package:flutter/foundation.dart';
+import 'package:smartmeal/core/errors/errors.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
   final FirebaseAuthDataSource _authDataSource;
@@ -68,7 +69,7 @@ class AuthRepositoryImpl implements AuthRepository {
     );
 
     final user = credential.user;
-    if (user == null) throw Exception('Error al crear usuario');
+    if (user == null) throw ServerFailure('Error al crear usuario');
 
     await _authDataSource.updateDisplayName(displayNameVO.value);
 
@@ -103,7 +104,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<void> deleteAccount() async {
     final user = _authDataSource.getCurrentUser();
-    if (user == null) throw Exception('Usuario no autenticado');
+    if (user == null) throw AuthFailure('Usuario no autenticado');
 
     await _firestoreDataSource.deleteUserProfile(user.uid);
     await _authDataSource.deleteAccount();

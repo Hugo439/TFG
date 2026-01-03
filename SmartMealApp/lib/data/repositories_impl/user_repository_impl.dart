@@ -5,6 +5,7 @@ import 'package:smartmeal/data/datasources/remote/firebase_auth_datasource.dart'
 import 'package:smartmeal/data/datasources/remote/firestore_datasource.dart';
 import 'package:smartmeal/data/mappers/user_profile_mapper.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:smartmeal/core/errors/errors.dart';
 
 class UserRepositoryImpl implements UserRepository {
   final FirebaseAuthDataSource _authDataSource;
@@ -19,10 +20,10 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<UserProfile> getUserProfile() async {
     final user = _authDataSource.getCurrentUser();
-    if (user == null) throw Exception('Usuario no autenticado');
+    if (user == null) throw AuthFailure('Usuario no autenticado');
 
     final data = await _firestoreDataSource.getUserProfile(user.uid);
-    if (data == null) throw Exception('Perfil no encontrado');
+    if (data == null) throw NotFoundFailure('Perfil no encontrado');
 
     return UserProfileMapper.fromFirestore(
       data,
@@ -35,7 +36,7 @@ class UserRepositoryImpl implements UserRepository {
   @override
   Future<void> updateUserProfile(UserProfile profile) async {
     final user = _authDataSource.getCurrentUser();
-    if (user == null) throw Exception('Usuario no autenticado');
+    if (user == null) throw AuthFailure('Usuario no autenticado');
 
     await _firestoreDataSource.updateUserProfile(
       user.uid,
@@ -77,7 +78,7 @@ class UserRepositoryImpl implements UserRepository {
 
       return photoUrl;
     } catch (e) {
-      throw Exception('Error al subir foto de perfil: $e');
+      throw ServerFailure('Error al subir foto de perfil: $e');
     }
   }
 }

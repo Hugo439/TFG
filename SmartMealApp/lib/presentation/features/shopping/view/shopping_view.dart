@@ -142,7 +142,7 @@ class _ShoppingContent extends StatelessWidget {
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: () async {
-                    final generated = await vm.generateFromMenus();
+                    final generated = await vm.generateFromMenus(context);
                     // Solo mostrar el éxito si realmente se generó (no duplicado)
                     if (context.mounted && generated) {
                       ScaffoldMessenger.of(context).showSnackBar(

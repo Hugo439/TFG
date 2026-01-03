@@ -22,9 +22,14 @@ class CacheFailure extends Failure {
   const CacheFailure([super.message = 'Error de caché']);
 }
 
-/// Error de permisos
+/// Error de permisos/autenticación
 class PermissionFailure extends Failure {
   const PermissionFailure([super.message = 'Permisos insuficientes']);
+}
+
+/// Error de autenticación
+class AuthFailure extends Failure {
+  const AuthFailure([super.message = 'Error de autenticación']);
 }
 
 /// Error de datos no encontrados
@@ -35,6 +40,13 @@ class NotFoundFailure extends Failure {
 /// Error de validación
 class ValidationFailure extends Failure {
   const ValidationFailure([super.message = 'Error de validación']);
+}
+
+/// Error de menú ya generado
+class MenuAlreadyGeneratedFailure extends Failure {
+  const MenuAlreadyGeneratedFailure([
+    super.message = 'Los ingredientes de este menú ya se habían añadido a la lista de compra'
+  ]);
 }
 
 /// Error desconocido

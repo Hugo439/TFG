@@ -4,6 +4,7 @@ import 'package:smartmeal/domain/repositories/recipe_repository.dart';
 import 'package:smartmeal/data/models/recipe_model.dart';
 import 'package:smartmeal/data/mappers/recipe_mapper.dart';
 import 'package:smartmeal/core/utils/meal_type_utils.dart';
+import 'package:smartmeal/core/errors/errors.dart';
 
 class RecipeRepositoryImpl implements RecipeRepository {
   final FirebaseFirestore _firestore;
@@ -22,7 +23,7 @@ class RecipeRepositoryImpl implements RecipeRepository {
       if (!doc.exists) return null;
       return RecipeModel.fromFirestore(doc).toEntity();
     } catch (e) {
-      throw Exception('Error al obtener receta: $e');
+      throw ServerFailure('Error al obtener receta: $e');
     }
   }
 
@@ -40,7 +41,7 @@ class RecipeRepositoryImpl implements RecipeRepository {
           .doc(model.id)
           .set(model.toFirestore());
     } catch (e) {
-      throw Exception('Error al guardar receta: $e');
+      throw ServerFailure('Error al guardar receta: $e');
     }
   }
 
@@ -56,7 +57,7 @@ class RecipeRepositoryImpl implements RecipeRepository {
           .map((doc) => RecipeModel.fromFirestore(doc).toEntity())
           .toList();
     } catch (e) {
-      throw Exception('Error al obtener todas las recetas: $e');
+      throw ServerFailure('Error al obtener todas las recetas: $e');
     }
   }
 
@@ -77,7 +78,7 @@ class RecipeRepositoryImpl implements RecipeRepository {
           .map((doc) => RecipeModel.fromFirestore(doc).toEntity())
           .toList();
     } catch (e) {
-      throw Exception('Error al obtener recetas por tipo: $e');
+      throw ServerFailure('Error al obtener recetas por tipo: $e');
     }
   }
 
@@ -95,7 +96,7 @@ class RecipeRepositoryImpl implements RecipeRepository {
           .doc(recipeId)
           .update({'steps': steps, 'updatedAt': FieldValue.serverTimestamp()});
     } catch (e) {
-      throw Exception('Error al actualizar pasos de receta: $e');
+      throw ServerFailure('Error al actualizar pasos de receta: $e');
     }
   }
 }

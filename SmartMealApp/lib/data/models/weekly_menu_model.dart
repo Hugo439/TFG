@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'day_menu_model.dart';
+import 'package:smartmeal/core/errors/errors.dart';
 
 class WeeklyMenuModel {
   final String id;
@@ -35,7 +36,7 @@ class WeeklyMenuModel {
             .toList(),
       );
     } catch (e) {
-      throw Exception('Error al convertir WeeklyMenuModel: $e');
+      throw ServerFailure('Error al convertir WeeklyMenuModel: $e');
     }
   }
 }

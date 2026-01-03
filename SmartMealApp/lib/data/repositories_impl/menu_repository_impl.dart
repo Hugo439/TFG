@@ -2,6 +2,7 @@ import 'package:smartmeal/domain/repositories/menu_repository.dart';
 import 'package:smartmeal/domain/entities/menu_item.dart';
 import 'package:smartmeal/data/datasources/remote/menu_datasource.dart';
 import 'package:smartmeal/data/mappers/menu_item_mapper.dart';
+import 'package:smartmeal/core/errors/errors.dart';
 
 class MenuRepositoryImpl implements MenuRepository {
   final MenuDataSource _dataSource;
@@ -24,7 +25,7 @@ class MenuRepositoryImpl implements MenuRepository {
   @override
   Future<MenuItem> getMenuItem(String id) async {
     final data = await _dataSource.getMenuItem(id);
-    if (data == null) throw Exception('Menú no encontrado');
+    if (data == null) throw NotFoundFailure('Menú no encontrado');
     return MenuItemMapper.fromFirestore(data);
   }
 
