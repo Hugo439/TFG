@@ -10,25 +10,13 @@ class LogoBox extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Container(
+    return SizedBox(
       height: height,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        color: colorScheme.surface.withValues(alpha: 0.9),
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: colorScheme.shadow.withValues(alpha: 0.1),
-            blurRadius: 8,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
       child:
           child ??
           Image.asset(
             'assets/branding/logo.png',
-            height: height * 0.8,
+            height: height * 0.85,
             fit: BoxFit.contain,
             errorBuilder: (context, error, stackTrace) {
               return Text(

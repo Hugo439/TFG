@@ -2503,6 +2503,30 @@ abstract class AppLocalizations {
   /// In es, this message translates to:
   /// **'Notificaciones desactivadas'**
   String get notificationsDisabled;
+
+  /// No description provided for @mealTypeBreakfast.
+  ///
+  /// In es, this message translates to:
+  /// **'Desayuno'**
+  String get mealTypeBreakfast;
+
+  /// No description provided for @mealTypeLunch.
+  ///
+  /// In es, this message translates to:
+  /// **'Comida'**
+  String get mealTypeLunch;
+
+  /// No description provided for @mealTypeDinner.
+  ///
+  /// In es, this message translates to:
+  /// **'Cena'**
+  String get mealTypeDinner;
+
+  /// No description provided for @mealTypeSnack.
+  ///
+  /// In es, this message translates to:
+  /// **'Snack'**
+  String get mealTypeSnack;
 }
 
 class _AppLocalizationsDelegate

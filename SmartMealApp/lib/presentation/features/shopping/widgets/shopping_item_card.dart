@@ -114,7 +114,7 @@ class ShoppingItemCard extends StatelessWidget {
               ? colorScheme.primary.withValues(alpha: 0.1)
               : (colorScheme.brightness == Brightness.dark
                     ? colorScheme.surfaceContainerHighest
-                    : colorScheme.tertiary),
+                    : colorScheme.primaryContainer.withValues(alpha: 0.4)),
           borderRadius: BorderRadius.circular(12),
           border: item.isChecked
               ? Border.all(color: colorScheme.primary, width: 1)
@@ -180,7 +180,7 @@ class ShoppingItemCard extends StatelessWidget {
                       style: TextStyle(
                         color: item.isChecked
                             ? colorScheme.onSurface.withValues(alpha: 0.6)
-                            : colorScheme.onSurface,
+                            : colorScheme.primary,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                         decoration: item.isChecked

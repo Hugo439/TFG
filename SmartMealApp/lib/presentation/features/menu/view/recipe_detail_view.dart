@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:smartmeal/presentation/features/menu/viewmodel/recipe_detail_view_model.dart';
 import 'package:smartmeal/presentation/widgets/layout/smart_meal_app_bar.dart';
 import 'package:smartmeal/presentation/features/menu/widgets/recipe_detail_content.dart';
+import 'package:smartmeal/core/utils/meal_type_utils.dart';
 
 /// Pantalla de detalle de una receta del menú.
 ///
@@ -71,7 +72,7 @@ class RecipeDetailView extends StatelessWidget {
           ),
         ),
         title: recipe.name.value,
-        subtitle: recipe.mealType.name,
+        subtitle: getLocalizedMealType(context, recipe.mealType),
         centerTitle: false,
         showNotification: false,
       ),

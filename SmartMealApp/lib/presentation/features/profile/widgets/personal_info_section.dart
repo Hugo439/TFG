@@ -80,7 +80,7 @@ class PersonalInfoSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: colorScheme.brightness == Brightness.dark
             ? colorScheme.surfaceContainerHighest
-            : colorScheme.tertiary,
+            : colorScheme.primaryContainer.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(

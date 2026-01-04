@@ -84,13 +84,14 @@ class SmartMealAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: colorScheme.surfaceContainerHighest,
       elevation: 0,
       centerTitle: centerTitle,
-      leadingWidth: 56,
-      leading: Padding(
-        padding: const EdgeInsets.only(
-          left: 12.0,
-          top: 8.0,
-        ), // Padding asimétrico
-        child: leading ?? _DefaultAvatar(colorScheme: colorScheme),
+      leadingWidth: 64,
+      leading: Center(
+        child: Container(
+          width: 48,
+          height: 48,
+          margin: const EdgeInsets.only(left: 8.0),
+          child: leading ?? _DefaultAvatar(colorScheme: colorScheme),
+        ),
       ),
       title: Padding(
         padding: const EdgeInsets.only(top: 8.0), // Mueve el título hacia abajo
@@ -130,30 +131,29 @@ class _DefaultAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AspectRatio(
-      aspectRatio: 1.0, // Fuerza proporción 1:1 (circular perfecto)
-      child: Container(
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: colorScheme.primary,
-        ),
-        child: ClipOval(
-          child: Image.asset(
-            'assets/branding/icono.png',
-            fit: BoxFit.cover,
-            errorBuilder: (context, error, stackTrace) {
-              return Center(
-                child: Text(
-                  'S',
-                  style: TextStyle(
-                    color: colorScheme.onPrimary,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
+    return Container(
+      width: 48,
+      height: 48,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: colorScheme.primary,
+      ),
+      child: ClipOval(
+        child: Image.asset(
+          'assets/branding/icono.png',
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            return Center(
+              child: Text(
+                'S',
+                style: TextStyle(
+                  color: colorScheme.onPrimary,
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
                 ),
-              );
-            },
-          ),
+              ),
+            );
+          },
         ),
       ),
     );

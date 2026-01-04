@@ -1,16 +1,12 @@
 {
   "@@locale": "en",
-
   "navMenus": "Menus",
   "navHome": "Home",
   "navShopping": "Shopping List",
-
   "notificationDefaultTitle": "SmartMeal!",
   "notificationDefaultBody": "You have a new notification",
   "notificationActionView": "View",
-
   "logoNotFound": "Logo not found",
-
   "appTitle": "SmartMeal",
   "home": "Home",
   "menu": "Menus",
@@ -34,11 +30,9 @@
   "success": "Success",
   "yes": "Yes",
   "no": "No",
-
   "errorTitle": "An error occurred",
   "errorInitializing": "Error initializing",
   "errorRetry": "Retry",
-  
   "supportTitle": "Support",
   "supportFormTitle": "Send Message",
   "supportHistoryTitle": "My Messages",
@@ -116,7 +110,6 @@
       }
     }
   },
-
   "settingsTitle": "Settings",
   "settingsProfileSection": "Profile",
   "settingsMyProfile": "My Profile",
@@ -142,7 +135,6 @@
   "settingsLegalSection": "Legal",
   "settingsPrivacyPolicy": "Privacy Policy",
   "settingsTermsAndConditions": "Terms and Conditions",
-
   "privacyHeading": "SmartMeal Privacy Policy",
   "privacyUpdated": "Last updated: {date}",
   "privacySection1Title": "1. Information we collect",
@@ -157,7 +149,6 @@
   "privacySection5Body": "You can request access, rectification, or deletion of your account from Settings. For other requests, contact support.",
   "privacySection6Title": "6. Contact",
   "privacySection6Body": "If you have questions about this policy, use the Support section in the app.",
-
   "termsHeading": "SmartMeal Terms and Conditions",
   "termsUpdated": "Last updated: {date}",
   "termsSection1Title": "1. Acceptance of terms",
@@ -170,7 +161,6 @@
   "termsSection4Body": "SmartMeal is provided “as-is”. We are not liable for indirect or consequential damages arising from the use of the app.",
   "termsSection5Title": "5. Changes to the terms",
   "termsSection5Body": "We may update these terms. We will notify you of relevant changes and the update date.",
-
   "statsGoalTitle": "Calorie goal",
   "statsGoalRatio": "{current} kcal / {target} kcal",
   "statsGoalPercent": "{percent}% of the goal",
@@ -183,7 +173,6 @@
   "settingsDeleteAccountDialogTitle": "Delete Account",
   "settingsDeleteAccountDialogMessage": "Are you sure you want to delete your account? This action cannot be undone and you will lose all your data.",
   "settingsDeleteAccountConfirm": "Delete",
-
   "contactEmail": "Send Email",
   "contactWhatsApp": "WhatsApp",
   "settingsComingSoon": "Coming soon",
@@ -196,7 +185,6 @@
   "commonSend": "Send",
   "commonError": "Error",
   "commonSuccess": "Success",
-
   "loginWelcome": "Welcome",
   "loginSubtitle": "Sign in to your account",
   "loginEmailHint": "Email",
@@ -214,7 +202,6 @@
   "loginErrorUserDisabled": "This account has been disabled",
   "loginErrorInvalidCredential": "Invalid credentials",
   "loginErrorGeneric": "Error signing in",
-
   "registerTitle": "Register",
   "registerHeader": "Create Account",
   "registerSubtitle": "Complete your information to improve your nutrition",
@@ -261,7 +248,6 @@
   "registerGenderFemale": "Female",
   "registerGenderOther": "Other",
   "registerOptional": "(Optional)",
-
   "homeTitle": "SmartMeal",
   "homeSubtitle": "Main Panel",
   "homeWelcome": "Welcome",
@@ -278,7 +264,6 @@
   "homeCardSettingsSubtitle": "Preferences",
   "homeCardSupportTitle": "Support",
   "homeCardSupportSubtitle": "Help",
-
   "profileTitle": "My Profile",
   "profileEditTooltip": "Edit profile",
   "profileError": "Error",
@@ -318,7 +303,6 @@
   "profileGenderMale": "Male",
   "profileGenderFemale": "Female",
   "profileGenderOther": "Other",
-
   "editProfileTitle": "Edit Profile",
   "editProfilePersonalInfo": "Personal Information",
   "editProfileNameLabel": "Name",
@@ -342,7 +326,6 @@
   "editProfileGenderFemale": "Female",
   "editProfileGenderOther": "Other",
   "editProfileErrorAgeInvalid": "Age must be a valid number",
-
   "menuTitle": "Weekly Menu",
   "menuSubtitle": "Your personalized menu",
   "menuLoadError": "Error loading menus",
@@ -357,17 +340,14 @@
   "@menuEmptyHint": {
     "description": "Help text when there are no menus"
   },
-
   "menuCreated": "Created",
   "@menuCreated": {
     "description": "Label for creation date"
   },
-
   "menuUpdated": "Updated",
   "@menuUpdated": {
     "description": "Label for update date"
   },
-
   "generateMenuTitle": "Generate Weekly Menu",
   "generateMenuMainTitle": "Intelligent Menu Generation",
   "generateMenuDescription": "Create a personalized weekly menu based on your profile, goals and dietary restrictions",
@@ -390,23 +370,18 @@
   "@generateMenuPreviewTitle": {
     "description": "Title for the generated menu preview"
   },
-
   "generateMenuRegenerate": "Regenerate",
   "@generateMenuRegenerate": {
     "description": "Button to generate a new menu"
   },
-
   "generateMenuAccept": "Accept and save",
   "@generateMenuAccept": {
     "description": "Button to accept and save the menu"
   },
-
   "menuWeeklyTitle": "Weekly Menu",
   "menuWeeklySubtitle": "Your personalized nutrition plan",
   "menuTotalWeek": "this week",
-
   "menuAlreadyGenerated": "The ingredients from this menu have already been added to the shopping list",
-
   "shoppingTitle": "Shopping List",
   "shoppingSubtitle": "Items",
   "shoppingItemsCount": "{count, plural, =0{No items} one{{count} item} other{{count} items}}",
@@ -514,12 +489,10 @@
   },
   "shoppingEditPriceSuccess": "✅ Custom price saved",
   "shoppingEditPriceTooltip": "Edit price",
-
   "recipeDescription": "Description",
   "recipeIngredients": "Ingredients",
   "recipeTotalCalories": "Total calories",
   "recipeIngredientsPrefix": "Ingredients",
-
   "noDataStats": "No statistics data available",
   "avgDaily": "Daily average",
   "kcal": "kcal",
@@ -536,14 +509,16 @@
   "mostUsedIngredients": "Most used ingredients",
   "gramsPerDay": "g/day",
   "times": "x",
-
   "caloricGoal": "Caloric goal",
   "highDeficit": "High deficit",
   "onTarget": "On target",
   "surplus": "Surplus",
   "percentOfGoal": "% of goal",
   "completeProfileForGoal": "Complete your profile to calculate your caloric goal.",
-
   "notificationsEnabled": "Notifications enabled",
-  "notificationsDisabled": "Notifications disabled"
+  "notificationsDisabled": "Notifications disabled",
+  "mealTypeBreakfast": "Breakfast",
+  "mealTypeLunch": "Lunch",
+  "mealTypeDinner": "Dinner",
+  "mealTypeSnack": "Snack"
 }

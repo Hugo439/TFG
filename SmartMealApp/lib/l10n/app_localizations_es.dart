@@ -1280,4 +1280,16 @@ class AppLocalizationsEs extends AppLocalizations {
 
   @override
   String get notificationsDisabled => 'Notificaciones desactivadas';
+
+  @override
+  String get mealTypeBreakfast => 'Desayuno';
+
+  @override
+  String get mealTypeLunch => 'Comida';
+
+  @override
+  String get mealTypeDinner => 'Cena';
+
+  @override
+  String get mealTypeSnack => 'Snack';
 }
