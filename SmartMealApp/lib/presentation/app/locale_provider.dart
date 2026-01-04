@@ -29,7 +29,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 ///
 /// Uso:
 /// ```dart
-/// // En main.dart
+/// En main.dart
 /// MultiProvider(
 ///   providers: [
 ///     ChangeNotifierProvider(create: (_) => LocaleProvider()),
@@ -43,7 +43,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 ///   ),
 /// )
 ///
-/// // En SettingsView
+///  En SettingsView
 /// final localeProvider = Provider.of<LocaleProvider>(context);
 /// DropdownButton<Locale>(
 ///   value: localeProvider.locale,

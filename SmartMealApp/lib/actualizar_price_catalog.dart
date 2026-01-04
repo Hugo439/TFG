@@ -152,14 +152,18 @@ Future<void> subirCatalogoPreciosRespetandoCampos() async {
       final data = docSnap.data()!;
       final Map<String, dynamic> updateData = {};
 
-      if (!data.containsKey('priceRef'))
+      if (!data.containsKey('priceRef')) {
         updateData['priceRef'] = producto['precio'];
-      if (!data.containsKey('unitKind'))
+      }
+      if (!data.containsKey('unitKind')) {
         updateData['unitKind'] = _mapUnidad(producto['unidad']);
-      if (!data.containsKey('displayName'))
+      }
+      if (!data.containsKey('displayName')) {
         updateData['displayName'] = producto['nombre'];
-      if (!data.containsKey('normalizedName'))
+      }
+      if (!data.containsKey('normalizedName')) {
         updateData['normalizedName'] = producto['nombre'].toLowerCase();
+      }
       if (!data.containsKey('category')) updateData['category'] = categoria;
 
       if (updateData.isNotEmpty) {
