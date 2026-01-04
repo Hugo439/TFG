@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:smartmeal/core/usecases/usecase.dart';
-import 'package:smartmeal/core/errors/menu_already_generated_exception.dart';
+import 'package:smartmeal/core/errors/errors.dart';
 import 'package:smartmeal/domain/repositories/menu_repository.dart';
 import 'package:smartmeal/domain/repositories/shopping_repository.dart';
 import 'package:smartmeal/domain/services/shopping/ingredient_aggregator.dart';
@@ -13,6 +13,35 @@ import 'package:smartmeal/domain/value_objects/shopping_item_name.dart';
 import 'package:smartmeal/domain/value_objects/shopping_item_quantity.dart';
 import 'package:smartmeal/domain/value_objects/price.dart';
 
+/// Caso de uso para generar lista de compras desde el menú semanal.
+///
+/// Proceso complejo que involucra:
+/// 1. **Extracción**: Obtener ingredientes de todas las recetas del menú
+/// 2. **Parsing**: Extraer cantidad, unidad y nombre de cada ingrediente
+/// 3. **Normalización**: Unificar variantes ("pollo pechuga", "pechuga pollo" → "pollo pechuga")
+/// 4. **Agregación**: Sumar cantidades de ingredientes repetidos
+/// 5. **Categorización**: Asignar categoría automáticamente
+/// 6. **Estimación de precio**: Calcular precio aproximado
+/// 7. **Persistencia**: Guardar en Firestore en batch
+///
+/// Servicios utilizados:
+/// - **IngredientParser**: Parsea "200 g pollo" → (cantidad: 200, unidad: g, nombre: pollo)
+/// - **SmartIngredientNormalizer**: Normaliza nombres para agrupar variantes
+/// - **IngredientAggregator**: Suma cantidades del mismo ingrediente
+/// - **SmartCategoryHelper**: Determina categoría automáticamente
+/// - **CostEstimator**: Estima precio basado en cantidad y categoría
+/// - **PriceEstimator**: Obtiene precio de base de datos/Firestore
+///
+/// Optimizaciones:
+/// - Operación batch para guardar (una sola transacción)
+/// - Logging detallado de rendimiento
+/// - Tracking de errores en parsing
+///
+/// Returns: Lista de ShoppingItems creados.
+///
+/// Throws:
+/// - [NotFoundFailure] si no hay menú generado
+/// - [ServerFailure] si falla la persistencia
 class GenerateShoppingFromMenusUseCase
     implements UseCase<List<ShoppingItem>, NoParams> {
   final MenuRepository menuRepository;

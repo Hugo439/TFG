@@ -3,16 +3,58 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:smartmeal/data/models/ai_menu_response_model.dart';
 import 'package:smartmeal/core/utils/calorie_distribution_utils.dart';
+import 'package:smartmeal/core/errors/errors.dart';
+import 'package:smartmeal/core/constants/app_constants.dart';
 
+/// Datasource para generación de menús usando Groq API.
+///
+/// **NOTA**: Actualmente no se usa en producción, se usa GeminiMenuDatasource.
+///
+/// Este datasource se comunica con un Cloudflare Worker que usa Groq
+/// (modelos llama-3.3-70b-versatile) para generar menús semanales.
+///
+/// Características:
+/// - **Prompt muy detallado**: Incluye ejemplos de platos con calorías reales
+/// - **Validación estricta**: Verifica estructura y rangos calóricos
+/// - **Reintentos**: Hasta 5 intentos con delay fijo de 3s
+/// - **Manejo de errores**: Detecta errores del worker y de la API
+///
+/// Diferencias con GeminiMenuDatasource:
+/// - Prompt más largo y explícito
+/// - Ejemplos de platos por tipo de comida
+/// - Instruye sobre cálculo realista de calorías
+/// - Delay fijo vs backoff exponencial
+///
+/// Formato esperado: Igual que GeminiMenuDatasource.
 class GroqMenuDatasource {
-  static const String _backendUrl =
-      'https://groq-worker.smartmealgroq.workers.dev/gemini';
-  static const int _maxRetries = 3;
-  static const Duration _retryDelay = Duration(seconds: 2);
+  static const String _backendUrl = AppConstants.groqWorkerGeminiUrl;
+  static const int _maxRetries = AppConstants.maxRetries;
+  static const Duration _retryDelay = Duration(
+    seconds: AppConstants.retryDelaySeconds,
+  );
 
   GroqMenuDatasource();
 
-  /// Genera recetas + menú semanal completo
+  /// Genera un menú semanal completo usando Groq API.
+  ///
+  /// **IMPORTANTE**: Este método usa un prompt muy detallado con ejemplos
+  /// de platos reales y cálculos calóricos para mejorar la precisión de la IA.
+  ///
+  /// Parámetros: Iguales que GeminiMenuDatasource.
+  ///
+  /// Returns: Modelo con 28 recetas y distribución semanal.
+  ///
+  /// Prompt especial incluye:
+  /// - Ejemplos de platos por tipo de comida con cálculo calórico desglosado
+  /// - Instrucciones explícitas sobre estructura de índices (0-6 breakfast, 7-13 lunch, etc.)
+  /// - Validación final que debe hacer la IA antes de responder
+  /// - Énfasis en calorías REALISTAS basadas en ingredientes
+  ///
+  /// Ejemplo de razonamiento solicitado a la IA:
+  /// "Plato: Tostadas con aguacate
+  ///  Ingredientes: pan (160) + aguacate (120) + huevo (140) = 420 kcal"
+  ///
+  /// Throws: [ServerFailure] si falla después de todos los reintentos.
   Future<AiMenuResponseModel> generateWeeklyMenu({
     required int targetCaloriesPerMeal,
     required List<String> excludedTags,
@@ -160,7 +202,7 @@ Genera el menú semanal ahora:
         );
 
         if (response.statusCode != 200) {
-          throw Exception("Error del servidor: ${response.statusCode}");
+          throw ServerFailure("Error del servidor: ${response.statusCode}");
         }
 
         final data = json.decode(response.body);
@@ -172,7 +214,7 @@ Genera el menú semanal ahora:
             debugPrint('[GroqMenu] ERROR del worker: $errorMsg');
             debugPrint('[GroqMenu] Respuesta completa: ${response.body}');
           }
-          throw Exception("Error del worker de Cloudflare: $errorMsg");
+          throw ServerFailure("Error del worker de Cloudflare: $errorMsg");
         }
 
         final content =
@@ -185,7 +227,7 @@ Genera el menú semanal ahora:
         final end = clean.lastIndexOf('}') + 1;
 
         if (start == -1 || end <= start) {
-          throw Exception(
+          throw ServerFailure(
             "Respuesta inválida del modelo - no se encontró JSON válido",
           );
         }
@@ -194,7 +236,7 @@ Genera el menú semanal ahora:
         final decoded = json.decode(jsonStr);
 
         if (decoded is! Map) {
-          throw Exception("El JSON decodificado no es un Map");
+          throw ServerFailure("El JSON decodificado no es un Map");
         }
 
         final result = Map<String, dynamic>.from(decoded);
@@ -207,7 +249,7 @@ Genera el menú semanal ahora:
               '[GroqMenu] Claves encontradas: ${result.keys.join(', ')}',
             );
           }
-          throw Exception("El JSON no contiene 'recipes'");
+          throw ServerFailure("El JSON no contiene 'recipes'");
         }
 
         if (!result.containsKey('weeklyMenu')) {
@@ -217,16 +259,16 @@ Genera el menú semanal ahora:
               '[GroqMenu] Claves encontradas: ${result.keys.join(', ')}',
             );
           }
-          throw Exception("El JSON no contiene 'weeklyMenu'");
+          throw ServerFailure("El JSON no contiene 'weeklyMenu'");
         }
 
         // Validación adicional de estructura
         if (result['recipes'] is! List) {
-          throw Exception("'recipes' no es una lista");
+          throw ServerFailure("'recipes' no es una lista");
         }
 
         if (result['weeklyMenu'] is! Map) {
-          throw Exception("'weeklyMenu' no es un mapa");
+          throw ServerFailure("'weeklyMenu' no es un mapa");
         }
 
         // Si llegamos aquí, la respuesta es válida
@@ -253,4 +295,5 @@ Genera el menú semanal ahora:
     throw lastError ?? Exception('Error desconocido generando menú con Groq');
   }
 }
+
 //TODO: no se usa

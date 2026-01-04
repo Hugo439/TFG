@@ -6,6 +6,41 @@ import 'package:smartmeal/data/models/missing_price_entry_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 
+/// Implementación del repositorio de ingredientes sin precio.
+///
+/// Responsabilidad:
+/// - Rastrear ingredientes que faltan en price_catalog
+/// - Contar solicitudes para priorizar adiciones
+///
+/// Colección Firestore: 'missing_prices'
+///
+/// Operaciones:
+/// - **trackMissingPrice**: registra/incrementa contador de ingrediente faltante
+/// - **getTopMissingPrices**: obtiene top N más solicitados
+/// - **getAllMissingPrices**: obtiene todos los ingredientes faltantes
+/// - **removeMissingPrice**: elimina entrada (cuando se añade al catálogo)
+///
+/// Flujo típico:
+/// 1. Usuario genera menú con "aguacate"
+/// 2. PriceDatabaseService no encuentra precio
+/// 3. trackMissingPrice() incrementa requestCount para "aguacate"
+/// 4. Admin revisa getTopMissingPrices()
+/// 5. Admin añade "aguacate" al price_catalog
+/// 6. removeMissingPrice("aguacate")
+///
+/// Manejo de errores:
+/// - Retorna Either<Failure, Result>
+///
+/// Uso:
+/// ```dart
+/// final repo = MissingPriceRepositoryImpl(datasource);
+///
+/// // Registrar ingrediente faltante
+/// await repo.trackMissingPrice(MissingPriceEntry(...));
+///
+/// // Ver top 20 más solicitados
+/// final result = await repo.getTopMissingPrices(limit: 20);
+/// ```
 class MissingPriceRepositoryImpl implements MissingPriceRepository {
   final MissingPriceFirestoreDatasource _datasource;
 

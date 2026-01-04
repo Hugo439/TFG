@@ -3,15 +3,71 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:smartmeal/data/models/ai_menu_response_model.dart';
 import 'package:smartmeal/core/utils/calorie_distribution_utils.dart';
+import 'package:smartmeal/core/errors/errors.dart';
+import 'package:smartmeal/core/constants/app_constants.dart';
 
+/// Datasource para generación de menús usando Gemini API.
+///
+/// Se comunica con un Cloudflare Worker que encapsula la API de Gemini
+/// para generar menús semanales completos (28 recetas + distribución).
+///
+/// Características:
+/// - **Reintentos automáticos**: Hasta 5 intentos con backoff exponencial
+/// - **Validación robusta**: Verifica estructura JSON antes de retornar
+/// - **Limpieza de markdown**: Elimina bloques ```json de la respuesta
+/// - **Distribución calórica**: Usa MealCalorieDistribution para rangos realistas
+///
+/// Formato esperado de respuesta:
+/// ```json
+/// {
+///   "recipes": [
+///     {"name": "...", "ingredients": [...], "calories": 450, "mealType": "breakfast", "steps": [...]},
+///     ... (28 recetas)
+///   ],
+///   "weeklyMenu": {
+///     "lunes": {"breakfast": 0, "lunch": 7, "snack": 14, "dinner": 21},
+///     ...
+///   }
+/// }
+/// ```
+///
+/// Backoff: 3s, 6s, 12s, 24s, 48s
 class GeminiMenuDatasource {
-  static const String _workerUrl =
-      'https://groq-worker.smartmealgroq.workers.dev/gemini';
+  static const String _workerUrl = AppConstants.groqWorkerGeminiUrl;
   static const int _maxRetries = 5;
-  static const Duration _initialRetryDelay = Duration(seconds: 3);
+  static const Duration _initialRetryDelay = Duration(
+    seconds: AppConstants.retryDelaySeconds,
+  );
 
   GeminiMenuDatasource();
 
+  /// Genera un menú semanal completo usando Gemini API.
+  ///
+  /// Parámetros:
+  /// [targetCaloriesPerMeal] - Calorías objetivo por comida (se calculará distribución por tipo).
+  /// [excludedTags] - Lista de alergias/ingredientes a evitar.
+  /// [userGoal] - Objetivo: 'lose_weight', 'maintain_weight', 'gain_weight', 'gain_muscle'.
+  /// [recipesCount] - Número de recetas a generar (default: 28 = 7 días × 4 comidas).
+  ///
+  /// Returns: Modelo con 28 recetas y distribución semanal.
+  ///
+  /// Proceso:
+  /// 1. Calcular distribución calórica realista (breakfast 27.5%, lunch 37.5%, snack 12.5%, dinner 27.5%)
+  /// 2. Construir prompt detallado con:
+  ///    - Datos del usuario
+  ///    - Rangos calóricos por tipo de comida
+  ///    - Formato de ingredientes ("cantidad unidad nombre")
+  ///    - Estructura JSON esperada
+  /// 3. Enviar request al Worker
+  /// 4. Limpiar markdown de la respuesta
+  /// 5. Extraer y validar JSON
+  /// 6. Reintentar con backoff exponencial si falla
+  ///
+  /// Throws:
+  /// - [ServerFailure] si todos los reintentos fallan
+  /// - [ServerFailure] si la respuesta no tiene la estructura esperada
+  ///
+  /// Nota: Los logs solo se imprimen en debug mode.
   Future<AiMenuResponseModel> generateWeeklyMenu({
     required int targetCaloriesPerMeal,
     required List<String> excludedTags,
@@ -99,7 +155,7 @@ JSON (sin markdown):
               '[GeminiWorker] Error ${response.statusCode}: ${response.body}',
             );
           }
-          throw Exception('Error del servidor: ${response.statusCode}');
+          throw ServerFailure('Error del servidor: ${response.statusCode}');
         }
 
         final data = json.decode(response.body);
@@ -110,14 +166,14 @@ JSON (sin markdown):
           if (kDebugMode) {
             debugPrint('[GeminiWorker] ERROR: $errorMsg');
           }
-          throw Exception('Error del worker: $errorMsg');
+          throw ServerFailure('Error del worker: $errorMsg');
         }
 
         // Extraer contenido
         final content = data['content'];
 
         if (content == null) {
-          throw Exception('Respuesta vacía del worker');
+          throw ServerFailure('Respuesta vacía del worker');
         }
 
         // Limpiar markdown si existe
@@ -138,14 +194,14 @@ JSON (sin markdown):
         final end = cleanText.lastIndexOf('}') + 1;
 
         if (start == -1 || end <= start) {
-          throw Exception('No se encontró JSON válido en la respuesta');
+          throw ServerFailure('No se encontró JSON válido en la respuesta');
         }
 
         final jsonStr = cleanText.substring(start, end);
         final decoded = json.decode(jsonStr);
 
         if (decoded is! Map) {
-          throw Exception('El JSON no es un objeto');
+          throw ServerFailure('El JSON no es un objeto');
         }
 
         final result = Map<String, dynamic>.from(decoded);
@@ -157,7 +213,7 @@ JSON (sin markdown):
               '[GeminiWorker] Claves encontradas: ${result.keys.join(', ')}',
             );
           }
-          throw Exception("Falta 'recipes' en el JSON");
+          throw ServerFailure("Falta 'recipes' en el JSON");
         }
 
         if (!result.containsKey('weeklyMenu')) {
@@ -166,15 +222,15 @@ JSON (sin markdown):
               '[GeminiWorker] Claves encontradas: ${result.keys.join(', ')}',
             );
           }
-          throw Exception("Falta 'weeklyMenu' en el JSON");
+          throw ServerFailure("Falta 'weeklyMenu' en el JSON");
         }
 
         if (result['recipes'] is! List) {
-          throw Exception("'recipes' debe ser una lista");
+          throw ServerFailure("'recipes' debe ser una lista");
         }
 
         if (result['weeklyMenu'] is! Map) {
-          throw Exception("'weeklyMenu' debe ser un objeto");
+          throw ServerFailure("'weeklyMenu' debe ser un objeto");
         }
 
         if (kDebugMode && attempt > 0) {

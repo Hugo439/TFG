@@ -1,7 +1,48 @@
 import 'package:smartmeal/domain/entities/missing_price_entry.dart';
 import 'package:smartmeal/domain/value_objects/unit_kind.dart';
 
-/// Modelo de datos para MissingPriceEntry (capa de datos)
+/// Modelo de datos para ingrediente sin precio en catálogo.
+///
+/// Responsabilidad:
+/// - Rastrear ingredientes que faltan en price_catalog
+/// - Contar cuántas veces se solicita cada ingrediente
+/// - Priorizar cuáles añadir al catálogo
+///
+/// Usado cuando:
+/// - PriceDatabaseService no encuentra precio para ingrediente
+/// - Se incrementa requestCount cada vez que se solicita
+///
+/// Campos:
+/// - **normalizedName**: ingrediente normalizado ("aguacate", "quinoa")
+/// - **ingredientName**: nombre original del ingrediente
+/// - **category**: categoría inferida
+/// - **unitKind**: tipo de unidad inferida ("weight", "volume", "unit")
+/// - **requestCount**: número de veces solicitado
+/// - **firstRequested**: timestamp primera solicitud ISO 8601
+/// - **lastRequested**: timestamp última solicitud ISO 8601
+///
+/// Ruta Firestore:
+/// ```
+/// missing_prices/{normalizedName}
+/// ```
+///
+/// Ejemplo:
+/// ```json
+/// {
+///   "ingredientName": "Aguacate",
+///   "category": "frutasYVerduras",
+///   "unitKind": "weight",
+///   "requestCount": 15,
+///   "firstRequested": "2024-01-01T10:00:00.000Z",
+///   "lastRequested": "2024-01-15T14:30:00.000Z"
+/// }
+/// ```
+///
+/// Workflow:
+/// 1. Usuario genera menú con aguacate
+/// 2. PriceDatabaseService no encuentra precio
+/// 3. Incrementa requestCount en missing_prices/aguacate
+/// 4. Admin revisa missing_prices para añadir precios más solicitados
 class MissingPriceEntryModel {
   final String normalizedName;
   final String ingredientName;
@@ -21,6 +62,10 @@ class MissingPriceEntryModel {
     required this.lastRequested,
   });
 
+  /// Crea modelo desde Map de Firestore.
+  ///
+  /// id (normalizedName) viene como parámetro separado.
+  /// Maneja campos faltantes con valores por defecto.
   factory MissingPriceEntryModel.fromFirestore(
     Map<String, dynamic> map,
     String id,
@@ -38,6 +83,9 @@ class MissingPriceEntryModel {
     );
   }
 
+  /// Convierte a Map para persistencia en Firestore.
+  ///
+  /// No incluye normalizedName (está en document path).
   Map<String, dynamic> toFirestore() {
     return {
       'ingredientName': ingredientName,
@@ -49,6 +97,11 @@ class MissingPriceEntryModel {
     };
   }
 
+  /// Convierte modelo a entidad del dominio.
+  ///
+  /// Parsea:
+  /// - unitKind string → UnitKind enum
+  /// - firstRequested/lastRequested strings → DateTime
   MissingPriceEntry toEntity() {
     return MissingPriceEntry(
       ingredientName: ingredientName,
@@ -61,6 +114,11 @@ class MissingPriceEntryModel {
     );
   }
 
+  /// Crea modelo desde entidad del dominio.
+  ///
+  /// Convierte:
+  /// - UnitKind enum → unitKind string
+  /// - DateTime → ISO 8601 strings
   factory MissingPriceEntryModel.fromEntity(MissingPriceEntry entity) {
     return MissingPriceEntryModel(
       normalizedName: entity.normalizedName,

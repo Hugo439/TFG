@@ -2,6 +2,59 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
 
+/// Contenido de los términos y condiciones.
+///
+/// Responsabilidades:
+/// - Mostrar términos y condiciones completos
+/// - 5 secciones con títulos y cuerpos
+/// - Fecha de última actualización
+/// - Localizado (es/en)
+///
+/// Secciones:
+/// 1. Aceptación de términos (acuerdo de uso)
+/// 2. Uso del servicio (reglas y restricciones)
+/// 3. Propiedad intelectual (derechos de autor)
+/// 4. Limitación de responsabilidad (disclaimers)
+/// 5. Cambios a los términos (actualizaciones futuras)
+///
+/// Fecha de actualización:
+/// - Hardcoded: DateTime(2025, 12, 17)
+/// - Formateada con DateFormat.yMMMMd
+/// - Localizada según languageCode
+///
+/// _SectionTitle:
+/// - Widget helper para títulos
+/// - fontSize 18, bold
+/// - Color: onSurface
+/// - Mismo helper que PrivacyContent
+///
+/// Layout:
+/// - Columna vertical
+/// - Heading principal
+/// - Fecha de actualización
+/// - 5 bloques: título + cuerpo
+/// - Spacing: 12px entre bloques, 16px después de fecha
+///
+/// Localización:
+/// - Todos los textos desde l10n:
+///   * termsHeading, termsUpdated
+///   * termsSection1Title a termsSection5Title
+///   * termsSection1Body a termsSection5Body
+///
+/// Consistencia:
+/// - Mismo estilo que PrivacyContent
+/// - Estructura similar para UX coherente
+///
+/// Usado en:
+/// - TermsConditionsView: scrollable content
+///
+/// Parámetros:
+/// [languageCode] - Código de idioma para formateo de fecha
+///
+/// Uso:
+/// ```dart
+/// TermsContent(languageCode: 'es')
+/// ```
 class TermsContent extends StatelessWidget {
   const TermsContent({super.key, required this.languageCode});
 

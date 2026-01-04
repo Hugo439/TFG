@@ -1,6 +1,63 @@
 import 'package:flutter/material.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
 
+/// Card que muestra el precio total de la lista de compras.
+///
+/// Responsabilidades:
+/// - Mostrar precio total estimado
+/// - Mostrar contadores de items (seleccionados/total)
+/// - Diseño destacado con gradiente
+///
+/// Información mostrada:
+/// - **Label**: "Total estimado" (localizado)
+/// - **Contador items**: "X seleccionados de Y" (opcional)
+/// - **Precio total**: Grande y destacado con icono euro
+/// - **Nota**: "Precio aproximado" en letra pequeña
+///
+/// Diseño visual:
+/// - **Gradiente**: secondary → secondary con alpha 0.8
+/// - **Bordes redondeados**: 16px
+/// - **Sombra**: BoxShadow con color secondary, alpha 0.4
+/// - **Texto**: color onSecondary para contraste
+/// - **Icono euro**: 32px junto al precio
+///
+/// Layout:
+/// - Row con spaceBetween
+/// - Izquierda: Labels y contador
+/// - Derecha: Precio con icono euro
+///
+/// Cálculo del precio:
+/// - Suma de precios de todos los items
+/// - Usa PriceDatabaseService para estimaciones
+/// - Prioridad: UserPriceOverride > PriceCatalog > Fallback
+/// - Mostrado con 2 decimales: "XX.XX€"
+///
+/// Contador de items:
+/// - checkedCount: items marcados como comprados
+/// - totalCount: total de items en la lista
+/// - Formato: "X seleccionados de Y"
+/// - Opcional (solo si checkedCount > 0)
+///
+/// Labels personalizables:
+/// - totalLabel: override para "Total estimado"
+/// - selectedLabel: override para "X seleccionados de Y"
+/// - Default: usa l10n para localización
+///
+/// Parámetros:
+/// [totalPrice] - Precio total calculado
+/// [checkedCount] - Número de items marcados (default: 0)
+/// [totalCount] - Número total de items (default: 0)
+/// [totalLabel] - Label custom para total (opcional)
+/// [selectedLabel] - Label custom para contador (opcional)
+///
+/// Uso:
+/// ```dart
+/// TotalPriceCard(
+///   totalPrice: 45.67,
+///   checkedCount: 5,
+///   totalCount: 12,
+/// )
+/// ```
 class TotalPriceCard extends StatelessWidget {
   final double totalPrice;
   final int checkedCount;

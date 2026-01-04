@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smartmeal/domain/entities/recipe.dart';
 import 'package:smartmeal/domain/entities/weekly_menu.dart';
 import 'package:smartmeal/domain/repositories/statistics_repository.dart';
@@ -13,26 +12,49 @@ import 'package:smartmeal/domain/services/shopping/smart_ingredient_normalizer.d
 import 'package:smartmeal/domain/services/shopping/smart_category_helper.dart';
 import 'package:smartmeal/domain/services/shopping/ingredient_parser.dart';
 import 'package:smartmeal/domain/value_objects/shopping_item_category.dart';
-import 'package:smartmeal/domain/value_objects/shopping_item_unit_kind.dart';
+import 'package:smartmeal/domain/value_objects/unit_kind.dart';
 import 'package:smartmeal/domain/value_objects/statistics_models.dart';
 import 'package:smartmeal/data/models/statistics_cache_model.dart';
-import 'package:smartmeal/domain/services/shopping/cost_estimator.dart';
 import 'package:smartmeal/data/datasources/local/statistics_local_datasource.dart';
+import 'package:smartmeal/core/constants/app_constants.dart';
 
+/// Implementación del repositorio de estadísticas.
+///
+/// Calcula y cachea estadísticas nutricionales y de uso:
+/// - **Conteo de comidas**: Cuántas veces se usó cada tipo (breakfast, lunch, snack, dinner)
+/// - **Ingredientes más usados**: Top 6 ingredientes normalizados de la semana
+/// - **Recetas más repetidas**: Top 5 recetas de todo el historial
+/// - **Calorías**: Total semanal y promedio diario
+/// - **Macronutrientes**: Proteínas, carbohidratos y grasas estimadas
+/// - **Coste estimado**: Basado en la lista de compras actual
+///
+/// Características:
+/// - **Caché offline-first**: Carga instantánea desde caché local, actualiza en segundo plano
+/// - **Estimación de macros**: Usa heurísticas + API USDA + caché en memoria
+/// - **Normalización inteligente**: Agrupa variantes del mismo ingrediente
+/// - **Parsing de cantidades**: Convierte "200 g" a gramos base para cálculos
+///
+/// Fuentes de macros (en orden de prioridad):
+/// 1. Caché en memoria (API USDA)
+/// 2. API USDA (Cloudflare Worker)
+/// 3. Heurística local (_macroPer100g: 100+ ingredientes comunes)
+/// 4. Fallback por categoría
+///
+/// Nota: Los cálculos se basan en el menú más reciente.
 class StatisticsRepositoryImpl implements StatisticsRepository {
   final WeeklyMenuRepository _weeklyMenuRepository;
   final ShoppingRepository _shoppingRepository;
   final SmartIngredientNormalizer _normalizer;
   final SmartCategoryHelper _categoryHelper;
-  final CostEstimator _costEstimator;
   final IngredientParser _parser;
   final FirebaseFirestore _firestore;
   final StatisticsLocalDatasource _localDS;
-  final Map<String, StatisticsCacheModel> _memoryCache = {};
   final Map<String, _MacroProfile> _macroApiCache = {};
   final String _macroWorkerUrl;
 
   // Macros heurísticos base por 100 g (aprox)
+  // Usados cuando no hay datos de API USDA
+  // Formato: nombre_normalizado -> (proteína_g, carbohidratos_g, grasas_g)
   static const Map<String, _MacroProfile> _macroPer100g = {
     'pollo': _MacroProfile(31, 0, 4),
     'pavo': _MacroProfile(29, 0, 3),
@@ -99,6 +121,8 @@ class StatisticsRepositoryImpl implements StatisticsRepository {
   };
 
   // Macros por unidad para algunos básicos (1 unidad)
+  // Usado cuando la cantidad viene en "ud" (unidades)
+  // Ejemplo: "2 ud huevo" usaría estos valores × 2
   static const Map<String, _MacroProfile> _macroPerUnit = {
     'huevo': _MacroProfile(6.3, 0.4, 5.3),
     'platano': _MacroProfile(1.3, 27, 0.4),
@@ -109,6 +133,8 @@ class StatisticsRepositoryImpl implements StatisticsRepository {
   };
 
   // Fallback por categoría (por 100 g)
+  // Usado cuando no se encuentra el ingrediente específico
+  // ni en heurísticas ni en API
   static const Map<ShoppingItemCategory, _MacroProfile> _categoryMacroPer100g =
       {
         ShoppingItemCategory.carnesYPescados: _MacroProfile(20, 0, 10),
@@ -124,8 +150,7 @@ class StatisticsRepositoryImpl implements StatisticsRepository {
     this._weeklyMenuRepository,
     this._shoppingRepository,
     this._normalizer,
-    this._categoryHelper,
-    this._costEstimator, {
+    this._categoryHelper, {
     required StatisticsLocalDatasource localDatasource,
     FirebaseFirestore? firestore,
     String? macroWorkerUrl,
@@ -137,7 +162,16 @@ class StatisticsRepositoryImpl implements StatisticsRepository {
            'https://groq-worker.smartmealgroq.workers.dev/macros',
        _localDS = localDatasource;
 
-  // Refresca estadísticas en segundo plano y actualiza caché local
+  /// Recalcula y actualiza las estadísticas en segundo plano.
+  ///
+  /// [userId] - ID del usuario.
+  ///
+  /// Proceso:
+  /// 1. Calcular estadísticas completas
+  /// 2. Guardar en caché local para próxima carga instantánea
+  ///
+  /// Nota: Los errores se silencian para no interferir con la operación principal.
+  /// Esta función se llama automáticamente en segundo plano desde [getStatisticsSummary].
   Future<void> refreshStatistics(String userId) async {
     try {
       final summary = await _calculateStatisticsSummary(userId);
@@ -147,7 +181,9 @@ class StatisticsRepositoryImpl implements StatisticsRepository {
         if (allMenus.isNotEmpty) {
           allMenus.sort((a, b) => b.weekStartDate.compareTo(a.weekStartDate));
           final menuDate = allMenus.first.weekStartDate;
-          await _localDS.saveLatest(StatisticsCacheModel.fromSummary(summary, menuDate));
+          await _localDS.saveLatest(
+            StatisticsCacheModel.fromSummary(summary, menuDate),
+          );
         }
       }
     } catch (e) {
@@ -155,6 +191,24 @@ class StatisticsRepositoryImpl implements StatisticsRepository {
     }
   }
 
+  /// Obtiene el resumen de estadísticas del usuario.
+  ///
+  /// Estrategia offline-first:
+  /// 1. 💾 Cargar desde caché local (instantáneo)
+  /// 2. 🔄 Lanzar actualización en segundo plano
+  /// 3. 📊 Si no hay caché, calcular normalmente
+  ///
+  /// [userId] - ID del usuario.
+  ///
+  /// Returns: Resumen con:
+  /// - Conteo por tipo de comida
+  /// - Top 6 ingredientes
+  /// - Top 5 recetas (de todo el historial)
+  /// - Calorías totales y promedio
+  /// - Macros estimadas (proteínas, carbos, grasas)
+  /// - Coste estimado (de la lista de compras actual)
+  ///
+  /// Si no hay menús, devuelve resumen con valores en 0.
   @override
   Future<StatisticsSummary> getStatisticsSummary(String userId) async {
     //  Intentar cargar del caché local instantáneo
@@ -167,23 +221,41 @@ class StatisticsRepositoryImpl implements StatisticsRepository {
 
     //  Si no hay caché, calcular normalmente
     final summary = await _calculateStatisticsSummary(userId);
-    return summary ?? const StatisticsSummary(
-      mealTypeCounts: {
-        MealType.breakfast: 0,
-        MealType.lunch: 0,
-        MealType.snack: 0,
-        MealType.dinner: 0,
-      },
-      topIngredients: [],
-      topRecipes: [],
-      totalWeeklyCalories: 0,
-      avgDailyCalories: 0,
-      uniqueRecipesCount: 0,
-      totalIngredientsCount: 0,
-      estimatedCost: 0,
-    );
+    return summary ??
+        const StatisticsSummary(
+          mealTypeCounts: {
+            MealType.breakfast: 0,
+            MealType.lunch: 0,
+            MealType.snack: 0,
+            MealType.dinner: 0,
+          },
+          topIngredients: [],
+          topRecipes: [],
+          totalWeeklyCalories: 0,
+          avgDailyCalories: 0,
+          uniqueRecipesCount: 0,
+          totalIngredientsCount: 0,
+          estimatedCost: 0,
+        );
   }
 
+  /// Calcula las estadísticas completas desde los menús.
+  ///
+  /// [userId] - ID del usuario.
+  ///
+  /// Returns:
+  /// - Estadísticas calculadas si hay menús
+  /// - null si el usuario aún no tiene menús
+  ///
+  /// Cálculos:
+  /// 1. Conteo de tipos de comida (del menú actual)
+  /// 2. Top ingredientes (normalizados, del menú actual)
+  /// 3. Top recetas (de TODOS los menús históricos)
+  /// 4. Calorías (del menú actual)
+  /// 5. Macros estimadas (usando heurísticas + API)
+  /// 6. Coste (de la lista de compras actual)
+  ///
+  /// Nota: Guarda automáticamente el resultado en caché local.
   Future<StatisticsSummary?> _calculateStatisticsSummary(String userId) async {
     WeeklyMenu? menu;
     final allMenus = await _weeklyMenuRepository.getWeeklyMenus(userId);
@@ -229,12 +301,14 @@ class StatisticsRepositoryImpl implements StatisticsRepository {
         .map((e) => IngredientCount(e.key, e.value))
         .toList();
 
-    // Recetas más repetidas (por nombre)
+    // Recetas más repetidas (por nombre) - DESDE TODOS LOS MENÚS HISTÓRICOS
     final Map<String, int> recipeCounts = {};
-    for (final day in menu.days) {
-      for (final r in day.recipes) {
-        final name = r.name.value;
-        recipeCounts[name] = (recipeCounts[name] ?? 0) + 1;
+    for (final weeklyMenu in allMenus) {
+      for (final day in weeklyMenu.days) {
+        for (final r in day.recipes) {
+          final name = r.name.value;
+          recipeCounts[name] = (recipeCounts[name] ?? 0) + 1;
+        }
       }
     }
     final topRecipesList = recipeCounts.entries.toList()
@@ -271,12 +345,24 @@ class StatisticsRepositoryImpl implements StatisticsRepository {
     );
 
     // Guardar en caché local de forma asincrónica
-    unawaited(_localDS.saveLatest(StatisticsCacheModel.fromSummary(summary, menu.weekStartDate)));
+    unawaited(
+      _localDS.saveLatest(
+        StatisticsCacheModel.fromSummary(summary, menu.weekStartDate),
+      ),
+    );
 
     return summary;
   }
 
   // ===== HELPER METHODS PARA CACHÉ =====
+
+  /// Guarda estadísticas en el caché remoto (Firestore).
+  ///
+  /// [userId] - ID del usuario.
+  /// [summary] - Resumen de estadísticas a cachear.
+  /// [menuDate] - Fecha del menú asociado (para validar frescura).
+  ///
+  /// Nota: Los errores se silencian, el caché no debe impedir la operación principal.
   @override
   Future<void> cacheStatisticsSummary(
     String userId,
@@ -286,9 +372,9 @@ class StatisticsRepositoryImpl implements StatisticsRepository {
     try {
       final cache = StatisticsCacheModel.fromSummary(summary, menuDate);
       await _firestore
-          .collection('users')
+          .collection(AppConstants.collectionUsers)
           .doc(userId)
-          .collection('statistics')
+          .collection(AppConstants.collectionStatistics)
           .doc('summary')
           .set(cache.toJson());
     } catch (e) {
@@ -296,105 +382,40 @@ class StatisticsRepositoryImpl implements StatisticsRepository {
     }
   }
 
-  Future<void> _cacheStatistics(
-    String userId,
-    StatisticsSummary summary,
-    DateTime menuDate,
-  ) async {
-    final cache = StatisticsCacheModel.fromSummary(summary, menuDate);
-    _memoryCache[userId] = cache;
-
-    // Ejecutar de forma asincrónica sin esperar
-    unawaited(_saveLocalCache(userId, cache));
-    unawaited(cacheStatisticsSummary(userId, summary, menuDate));
-  }
-
-  Future<StatisticsCacheModel?> _getCachedStatistics(String userId) async {
-    // 1) Memoria
-    final mem = _memoryCache[userId];
-    if (mem != null) return mem;
-
-    // 2) Disco local
-    final local = await _loadLocalCache(userId);
-    if (local != null) {
-      _memoryCache[userId] = local;
-      return local;
-    }
-
-    // 3) Firestore remoto
-    try {
-      final doc = await _firestore
-          .collection('users')
-          .doc(userId)
-          .collection('statistics')
-          .doc('summary')
-          .get();
-
-      if (doc.exists) {
-        final remote = StatisticsCacheModel.fromJson(doc.data() ?? {});
-        _memoryCache[userId] = remote;
-        unawaited(_saveLocalCache(userId, remote));
-        return remote;
-      }
-    } catch (e) {
-      // Ignorar errores de caché
-    }
-
-    return null;
-  }
-
-  Future<void> _saveLocalCache(
-    String userId,
-    StatisticsCacheModel cache,
-  ) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString(_localKey(userId), jsonEncode(cache.toJson()));
-  }
-
-  Future<StatisticsCacheModel?> _loadLocalCache(String userId) async {
-    final prefs = await SharedPreferences.getInstance();
-    final raw = prefs.getString(_localKey(userId));
-    if (raw == null) return null;
-    try {
-      final Map<String, dynamic> data = jsonDecode(raw) as Map<String, dynamic>;
-      return StatisticsCacheModel.fromJson(data);
-    } catch (_) {
-      return null;
-    }
-  }
-
-  String _localKey(String userId) => 'stats_cache_$userId';
-
+  /// Limpia el caché de estadísticas (local y remoto).
+  ///
+  /// [userId] - ID del usuario.
+  ///
+  /// Llamado cuando cambia un menú o la lista de compras para
+  /// forzar recalculación de estadísticas.
   @override
   Future<void> clearStatisticsCache(String userId) async {
-    // Limpiar memoria
-    _memoryCache.remove(userId);
+    // Limpiar caché local
+    await _localDS.clear();
 
-    // Limpiar SharedPreferences
-    try {
-      final prefs = await SharedPreferences.getInstance();
-      await prefs.remove(_localKey(userId));
-    } catch (_) {}
-
-    // Limpiar Firestore
+    // Limpiar Firestore remoto
     try {
       await _firestore
-          .collection('users')
+          .collection(AppConstants.collectionUsers)
           .doc(userId)
-          .collection('statistics')
+          .collection(AppConstants.collectionStatistics)
           .doc('summary')
           .delete();
     } catch (_) {}
   }
 
-  bool _isSameMenuDate(DateTime cachedDate, DateTime currentDate) {
-    // Comparar solo año-mes-día (ignorar hora)
-    return cachedDate.year == currentDate.year &&
-        cachedDate.month == currentDate.month &&
-        cachedDate.day == currentDate.day;
-  }
-
   // ===== HELPER METHODS PARA ESTADÍSTICAS =====
+
+  /// Extrae el nombre del ingrediente desde un string crudo.
+  ///
+  /// Heurística: Si el segundo token es una unidad conocida (g, kg, ml, etc.),
+  /// el nombre es todo lo que viene después. Si no, asume que la cantidad
+  /// es el primer token y el resto es el nombre.
+  ///
+  /// Ejemplos:
+  /// - "200 g pollo" → "pollo"
+  /// - "2 ud huevo" → "huevo"
+  /// - "pollo pechuga" → "pollo pechuga"
   String _extractName(String raw) {
     final parts = raw.toLowerCase().trim().split(RegExp(r'\s+'));
     if (parts.length <= 2) return raw;
@@ -407,6 +428,22 @@ class StatisticsRepositoryImpl implements StatisticsRepository {
     return parts.sublist(1).join(' ');
   }
 
+  /// Calcula los macronutrientes estimados para todo el menú semanal.
+  ///
+  /// [menu] - Menú semanal a analizar.
+  ///
+  /// Returns: Mapa con totales semanales:
+  /// - 'protein': gramos totales de proteína
+  /// - 'carbs': gramos totales de carbohidratos
+  /// - 'fat': gramos totales de grasas
+  ///
+  /// Proceso para cada ingrediente:
+  /// 1. Parsear cantidad y unidad
+  /// 2. Normalizar nombre
+  /// 3. Determinar categoría
+  /// 4. Obtener perfil de macros (heurística/API)
+  /// 5. Escalar según cantidad
+  /// 6. Acumular
   Future<Map<String, double>> _calculateEstimatedMacros(WeeklyMenu menu) async {
     double totalProtein = 0;
     double totalCarbs = 0;
@@ -436,6 +473,18 @@ class StatisticsRepositoryImpl implements StatisticsRepository {
     };
   }
 
+  /// Calcula macros para una porción específica de un ingrediente.
+  ///
+  /// [normalized] - Nombre normalizado del ingrediente.
+  /// [category] - Categoría del ingrediente.
+  /// [portion] - Porción parseada (cantidad + unidad).
+  ///
+  /// Returns: Perfil de macros escalado a la cantidad especificada.
+  ///
+  /// Lógica:
+  /// - Si es unidad y existe perfil por unidad (ej: huevo) → usar ese perfil × cantidad
+  /// - Si es unidad sin perfil → asumir 80g/unidad y usar perfil per 100g
+  /// - Si es peso/volumen → convertir a factor (cantidad / 100) y escalar
   Future<_MacroProfile> _macrosForPortion(
     String normalized,
     ShoppingItemCategory category,
@@ -461,6 +510,18 @@ class StatisticsRepositoryImpl implements StatisticsRepository {
     return per100g.scale(factor);
   }
 
+  /// Obtiene el perfil de macros por 100g de un ingrediente.
+  ///
+  /// [normalized] - Nombre normalizado del ingrediente.
+  /// [category] - Categoría del ingrediente (para fallback).
+  ///
+  /// Returns: Perfil de macros por 100g.
+  ///
+  /// Estrategia (en orden):
+  /// 1. Caché en memoria (API USDA previamente consultada)
+  /// 2. API USDA (Cloudflare Worker)
+  /// 3. Heurística local (_macroPer100g)
+  /// 4. Fallback por categoría
   Future<_MacroProfile> _macroProfilePer100g(
     String normalized,
     ShoppingItemCategory category,
@@ -482,6 +543,17 @@ class StatisticsRepositoryImpl implements StatisticsRepository {
         _categoryMacroPer100g[ShoppingItemCategory.otros]!;
   }
 
+  /// Consulta la API USDA (Cloudflare Worker) para obtener macros.
+  ///
+  /// [normalized] - Nombre normalizado del ingrediente.
+  ///
+  /// Returns:
+  /// - Perfil de macros si la API tiene datos
+  /// - null si falla o no encuentra datos
+  ///
+  /// URL del Worker: https://groq-worker.smartmealgroq.workers.dev/macros?query=pollo
+  ///
+  /// Nota: Los errores se silencian, devolviendo null para usar fallback.
   Future<_MacroProfile?> _fetchUsdaMacroProfile(String normalized) async {
     try {
       final uri = Uri.parse(
@@ -503,10 +575,16 @@ class StatisticsRepositoryImpl implements StatisticsRepository {
       return null;
     }
   }
-
-
 }
 
+/// Perfil de macronutrientes para un ingrediente.
+///
+/// Representa las cantidades de macronutrientes por 100g (o por unidad).
+/// - [protein]: gramos de proteína
+/// - [carbs]: gramos de carbohidratos
+/// - [fat]: gramos de grasas
+///
+/// Incluye método [scale] para ajustar cantidades según porción.
 class _MacroProfile {
   final double protein;
   final double carbs;

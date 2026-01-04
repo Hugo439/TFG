@@ -1,5 +1,60 @@
 import 'package:flutter/material.dart';
 
+/// Card para mostrar una métrica numérica con icono.
+///
+/// Responsabilidades:
+/// - Mostrar valor numérico destacado
+/// - Icono temático con color
+/// - Título descriptivo
+/// - Unidad de medida
+///
+/// Uso principal:
+/// - StatisticsView para mostrar métricas nutricionales
+/// - Ejemplos: calorías diarias, total comidas, costo, ingredientes
+///
+/// Diseño visual:
+/// - **Background**: color con alpha 0.08 (sutil)
+/// - **Bordes redondeados**: 16px
+/// - **Icono**: 28px, color personalizable
+/// - **Título**: labelMedium, color onSurface con alpha 0.7
+/// - **Valor**: headlineMedium, bold, color personalizable
+/// - **Unidad**: labelSmall, junto al valor
+///
+/// Layout:
+/// - Columna vertical con crossAxisStart
+/// - Icono arriba
+/// - Título en medio
+/// - Valor + unidad en Row al final
+///
+/// Responsive:
+/// - Valor con Flexible para evitar overflow
+/// - maxLines: 1 con ellipsis
+/// - Unidad con padding bottom para alineación
+///
+/// Colores temáticos:
+/// - Proteínas: rojo/rosa
+/// - Carbohidratos: naranja/amarillo
+/// - Grasas: azul/morado
+/// - Calorías: primary
+/// - Costo: secondary
+///
+/// Parámetros:
+/// [icon] - Icono a mostrar
+/// [title] - Título descriptivo
+/// [value] - Valor numérico (como String)
+/// [unit] - Unidad de medida (ej: "kcal", "€", "ud")
+/// [color] - Color del icono y valor
+///
+/// Uso:
+/// ```dart
+/// MetricCard(
+///   icon: Icons.local_fire_department,
+///   title: 'Calorías diarias',
+///   value: '2100',
+///   unit: 'kcal',
+///   color: Colors.orange,
+/// )
+/// ```
 class MetricCard extends StatelessWidget {
   final IconData icon;
   final String title;

@@ -7,6 +7,40 @@ import 'package:smartmeal/core/usecases/usecase.dart';
 import 'package:smartmeal/core/utils/calorie_calculator_utils.dart';
 import 'package:smartmeal/core/errors/errors.dart';
 
+/// ViewModel para pantalla de estadísticas del menú.
+///
+/// Responsabilidades:
+/// - Cargar estadísticas del menú actual desde caché/calculadas
+/// - Calcular calorías objetivo del usuario
+/// - Calcular cumplimiento de objetivo (compliance)
+///
+/// Estadísticas incluidas:
+/// - Distribución de comidas (breakfast, lunch, snack, dinner)
+/// - Top 10 ingredientes más usados
+/// - Top 10 recetas más frecuentes
+/// - Calorías totales semanales y promedio diario
+/// - Macronutrientes (proteínas, carbohidratos, grasas)
+/// - Coste estimado del menú
+///
+/// Compliance:
+/// - **highDeficit**: < 90% del objetivo (⚠️ alerta)
+/// - **onTarget**: 90-110% del objetivo (✅ perfecto)
+/// - **surplus**: > 110% del objetivo (⚠️ exceso)
+///
+/// Caché:
+/// - Usa StatisticsCacheModel en Firestore
+/// - Si caché válido, carga instantánea
+/// - Si no, recalcula desde menú y cachea
+///
+/// Uso:
+/// ```dart
+/// final vm = Provider.of<StatisticsViewModel>(context);
+/// await vm.load();
+/// if (!vm.loading && vm.summary != null) {
+///   print('Calorías diarias: ${vm.summary!.avgDailyCalories}');
+///   print('Cumplimiento: ${vm.complianceStatus}');
+/// }
+/// ```
 class StatisticsViewModel extends ChangeNotifier {
   final GetCurrentUserUseCase _getCurrentUserUseCase;
   final GetStatisticsSummaryUseCase _getStatisticsSummaryUseCase;
@@ -34,6 +68,18 @@ class StatisticsViewModel extends ChangeNotifier {
   String? get complianceStatus => _complianceStatus;
   bool get hasLoaded => _hasLoaded;
 
+  /// Carga estadísticas del menú actual.
+  ///
+  /// Proceso:
+  /// 1. Obtiene usuario actual
+  /// 2. Obtiene perfil del usuario
+  /// 3. Calcula calorías objetivo con CalorieCalculator
+  /// 4. Carga estadísticas con GetStatisticsSummaryUseCase
+  /// 5. Calcula compliance (cumplimiento de objetivo)
+  ///
+  /// GetStatisticsSummaryUseCase:
+  /// - Intenta cargar desde caché
+  /// - Si no válido, recalcula y cachea
   Future<void> load() async {
     _loading = true;
     _error = null;
@@ -65,6 +111,15 @@ class StatisticsViewModel extends ChangeNotifier {
     }
   }
 
+  /// Calcula cumplimiento de objetivo calórico.
+  ///
+  /// Fórmula:
+  /// - compliance% = (avgDailyCalories / targetCalories) * 100
+  ///
+  /// Categorías:
+  /// - **highDeficit**: < 90% (comiendo muy poco)
+  /// - **onTarget**: 90-110% (cumpliendo objetivo)
+  /// - **surplus**: > 110% (comiendo de más)
   void _computeCompliance() {
     if (_summary == null || _targetCalories == null || _targetCalories == 0) {
       _compliancePercent = null;

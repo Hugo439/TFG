@@ -7,6 +7,34 @@ import 'package:smartmeal/domain/usecases/recipes/update_recipe_usecase.dart';
 import 'package:smartmeal/core/di/service_locator.dart';
 import 'package:smartmeal/core/errors/errors.dart';
 
+/// ViewModel para pantalla de detalle de receta.
+///
+/// Responsabilidades:
+/// - Cargar receta por ID desde Firestore
+/// - Generar pasos de preparación con IA (Gemini/Groq)
+/// - Actualizar receta con pasos generados
+///
+/// Funcionalidades:
+/// 1. **loadRecipe(id)**: carga receta desde GetRecipeByIdUseCase
+/// 2. **generateSteps()**: genera pasos con GenerateRecipeStepsUseCase
+///    - Usa IA para crear pasos desde ingredientes/descripción
+///    - Actualiza receta con UpdateRecipeUseCase
+///
+/// Flujo de generación de pasos:
+/// 1. Usuario ve receta sin pasos
+/// 2. Pulsa "Generar pasos"
+/// 3. IA genera pasos detallados
+/// 4. Se guardan en Firestore
+/// 5. UI se actualiza automáticamente
+///
+/// Uso:
+/// ```dart
+/// final vm = Provider.of<RecipeDetailViewModel>(context);
+/// await vm.loadRecipe(recipeId);
+/// if (vm.recipe?.steps.isEmpty ?? true) {
+///   await vm.generateSteps();
+/// }
+/// ```
 class RecipeDetailViewModel extends ChangeNotifier {
   final GetRecipeByIdUseCase _getRecipeByIdUseCase = sl<GetRecipeByIdUseCase>();
   final GenerateRecipeStepsUseCase _generateStepsUseCase =
@@ -22,6 +50,12 @@ class RecipeDetailViewModel extends ChangeNotifier {
   String? _stepsError;
   String? get stepsError => _stepsError;
 
+  /// Carga receta por ID desde Firestore.
+  ///
+  /// Parámetros:
+  /// - **id**: ID de la receta
+  ///
+  /// Requiere usuario autenticado.
   Future<void> loadRecipe(String id) async {
     final userId = FirebaseAuth.instance.currentUser?.uid;
     if (userId == null) throw AuthFailure('Usuario no autenticado');
@@ -30,6 +64,22 @@ class RecipeDetailViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Genera pasos de preparación con IA.
+  ///
+  /// Proceso:
+  /// 1. Llama a GenerateRecipeStepsUseCase con:
+  ///    - Nombre de la receta
+  ///    - Lista de ingredientes
+  ///    - Descripción
+  /// 2. IA (Gemini/Groq) genera pasos detallados
+  /// 3. Actualiza receta localmente
+  /// 4. Guarda en Firestore con UpdateRecipeUseCase
+  ///
+  /// Requiere:
+  /// - recipe != null
+  /// - No estar generando ya (isGeneratingSteps == false)
+  ///
+  /// Si error, guarda en stepsError.
   Future<void> generateSteps() async {
     if (_recipe == null || _isGeneratingSteps) return;
 

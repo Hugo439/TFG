@@ -1,7 +1,60 @@
 import 'package:flutter/material.dart';
 import 'colors.dart';
 
-/// Helpers para obtener colores según el tema actual
+/// Helpers para obtener colores adaptativos según tema actual.
+///
+/// Responsabilidades:
+/// - Obtener colores que se adaptan a light/dark
+/// - Helpers para texto, backgrounds, cards
+/// - Colores de categorías de soporte
+/// - Colores de estados
+///
+/// Ventajas:
+/// - Centralización de lógica de tema
+/// - Evita repetir Theme.of(context).brightness
+/// - Facilita cambios de colores globales
+///
+/// Métodos principales:
+/// - **textPrimary**: color de texto principal
+/// - **textSecondary**: color de texto secundario (alpha 0.7)
+/// - **backgroundPrimary**: fondo principal (surface)
+/// - **backgroundSecondary**: fondo secundario (surfaceContainerHighest)
+/// - **cardBackground**: fondo de cards (adapta a tema)
+/// - **getCategoryColor**: color por categoría de soporte
+/// - **getStatusColor**: color por estado (pending, resolved, closed)
+///
+/// getCategoryColor:
+/// - Dudas: azul
+/// - Errores: rojo
+/// - Sugerencias: verde/amarillo
+/// - Cuenta: morado
+/// - Menús: naranja
+/// - Otro: gris
+/// - Default: secondaryText
+///
+/// getStatusColor:
+/// - pending: naranja/warning
+/// - resolved: verde/success
+/// - closed: gris/secondaryText
+/// - Default: secondaryText
+///
+/// Uso:
+/// ```dart
+/// Text(
+///   'Título',
+///   style: TextStyle(color: ThemeHelpers.textPrimary(context)),
+/// )
+///
+/// Container(
+///   color: ThemeHelpers.backgroundSecondary(context),
+///   child: ...,
+/// )
+///
+/// Icon(
+///   Icons.help,
+///   color: ThemeHelpers.getCategoryColor('Dudas', context),
+/// )
+/// ```
 class ThemeHelpers {
   /// Obtener color de texto primario según tema
   static Color textPrimary(BuildContext context) {

@@ -4,12 +4,59 @@ import 'package:flutter/foundation.dart';
 import 'package:smartmeal/data/models/weekly_menu_model.dart';
 import 'package:smartmeal/data/models/day_menu_model.dart';
 
+/// Datasource local para cachear último menú semanal.
+///
+/// Responsabilidad:
+/// - Cachear último menú cargado en SharedPreferences
+/// - Mostrar instantáneamente mientras carga Firestore
+///
+/// Estrategia:
+/// - Solo cachea el menú más reciente
+/// - Al abrir app, muestra caché instantáneamente
+/// - Carga lista completa desde Firestore en background
+/// - Actualiza caché con menú más reciente
+///
+/// Serialización:
+/// - WeeklyMenuModel → JSON con:
+///   - Metadatos del menú
+///   - Lista de 7 DayMenuModel
+///   - IDs de recetas (no objetos completos)
+///
+/// Limitaciones:
+/// - Solo cachea 1 menú (el último)
+/// - Para múltiples menús, cargar desde Firestore
+///
+/// Clave: 'latest_weekly_menu_cache'
+///
+/// Uso:
+/// ```dart
+/// final ds = WeeklyMenuLocalDatasource(prefs);
+///
+/// // Mostrar caché instantáneamente
+/// final cached = await ds.getLatest();
+/// if (cached != null) {
+///   // Mostrar menú cacheado
+/// }
+///
+/// // Cargar desde Firestore
+/// final menus = await firestoreDS.getWeeklyMenus();
+/// if (menus.isNotEmpty) {
+///   await ds.saveLatest(menus.first);
+/// }
+/// ```
 class WeeklyMenuLocalDatasource {
   static const String _key = 'latest_weekly_menu_cache';
   final SharedPreferences _prefs;
 
   WeeklyMenuLocalDatasource(this._prefs);
 
+  /// Obtiene último menú cacheado.
+  ///
+  /// Retorna null si:
+  /// - No hay caché
+  /// - Error al parsear JSON
+  ///
+  /// Se usa para mostrar instantáneamente al abrir app.
   Future<WeeklyMenuModel?> getLatest() async {
     try {
       final jsonStr = _prefs.getString(_key);
@@ -24,6 +71,12 @@ class WeeklyMenuLocalDatasource {
     }
   }
 
+  /// Guarda menú en caché.
+  ///
+  /// Reemplaza caché anterior (solo guarda 1 menú).
+  ///
+  /// Se llama con el menú más reciente después de
+  /// cargar desde Firestore.
   Future<void> saveLatest(WeeklyMenuModel menu) async {
     try {
       final map = _toJson(menu);
@@ -39,6 +92,7 @@ class WeeklyMenuLocalDatasource {
     }
   }
 
+  /// Limpia caché de menú.
   Future<void> clear() async {
     await _prefs.remove(_key);
   }

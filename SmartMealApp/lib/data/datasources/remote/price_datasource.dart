@@ -2,14 +2,45 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:smartmeal/domain/services/shopping/price_database.dart';
 
+/// Interfaz para datasources de precios.
+///
+/// Define el contrato para obtener precios de ingredientes desde
+/// diferentes fuentes (Firestore, API externa, hardcoded, etc.).
 abstract class PriceDatasource {
+  /// Obtiene todos los precios de una categoría.
+  ///
+  /// Returns: Mapa ingrediente → PriceRange.
   Future<Map<String, PriceRange>> getPrices(String category);
+
+  /// Estima el precio de un ingrediente específico.
+  ///
+  /// Returns: Precio estimado por unidad (kg, litro, o pieza).
   Future<double> getEstimatedPrice({
     required String ingredientName,
     required String category,
   });
 }
 
+/// Implementación de PriceDatasource usando Firestore.
+///
+/// Lee precios desde la colección 'price_catalog' en Firestore.
+///
+/// Estructura en Firestore:
+/// ```
+/// price_catalog/{ingredientId}
+///   - category: string (ej: 'carnes_y_pescados')
+///   - displayName: string (ej: 'Pollo pechuga')
+///   - priceRef: number (precio de referencia por kg/l/ud)
+///   - unitKind: string ('weight', 'liter', 'piece')
+/// ```
+///
+/// Características:
+/// - **Caché en memoria**: Guarda precios por categoría para evitar consultas repetidas
+/// - **Aliases de categorías**: Maneja variaciones de nombres ("frutas_y_verduras", "frutas-y-verduras", etc.)
+/// - **Rango de precios**: Calcula min/max como ±20% del precio de referencia
+/// - **Búsqueda flexible**: Encuentra ingredientes por nombre parcial
+///
+/// Nota: Si no encuentra precio, devuelve 0 (el repositorio usará fallback).
 class FirestorePriceDatasource implements PriceDatasource {
   final FirebaseFirestore _firestore;
   final Map<String, Map<String, PriceRange>> _cache = {};
@@ -35,6 +66,22 @@ class FirestorePriceDatasource implements PriceDatasource {
 
   FirestorePriceDatasource(this._firestore);
 
+  /// Obtiene todos los precios de una categoría desde Firestore.
+  ///
+  /// [category] - Nombre de la categoría (ej: 'frutas_y_verduras', 'lacteos').
+  ///
+  /// Returns:
+  /// - Mapa ingrediente → PriceRange (con min, max, avg)
+  /// - Mapa vacío si no se encuentra la categoría o hay error
+  ///
+  /// Proceso:
+  /// 1. Buscar en caché primero
+  /// 2. Si no hay caché, consultar Firestore por categoría
+  /// 3. Intentar con aliases si no encuentra (ej: frutas_y_verduras, frutas-y-verduras)
+  /// 4. Convertir a PriceRange (min = avg * 0.8, max = avg * 1.2)
+  /// 5. Guardar en caché
+  ///
+  /// Nota: Los errores se silencian y se devuelve mapa vacío.
   @override
   Future<Map<String, PriceRange>> getPrices(String category) async {
     try {
@@ -113,6 +160,21 @@ class FirestorePriceDatasource implements PriceDatasource {
     }
   }
 
+  /// Estima el precio por unidad de un ingrediente.
+  ///
+  /// [ingredientName] - Nombre del ingrediente a buscar.
+  /// [category] - Categoría del ingrediente.
+  ///
+  /// Returns:
+  /// - Precio promedio por unidad (kg, litro, o pieza)
+  /// - 0 si no se encuentra
+  ///
+  /// Búsqueda flexible:
+  /// - Convierte a minúsculas
+  /// - Busca coincidencias parciales ("pollo" encuentra "pollo pechuga")
+  /// - Usa el primer match encontrado
+  ///
+  /// Nota: Si devuelve 0, el repositorio usará PriceDatabase como fallback.
   @override
   Future<double> getEstimatedPrice({
     required String ingredientName,
@@ -155,6 +217,12 @@ class FirestorePriceDatasource implements PriceDatasource {
     }
   }
 
+  /// Convierte string de unitKind a enum UnitType.
+  ///
+  /// Mapeo:
+  /// - 'liter' → UnitType.liter
+  /// - 'piece' → UnitType.piece
+  /// - default → UnitType.weight
   UnitType _parseUnitType(String? unit) {
     switch (unit) {
       case 'liter':
@@ -166,7 +234,9 @@ class FirestorePriceDatasource implements PriceDatasource {
     }
   }
 
-  /// Limpiar caché (útil para refresh)
+  /// Limpia el caché de precios.
+  ///
+  /// Útil para forzar recarga desde Firestore (ej: después de actualizar catálogo).
   void clearCache() {
     _cache.clear();
     if (kDebugMode) {

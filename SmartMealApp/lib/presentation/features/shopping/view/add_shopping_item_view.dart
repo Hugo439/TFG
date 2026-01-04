@@ -8,6 +8,62 @@ import 'package:smartmeal/presentation/widgets/inputs/filled_text_field.dart';
 import 'package:smartmeal/presentation/widgets/buttons/primary_button.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
 
+/// Pantalla para añadir o editar un ingrediente en la lista de compras.
+///
+/// Responsabilidades:
+/// - Formulario de ingrediente (nombre, cantidad, categoría)
+/// - Validación de campos obligatorios
+/// - Guardar en Firestore
+/// - Modo edición (si se pasa itemToEdit)
+///
+/// Campos del formulario:
+/// - **Nombre del producto**: String obligatorio
+/// - **Cantidad**: String con unidad (ej: "500g", "2 ud", "1L")
+/// - **Categoría**: Dropdown (frutas_y_verduras, carnes_y_pescados, lacteos, etc.)
+///
+/// Validaciones:
+/// - Nombre: no vacío, trim whitespace
+/// - Cantidad: no vacía
+/// - Categoría: una opción seleccionada
+///
+/// Modos:
+/// 1. **Añadir nuevo**: itemToEdit == null
+///    - Título: "Añadir ingrediente"
+///    - Botón: "Añadir"
+/// 2. **Editar existente**: itemToEdit != null
+///    - Título: "Editar ingrediente"
+///    - Botón: "Guardar cambios"
+///    - Campos prellenados con valores actuales
+///
+/// Guardado:
+/// - AddShoppingItemUseCase crea/actualiza en Firestore
+/// - Genera ID único si es nuevo
+/// - Mantiene ID si es edición
+/// - Marca isChecked = false por defecto
+///
+/// Navegación:
+/// - Éxito: pop() con resultado true
+/// - Cancelar: pop() sin resultado
+///
+/// Parámetros:
+/// [itemToEdit] - Item a editar (opcional, null = modo añadir)
+///
+/// Uso:
+/// ```dart
+/// // Añadir nuevo
+/// Navigator.push(
+///   context,
+///   MaterialPageRoute(builder: (_) => AddShoppingItemView()),
+/// );
+///
+/// // Editar existente
+/// Navigator.push(
+///   context,
+///   MaterialPageRoute(
+///     builder: (_) => AddShoppingItemView(itemToEdit: item),
+///   ),
+/// );
+/// ```
 class AddShoppingItemView extends StatelessWidget {
   final ShoppingItem? itemToEdit;
 

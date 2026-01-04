@@ -2,6 +2,55 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
 
+/// Contenido de la política de privacidad.
+///
+/// Responsabilidades:
+/// - Mostrar política de privacidad completa
+/// - 6 secciones con títulos y cuerpos
+/// - Fecha de última actualización
+/// - Localizado (es/en)
+///
+/// Secciones:
+/// 1. Introducción (qué datos recopilamos)
+/// 2. Uso de datos (para qué los usamos)
+/// 3. Compartir datos (con quién se comparten)
+/// 4. Seguridad (cómo protegemos los datos)
+/// 5. Derechos del usuario (acceso, modificación, eliminación)
+/// 6. Contacto (cómo contactarnos)
+///
+/// Fecha de actualización:
+/// - Hardcoded: DateTime(2025, 12, 17)
+/// - Formateada con DateFormat.yMMMMd
+/// - Localizada según languageCode
+///
+/// _SectionTitle:
+/// - Widget helper para títulos
+/// - fontSize 18, bold
+/// - Color: onSurface
+///
+/// Layout:
+/// - Columna vertical
+/// - Heading principal
+/// - Fecha de actualización
+/// - 6 bloques: título + cuerpo
+/// - Spacing: 12px entre bloques, 16px después de fecha
+///
+/// Localización:
+/// - Todos los textos desde l10n:
+///   * privacyHeading, privacyUpdated
+///   * privacySection1Title a privacySection6Title
+///   * privacySection1Body a privacySection6Body
+///
+/// Usado en:
+/// - PrivacyPolicyView: scrollable content
+///
+/// Parámetros:
+/// [languageCode] - Código de idioma para formateo de fecha
+///
+/// Uso:
+/// ```dart
+/// PrivacyContent(languageCode: 'es')
+/// ```
 class PrivacyContent extends StatelessWidget {
   const PrivacyContent({super.key, required this.languageCode});
 

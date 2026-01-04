@@ -5,6 +5,40 @@ import 'package:smartmeal/presentation/widgets/cards/menu_card.dart';
 import 'package:smartmeal/presentation/widgets/layout/app_shell.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
 
+/// Pantalla principal (Home) de la aplicación.
+///
+/// Responsabilidades:
+/// - Dashboard con 6 cards de navegación
+/// - Punto de entrada después del login
+/// - Navegación rápida a todas las funcionalidades
+///
+/// Tarjetas (MenuCard):
+/// 1. **Perfil**: Ver/editar datos personales
+/// 2. **Menú Semanal**: Ver menú actual o generar nuevo
+/// 3. **Lista de Compras**: Gestionar ingredientes
+/// 4. **Estadísticas**: Ver métricas nutricionales
+/// 5. **Soporte**: Enviar mensajes al admin
+/// 6. **Configuración**: Idioma, tema, privacidad
+///
+/// Layout responsive:
+/// - **>1100px**: 4 columnas
+/// - **700-1100px**: 3 columnas
+/// - **<700px**: 2 columnas
+///
+/// Aspect ratio:
+/// - **>1100px**: 1.05
+/// - **700-1100px**: 1.0
+/// - **<700px**: 0.95
+///
+/// Navegación:
+/// - AppShell con BottomNavigationBar (selectedIndex: 1)
+/// - Al cambiar tab en navbar, usa NavigationController
+///
+/// Uso:
+/// ```dart
+/// // Navegar desde login
+/// Navigator.pushReplacementNamed(context, Routes.home);
+/// ```
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
 

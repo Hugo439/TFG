@@ -2,7 +2,52 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:smartmeal/data/models/price_entry_model.dart';
 
-/// Datasource para el catálogo de precios en Firestore
+/// Datasource para el catálogo de precios en Firestore.
+///
+/// Colección: 'price_catalog'
+///
+/// Responsabilidades:
+/// - CRUD de precios de referencia del catálogo global
+/// - Búsqueda de precios por nombre normalizado
+/// - Búsqueda por categoría
+/// - Búsqueda de texto completo (lado cliente)
+///
+/// Estructura del documento:
+/// ```
+/// price_catalog/{normalizedName}
+///   - displayName: string ("Pollo pechuga")
+///   - category: string ("carnes_y_pescados")
+///   - priceRef: number (8.0 €/kg)
+///   - unitKind: string ('weight', 'liter', 'piece')
+/// ```
+///
+/// Normalización:
+/// - ID del documento: nombre normalizado ("pollo" en lugar de "Pollo pechuga")
+/// - Sin tildes, minúsculas, sin espacios
+/// - Ejemplo: "Pollo pechuga" → "pollo"
+///
+/// Búsqueda de texto:
+/// - Firestore no tiene búsqueda de texto nativo
+/// - searchPrices() descarga todos los docs y filtra en cliente
+/// - Busca en normalizedName (id) y displayName
+///
+/// Logging:
+/// - Solo en debug mode
+/// - Prefijo: 📦 para operaciones normales, ❌ para errores
+///
+/// Uso:
+/// ```dart
+/// final ds = PriceCatalogFirestoreDatasource(firestore);
+///
+/// // Buscar por nombre normalizado
+/// final entry = await ds.getPriceEntry('pollo');
+///
+/// // Buscar por categoría
+/// final meats = await ds.getPricesByCategory('carnes_y_pescados');
+///
+/// // Búsqueda de texto
+/// final results = await ds.searchPrices('pech'); // encuentra "Pollo pechuga"
+/// ```
 class PriceCatalogFirestoreDatasource {
   final FirebaseFirestore _firestore;
 

@@ -1,8 +1,100 @@
 import 'package:flutter/material.dart';
 import 'colors.dart';
 
-/// Tema principal de la app SmartMeal (modo claro y oscuro).
-/// Adaptado completamente a Material 3 con la paleta personalizada.
+/// Configuración de temas Material 3 para SmartMeal.
+///
+/// Responsabilidades:
+/// - Definir lightTheme y darkTheme completos
+/// - Paleta de colores personalizada (AppColors)
+/// - Estilos de texto consistentes
+/// - Componentes Material 3
+///
+/// Material 3:
+/// - useMaterial3: true
+/// - ColorScheme completo con roles semánticos
+/// - Nuevas propiedades: surfaceContainerHighest, surfaceBright, etc.
+/// - Elevation system actualizado
+///
+/// lightTheme:
+/// - Brightness.light
+/// - primary: AppColors.primary (#5E56E7)
+/// - secondary: AppColors.secondary (#FF9F66)
+/// - tertiary: AppColors.tertiary (beige/cream)
+/// - surface: AppColors.primaryBackground (blanco/gris claro)
+/// - Todos los roles de color definidos
+///
+/// darkTheme:
+/// - Brightness.dark
+/// - primary: AppColors.primary (mismo base)
+/// - surface: AppColors.darkPrimaryBackground (#1A1A2E)
+/// - onSurface: AppColors.darkPrimaryText (blanco/gris claro)
+/// - Colores adaptados para contraste en oscuro
+///
+/// TextTheme:
+/// - displayLarge: 32px, bold
+/// - displayMedium: 28px, bold
+/// - displaySmall: 24px, bold
+/// - headlineLarge: 22px, w600
+/// - headlineMedium: 20px, w600
+/// - headlineSmall: 18px, w600
+/// - titleLarge: 18px, w600
+/// - titleMedium: 16px, w600
+/// - titleSmall: 14px, w600
+/// - bodyLarge: 16px, regular
+/// - bodyMedium: 14px, regular
+/// - bodySmall: 12px, regular
+/// - labelLarge: 14px, w600
+/// - labelMedium: 12px, w600
+/// - labelSmall: 11px, w600
+///
+/// AppBarTheme:
+/// - backgroundColor: tertiary
+/// - elevation: 0
+/// - centerTitle: true
+/// - iconTheme y titleTextStyle definidos
+///
+/// CardTheme:
+/// - shape: RoundedRectangleBorder(16px)
+/// - elevation: 2
+/// - Colores: surface con outline
+///
+/// ButtonTheme:
+/// - ElevatedButton: primary background
+/// - TextButton: primary foreground
+/// - OutlinedButton: border primary
+/// - Shapes con borderRadius 12px
+///
+/// InputDecorationTheme:
+/// - filled: true
+/// - borderRadius: 12px
+/// - focusedBorder: primary
+/// - enabledBorder: outline
+///
+/// FloatingActionButtonTheme:
+/// - backgroundColor: primary
+/// - foregroundColor: onPrimary
+/// - shape: circular
+///
+/// Uso:
+/// ```dart
+/// MaterialApp(
+///   theme: AppTheme.lightTheme,
+///   darkTheme: AppTheme.darkTheme,
+///   themeMode: ThemeMode.system,
+/// )
+/// ```
+///
+/// Acceso a colores:
+/// ```dart
+/// final colorScheme = Theme.of(context).colorScheme;
+/// Container(color: colorScheme.primary)
+/// ```
+///
+/// Texto con tema:
+/// ```dart
+/// final textTheme = Theme.of(context).textTheme;
+/// Text('Título', style: textTheme.headlineMedium)
+/// ```
 class AppTheme {
   static ThemeData lightTheme = ThemeData(
     useMaterial3: true,
@@ -247,7 +339,10 @@ class AppTheme {
         fontWeight: FontWeight.w500,
       ),
       bodyLarge: TextStyle(color: AppColors.darkOnSurface, fontSize: 16),
-      bodyMedium: TextStyle(color: AppColors.darkOnSurfaceVariant, fontSize: 14),
+      bodyMedium: TextStyle(
+        color: AppColors.darkOnSurfaceVariant,
+        fontSize: 14,
+      ),
       bodySmall: TextStyle(color: AppColors.darkOnSurfaceVariant, fontSize: 12),
       labelLarge: TextStyle(
         color: AppColors.darkOnSurface,
@@ -259,7 +354,10 @@ class AppTheme {
         fontSize: 12,
         fontWeight: FontWeight.w500,
       ),
-      labelSmall: TextStyle(color: AppColors.darkOnSurfaceVariant, fontSize: 10),
+      labelSmall: TextStyle(
+        color: AppColors.darkOnSurfaceVariant,
+        fontSize: 10,
+      ),
     ),
     floatingActionButtonTheme: const FloatingActionButtonThemeData(
       backgroundColor: AppColors.darkPrimary,

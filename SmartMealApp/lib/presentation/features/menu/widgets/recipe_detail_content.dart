@@ -6,6 +6,61 @@ import 'package:smartmeal/presentation/features/menu/widgets/meal_type_icon.dart
 import 'package:smartmeal/presentation/features/menu/widgets/meal_type_text.dart';
 import 'package:smartmeal/presentation/features/menu/viewmodel/recipe_detail_view_model.dart';
 
+/// Widget que muestra el contenido completo de una receta.
+///
+/// Responsabilidades:
+/// - Mostrar toda la información de la receta
+/// - Header con tipo de comida y calorías
+/// - Lista de ingredientes con cantidades
+/// - Pasos de preparación enumerados
+/// - Macronutrientes (si disponibles)
+///
+/// Secciones:
+///
+/// 1. **Header con gradiente**:
+///    - Icono del tipo de comida (breakfast/lunch/snack/dinner)
+///    - Nombre del tipo de comida
+///    - Calorías totales destacadas (18px bold)
+///    - Badge con macros (si disponibles)
+///
+/// 2. **Ingredientes**:
+///    - Título "Ingredientes" con icono shopping_basket
+///    - Lista con bullets personalizados
+///    - Formato: "cantidad unidad ingrediente"
+///    - Ejemplo: "200g pollo", "1 cebolla"
+///
+/// 3. **Pasos de preparación**:
+///    - Título "Preparación" con icono restaurant
+///    - Enumeración con círculos numerados
+///    - Texto de cada paso con padding
+///    - Visual clara y espaciada
+///
+/// 4. **Macronutrientes** (opcional):
+///    - Sección expandible o siempre visible
+///    - Proteínas, Carbohidratos, Grasas
+///    - Formato: "Xg" con colores temáticos
+///    - Solo si hay datos disponibles
+///
+/// Diseño visual:
+/// - Gradientes suaves con primary color
+/// - Bordes redondeados (12-16px)
+/// - Espaciado generoso entre secciones
+/// - Iconos coloridos para cada sección
+/// - Cards con sombras sutiles
+///
+/// Responsive:
+/// - Ajusta tamaños de texto según viewport
+/// - Layout apilado verticalmente
+/// - Padding adaptativo
+///
+/// Parámetros:
+/// [recipe] - Recipe con todos los datos
+///
+/// Uso:
+/// ```dart
+/// // En RecipeDetailView
+/// RecipeDetailContent(recipe: recipe)
+/// ```
 class RecipeDetailContent extends StatelessWidget {
   final Recipe recipe;
   const RecipeDetailContent({super.key, required this.recipe});

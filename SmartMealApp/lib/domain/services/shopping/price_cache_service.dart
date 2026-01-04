@@ -1,5 +1,16 @@
 import 'package:smartmeal/domain/services/shopping/smart_ingredient_normalizer.dart';
 
+/// Representa una entrada de precio en caché con metadatos de expiración.
+///
+/// Propiedades:
+/// - **price**: precio calculado
+/// - **fetchedAt**: timestamp de cuando se calculó
+/// - **expiresAt**: timestamp de expiración
+/// - **source**: origen del precio ('firestore', 'fallback', 'api')
+///
+/// Métodos útiles:
+/// - **isExpired**: verifica si ha expirado
+/// - **age**: duración desde que se calculó
 class PriceCacheEntry {
   final double price;
   final DateTime fetchedAt;
@@ -36,6 +47,49 @@ class PriceCacheEntry {
   }
 }
 
+/// Servicio de caché en memoria para precios de ingredientes.
+///
+/// Responsabilidades:
+/// - Cachear precios calculados en memoria (RAM)
+/// - Gestionar expiración automática (TTL configurable)
+/// - Limitar tamaño máximo de caché
+/// - Proveer estadísticas de uso
+///
+/// Configuración:
+/// - **defaultTtl**: 24 horas
+/// - **maxCacheSize**: 500 entradas
+///
+/// Estrategia de limpieza:
+/// - Cuando se alcanza maxCacheSize, elimina 20% de entradas más antiguas
+/// - Limpieza automática de entradas expiradas al consultar
+///
+/// Generación de claves:
+/// - Formato: "nombreNormalizado:categoría:cantidad:unidad"
+/// - Ejemplo: "pollo:carnesYPescados:500:weight"
+///
+/// Beneficios:
+/// - Reduce cálculos repetidos de precios
+/// - Mejora rendimiento en listas de compra grandes
+/// - Evita llamadas redundantes a servicios externos
+///
+/// Uso típico:
+/// ```dart
+/// final cache = PriceCacheService();
+/// final key = PriceCacheService.generateKey(
+///   ingredientName: "pollo",
+///   category: "carnesYPescados",
+///   quantityBase: 500,
+///   unitKind: "weight",
+/// );
+///
+/// // Intentar obtener desde caché
+/// var price = cache.get(key);
+/// if (price == null) {
+///   // Calcular y cachear
+///   price = calculatePrice();
+///   cache.set(key, price, source: 'calculated');
+/// }
+/// ```
 class PriceCacheService {
   final Map<String, PriceCacheEntry> _memoryCache = {};
 
@@ -43,7 +97,15 @@ class PriceCacheService {
   static const Duration defaultTtl = Duration(hours: 24);
   static const int maxCacheSize = 500;
 
-  /// Obtiene un precio desde caché (si no ha expirado)
+  /// Obtiene precio desde caché si no ha expirado.
+  ///
+  /// [cacheKey] - Clave generada con generateKey().
+  ///
+  /// Returns: Precio cacheado o null si no existe o expiró.
+  ///
+  /// Comportamiento:
+  /// - Si expirado: remueve de caché y retorna null
+  /// - Si válido: retorna precio
   double? get(String cacheKey) {
     final entry = _memoryCache[cacheKey];
 
@@ -57,7 +119,15 @@ class PriceCacheService {
     return entry.price;
   }
 
-  /// Guarda un precio en caché
+  /// Guarda precio en caché con expiración.
+  ///
+  /// [cacheKey] - Clave de caché.
+  /// [price] - Precio a cachear.
+  /// [ttl] - Tiempo de vida (default: 24h).
+  /// [source] - Origen del precio para estadísticas.
+  ///
+  /// Comportamiento:
+  /// - Si caché llena (>= maxCacheSize): limpia 20% más antiguas antes
   void set(
     String cacheKey,
     double price, {
@@ -80,7 +150,11 @@ class PriceCacheService {
     _memoryCache[cacheKey] = entry;
   }
 
-  /// Genera clave de caché
+  /// Genera clave de caché consistente.
+  ///
+  /// Normaliza ingredientName antes de generar clave.
+  ///
+  /// Returns: String con formato "nombre:categoría:cantidad:unidad".
   static String generateKey({
     required String ingredientName,
     required String category,

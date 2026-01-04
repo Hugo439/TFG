@@ -6,6 +6,40 @@ import 'package:smartmeal/data/models/price_entry_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/foundation.dart';
 
+/// Implementación del repositorio de catálogo de precios.
+///
+/// Responsabilidad:
+/// - CRUD de precios de referencia del catálogo global
+/// - Usado por PriceDatabaseService para lookups
+///
+/// Colección Firestore: 'price_catalog'
+///
+/// Operaciones:
+/// - **getPriceEntry**: obtiene precio por ingrediente normalizado
+/// - **getPricesByCategory**: obtiene todos los precios de una categoría
+/// - **searchPrices**: búsqueda por término
+/// - **savePriceEntry**: guarda/actualiza precio
+/// - **deletePriceEntry**: elimina precio del catálogo
+///
+/// Manejo de errores:
+/// - Retorna Either<Failure, Result>
+/// - Left: ServerFailure con mensaje
+/// - Right: resultado exitoso
+///
+/// Uso:
+/// ```dart
+/// final repo = PriceCatalogRepositoryImpl(datasource);
+///
+/// // Buscar precio
+/// final result = await repo.getPriceEntry('pollo');
+/// result.fold(
+///   (failure) => print('Error: $failure'),
+///   (entry) => print('Precio: ${entry?.priceRef}€/kg'),
+/// );
+///
+/// // Guardar precio
+/// await repo.savePriceEntry(PriceEntry(...));
+/// ```
 class PriceCatalogRepositoryImpl implements PriceCatalogRepository {
   final PriceCatalogFirestoreDatasource _datasource;
 

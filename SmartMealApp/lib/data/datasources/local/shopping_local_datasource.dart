@@ -3,7 +3,45 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smartmeal/data/models/shopping_item_model.dart';
 
-/// Datasource local para cachear la lista de compra
+/// Datasource local para cachear lista de compra.
+///
+/// Responsabilidad:
+/// - Cachear lista de compra en SharedPreferences
+/// - Cargar caché para mostrar instantáneamente
+/// - Sincronizar con Firestore en background
+///
+/// Estrategia de caché:
+/// 1. Al cargar items:
+///    - Primero muestra caché (instantáneo)
+///    - Luego carga desde Firestore (actualiza)
+///
+/// 2. Al modificar items:
+///    - Actualiza Firestore
+///    - Actualiza caché local
+///
+/// 3. Al generar nueva lista:
+///    - Limpia caché (clearCache)
+///    - Carga nuevos items
+///    - Cachea nuevos items
+///
+/// Serialización:
+/// - ShoppingItemModel → JSON → String → SharedPreferences
+/// - Clave: 'shopping_list_cache'
+///
+/// Uso:
+/// ```dart
+/// final ds = ShoppingLocalDatasource(prefs);
+///
+/// // Cargar caché
+/// final cached = await ds.getCachedShoppingItems();
+/// if (cached != null) {
+///   // Mostrar caché instantáneamente
+/// }
+///
+/// // Actualizar caché con datos de Firestore
+/// final items = await firestoreDS.getShoppingItems();
+/// await ds.cacheShoppingItems(items);
+/// ```
 class ShoppingLocalDatasource {
   static const String _cacheKey = 'shopping_list_cache';
 
@@ -11,8 +49,13 @@ class ShoppingLocalDatasource {
 
   ShoppingLocalDatasource(this._prefs);
 
-  /// Obtiene la lista de compra cacheada localmente
-  /// Retorna null si no hay caché disponible
+  /// Obtiene lista de compra desde caché local.
+  ///
+  /// Retorna null si:
+  /// - No hay caché disponible
+  /// - Error al parsear JSON
+  ///
+  /// Se usa para mostrar lista instantáneamente mientras carga Firestore.
   Future<List<ShoppingItemModel>?> getCachedShoppingItems() async {
     try {
       final jsonString = _prefs.getString(_cacheKey);
@@ -43,7 +86,12 @@ class ShoppingLocalDatasource {
     }
   }
 
-  /// Guarda la lista de compra en caché local
+  /// Guarda lista de compra en caché local.
+  ///
+  /// Serialización:
+  /// - List<ShoppingItemModel> → List<Map> → JSON → String
+  ///
+  /// Se llama después de cargar desde Firestore.
   Future<void> cacheShoppingItems(List<ShoppingItemModel> items) async {
     try {
       final jsonList = items
@@ -62,7 +110,10 @@ class ShoppingLocalDatasource {
     }
   }
 
-  /// Limpia el caché local (se llama al generar una nueva lista)
+  /// Limpia caché local.
+  ///
+  /// Se llama al generar nueva lista de compra para evitar
+  /// mostrar items obsoletos.
   Future<void> clearCache() async {
     try {
       await _prefs.remove(_cacheKey);

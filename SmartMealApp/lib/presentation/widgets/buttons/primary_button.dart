@@ -1,5 +1,52 @@
 import 'package:flutter/material.dart';
 
+/// Botón primario reutilizable de la app.
+///
+/// Responsabilidades:
+/// - Botón principal con estilo consistente
+/// - Estado de carga con indicador circular
+/// - Deshabilitar automáticamente durante carga
+///
+/// Características:
+/// - **Altura fija**: 48px
+/// - **Ancho**: full width (SizedBox sin width)
+/// - **Color**: primary del theme (background)
+/// - **Color texto**: onPrimary del theme
+/// - **Bordes redondeados**: 12px radius
+/// - **Sin elevation**: flat design
+///
+/// Estados:
+/// - **Normal**: texto visible, onPressed activo
+/// - **Loading**: CircularProgressIndicator, onPressed null
+/// - **Disabled**: opacidad reducida, onPressed null
+///
+/// Indicador de carga:
+/// - CircularProgressIndicator 18x18
+/// - Color: onPrimary
+/// - Stroke: 2px
+/// - Reemplaza el texto durante carga
+///
+/// Compatibilidad:
+/// - Acepta tanto `text` como `label` (legacy)
+/// - Acepta tanto `isLoading` como `loading` (legacy)
+/// - Prioriza `text` sobre `label`
+/// - Prioriza `isLoading` sobre `loading`
+///
+/// Parámetros:
+/// [text] - Texto del botón
+/// [label] - Texto del botón (legacy, usar text)
+/// [onPressed] - Callback al presionar
+/// [isLoading] - Mostrar indicador de carga
+/// [loading] - Mostrar indicador de carga (legacy)
+///
+/// Uso:
+/// ```dart
+/// PrimaryButton(
+///   text: 'Iniciar sesión',
+///   onPressed: () => login(),
+///   isLoading: viewModel.isLoading,
+/// )
+/// ```
 class PrimaryButton extends StatelessWidget {
   final String? text;
   final String? label; // Para compatibilidad hacia atrás

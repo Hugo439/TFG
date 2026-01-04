@@ -25,6 +25,67 @@ import 'package:smartmeal/domain/usecases/statistics/get_statistics_summary_usec
 import 'package:smartmeal/domain/usecases/user/get_user_profile_usecase.dart';
 import 'package:smartmeal/domain/entities/shopping_item.dart';
 
+/// Configuración de rutas de la aplicación.
+///
+/// Responsabilidades:
+/// - Definir rutas con nombres constantes
+/// - onGenerateRoute: factory de rutas
+/// - Pasar argumentos entre pantallas
+/// - Configurar ViewModels con Provider
+///
+/// Rutas disponibles:
+/// - **splash** (/): SplashGate (auth gate)
+/// - **login** (/login): LoginView
+/// - **register** (/register): RegisterView
+/// - **home** (/home): HomeView (dashboard)
+/// - **profile** (/profile): ProfileView
+/// - **editProfile** (/edit-profile): EditProfileView
+/// - **menu** (/menu): MenuView
+/// - **generateMenu** (/generate-menu): GenerateMenuView
+/// - **recipeDetail** (/recipe-detail): RecipeDetailView
+/// - **shopping** (/shopping): ShoppingView
+/// - **addShoppingItem** (/add-shopping-item): AddShoppingItemView
+/// - **settings** (/settings): SettingsView
+/// - **support** (/support): SupportView
+/// - **statistics** (/statistics): StatisticsView
+/// - **privacy** (/privacy): PrivacyPolicyView
+/// - **terms** (/terms): TermsConditionsView
+///
+/// Argumentos:
+/// - login: String? prefilledEmail
+/// - editProfile: UserProfile profile
+/// - recipeDetail: String recipeId
+/// - addShoppingItem: ShoppingItem? item (opcional)
+/// - statistics: sin argumentos, pero crea ViewModel con UseCases
+///
+/// Provider injection:
+/// - recipeDetail: ChangeNotifierProvider<RecipeDetailViewModel>
+/// - statistics: ChangeNotifierProvider<StatisticsViewModel>
+/// - UseCases inyectados desde Service Locator (sl<T>)
+///
+/// Navegación:
+/// ```dart
+/// // Sin argumentos
+/// Navigator.pushNamed(context, Routes.home);
+///
+/// // Con argumentos
+/// Navigator.pushNamed(
+///   context,
+///   Routes.login,
+///   arguments: 'user@example.com',
+/// );
+///
+/// // Navegación global (desde main.dart)
+/// navigatorKey.currentState!.pushNamed(Routes.support);
+/// ```
+///
+/// Patrón:
+/// - Rutas simples: MaterialPageRoute directo
+/// - Rutas con ViewModel: Provider wrapping
+/// - Rutas con argumentos: cast de routeSettings.arguments
+///
+/// Manejo de errores:
+/// - Si ruta no existe: null (MaterialApp muestra error screen)
 class Routes {
   static const String splash = '/';
   static const String login = '/login';

@@ -1,6 +1,74 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
+/// Gráfico de dona (donut chart) genérico.
+///
+/// Responsabilidades:
+/// - Visualizar proporciones con arcos de círculo
+/// - Soporte para múltiples slices con colores
+/// - CustomPainter para renderizado
+///
+/// DonutSlice:
+/// - value: valor numérico del slice
+/// - color: color del slice
+///
+/// Cálculo:
+/// - total = suma de todos los values
+/// - sweep = (value / total) * 2π
+/// - Cada slice es un arco proporcional
+///
+/// _DonutPainter:
+/// - CustomPainter con canvas.drawArc
+/// - Estilo: stroke (no fill)
+/// - strokeWidth: 18% del tamaño
+/// - strokeCap: butt (cuadrado)
+/// - startAngle: -π/2 (arriba, 12 en punto)
+///
+/// Orden de dibujado:
+/// - Recorre slices secuencialmente
+/// - Suma ángulos para siguiente slice
+/// - Sin gaps entre slices
+///
+/// buildDonutSlices:
+/// - Helper para crear slices desde Map
+/// - Asigna colores de palette cíclicamente
+/// - Útil para datos dinámicos
+///
+/// Caso sin datos:
+/// - Si total <= 0: no dibuja nada
+/// - Canvas queda vacío
+///
+/// Diferencia con MacrosChart:
+/// - DonutChart: genérico, acepta cualquier slices
+/// - MacrosChart: específico para macros (protein/carbs/fat)
+///
+/// Usado en:
+/// - StatisticsView: distribución de categorías
+/// - Cualquier visualización de proporciones
+///
+/// Parámetros:
+/// [slices] - Lista de DonutSlice
+/// [size] - Tamaño del chart (default: 160)
+///
+/// Uso:
+/// ```dart
+/// DonutChart(
+///   slices: [
+///     DonutSlice(50, Colors.red),
+///     DonutSlice(30, Colors.blue),
+///     DonutSlice(20, Colors.green),
+///   ],
+///   size: 180,
+/// )
+///
+/// // Con helper:
+/// DonutChart(
+///   slices: buildDonutSlices(
+///     {'Verduras': 40, 'Proteínas': 30, 'Granos': 30},
+///     [Colors.green, Colors.red, Colors.orange],
+///   ),
+/// )
+/// ```
 class DonutChart extends StatelessWidget {
   final List<DonutSlice> slices;
   final double size;

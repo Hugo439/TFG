@@ -1,5 +1,51 @@
 import 'package:flutter/material.dart';
 
+/// Botón con icono y estado de carga.
+///
+/// Responsabilidades:
+/// - Botón con icono + texto
+/// - Estado de carga que reemplaza icono
+/// - Colores personalizables
+///
+/// Características:
+/// - **Tamaño**: full width, 48px height
+/// - **Tipo**: ElevatedButton.icon (icono + label)
+/// - **Bordes redondeados**: 12px radius
+/// - **Sin elevation**: flat design
+///
+/// Estados:
+/// - **Normal**: icono + texto, onPressed activo
+/// - **Loading**: CircularProgressIndicator + texto, onPressed null
+/// - **Disabled**: opacidad reducida, onPressed null
+///
+/// Indicador de carga:
+/// - CircularProgressIndicator 18x18
+/// - Reemplaza el icono (no el texto)
+/// - Color: foregroundColor (default: onPrimary)
+/// - Stroke: 2px
+///
+/// Colores personalizables:
+/// - backgroundColor: primary por defecto
+/// - foregroundColor: onPrimary por defecto
+/// - Permite temas alternativos (ej: botón secundario)
+///
+/// Parámetros:
+/// [text] - Texto del botón
+/// [icon] - IconData a mostrar
+/// [onPressed] - Callback al presionar
+/// [isLoading] - Mostrar indicador de carga
+/// [backgroundColor] - Color de fondo (default: primary)
+/// [foregroundColor] - Color de texto/icono (default: onPrimary)
+///
+/// Uso:
+/// ```dart
+/// IconLoadingButton(
+///   text: 'Generar menú',
+///   icon: Icons.auto_awesome,
+///   onPressed: () => generate(),
+///   isLoading: viewModel.isGenerating,
+/// )
+/// ```
 class IconLoadingButton extends StatelessWidget {
   final String text;
   final IconData icon;

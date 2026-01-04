@@ -10,11 +10,54 @@ import 'package:smartmeal/data/models/ai_menu_response_model.dart';
 import 'package:smartmeal/data/models/recipe_data_model.dart';
 import 'package:smartmeal/data/models/day_menu_data_model.dart';
 
+/// Implementación del repositorio de generación de menús con IA.
+///
+/// Coordina la generación de menús semanales usando Gemini API con:
+/// - **Validación robusta**: Verifica que la respuesta de IA sea válida
+/// - **Reintentos**: Hasta 2 intentos si la respuesta es inválida
+/// - **Sanitización**: Corrige índices fuera de rango y tipos de comida incorrectos
+/// - **Generación de pasos**: Asegura que todas las recetas tengan pasos de preparación
+///
+/// Proceso de generación:
+/// 1. Solicitar menú semanal a Gemini (28 recetas: 7 días × 4 comidas)
+/// 2. Validar estructura (7 días, 4 comidas/día, sin duplicados, tipos correctos)
+/// 3. Si inválida, reintentar (máximo 2 veces)
+/// 4. Sanitizar respuesta (corregir índices y tipos)
+/// 5. Generar pasos para recetas que no los tengan
+/// 6. Mapear a entidad WeeklyMenu
+///
+/// Criterios de validación:
+/// - Exactamente 7 días (lunes a domingo)
+/// - 4 comidas por día (breakfast, lunch, snack, dinner)
+/// - Índices de recetas válidos (0 a recipes.length-1)
+/// - Sin índices duplicados en un mismo día
+/// - Tipos de comida correctos (breakfast en breakfast, lunch en lunch, etc.)
 class MenuGenerationRepositoryImpl implements MenuGenerationRepository {
   final GeminiMenuDatasource _geminiDatasource;
 
   MenuGenerationRepositoryImpl(this._geminiDatasource);
 
+  /// Genera un menú semanal completo usando IA.
+  ///
+  /// Parámetros:
+  /// [userId] - ID del usuario para quien se genera el menú.
+  /// [targetCaloriesPerDay] - Calorías objetivo por día (se dividirán entre 4 comidas).
+  /// [allergies] - Lista de alergias/ingredientes a excluir.
+  /// [userGoal] - Objetivo del usuario: 'lose_weight', 'maintain_weight', 'gain_weight', 'gain_muscle'.
+  ///
+  /// Returns: Menú semanal con 28 recetas (7 días × 4 comidas).
+  ///
+  /// Proceso:
+  /// 1. Calcular calorías por comida (targetCaloriesPerDay / 4)
+  /// 2. Solicitar menú a Gemini (máximo 3 intentos)
+  /// 3. Validar estructura de respuesta
+  /// 4. Sanitizar índices y tipos de comida
+  /// 5. Generar pasos para recetas sin pasos
+  /// 6. Crear entidad WeeklyMenu con nombre y fechas
+  ///
+  /// Throws: [ServerFailure] si la IA falla o la respuesta es inválida después de reintentos.
+  ///
+  /// Nota: Los logs de validación solo se imprimen en debug mode.
   @override
   Future<WeeklyMenu> generateWeeklyMenu({
     required String userId,
@@ -89,6 +132,24 @@ class MenuGenerationRepositoryImpl implements MenuGenerationRepository {
     );
   }
 
+  /// Sanitiza un menú semanal corrigiendo índices y tipos de comida.
+  ///
+  /// Correcciones aplicadas:
+  /// - Índices fuera de rango (< 0 o >= recipes.length) se reemplazan
+  /// - Tipos de comida incorrectos se corrigen (breakfast debe ser breakfast, etc.)
+  /// - Índices duplicados en un día se reemplazan
+  /// - Comidas faltantes se rellenan con índices disponibles
+  ///
+  /// [model] - Modelo con la respuesta cruda de IA.
+  ///
+  /// Returns: Modelo sanitizado con todos los días válidos.
+  ///
+  /// Algoritmo:
+  /// 1. Agrupar recetas por tipo (breakfast, lunch, snack, dinner)
+  /// 2. Para cada día y comida:
+  ///    - Si índice inválido o tipo incorrecto, buscar reemplazo del tipo correcto
+  ///    - Evitar índices duplicados en el mismo día
+  ///    - Si no hay recetas del tipo, usar fallback (cualquier receta disponible)
   AiMenuResponseModel _sanitizeWeeklyMenu(AiMenuResponseModel model) {
     final recipes = model.recipes;
     final mealTypeToIndices = <String, List<int>>{
@@ -182,6 +243,15 @@ class MenuGenerationRepositoryImpl implements MenuGenerationRepository {
     return AiMenuResponseModel(recipes: recipes, weeklyMenu: sanitized);
   }
 
+  /// Valida que un menú semanal tenga la estructura correcta.
+  ///
+  /// Criterios:
+  /// - Exactamente 7 días (lunes a domingo)
+  /// - Cada día tiene 4 comidas válidas (breakfast, lunch, snack, dinner)
+  ///
+  /// [model] - Modelo a validar.
+  ///
+  /// Returns: `true` si el menú es válido, `false` en caso contrario.
   bool _isValidWeeklyMenu(AiMenuResponseModel model) {
     final recipes = model.recipes;
     final days = model.weeklyMenu;
@@ -202,6 +272,18 @@ class MenuGenerationRepositoryImpl implements MenuGenerationRepository {
     return true;
   }
 
+  /// Valida que un día tenga 4 comidas válidas.
+  ///
+  /// Criterios:
+  /// - Todas las comidas (breakfast, lunch, snack, dinner) tienen índice
+  /// - Índices dentro de rango (0 a recipes.length-1)
+  /// - Sin índices duplicados
+  /// - Tipos de comida correctos (breakfast es breakfast, lunch es lunch, etc.)
+  ///
+  /// [day] - Datos del día a validar.
+  /// [recipes] - Lista de recetas disponibles.
+  ///
+  /// Returns: `true` si el día es válido.
   bool _isValidDay(DayMenuDataModel day, List<RecipeDataModel> recipes) {
     final indices = <int>[
       day.breakfast ?? -1,
@@ -221,6 +303,18 @@ class MenuGenerationRepositoryImpl implements MenuGenerationRepository {
     return true;
   }
 
+  /// Imprime detalles de un menú inválido (solo en debug mode).
+  ///
+  /// Reporta:
+  /// - Días faltantes
+  /// - Comidas faltantes en cada día
+  /// - Índices fuera de rango
+  /// - Tipos de comida incorrectos
+  /// - Índices duplicados
+  ///
+  /// [model] - Modelo inválido a analizar.
+  ///
+  /// Nota: Solo para debugging durante desarrollo.
   void _logInvalidWeeklyMenu(AiMenuResponseModel model) {
     final recipes = model.recipes;
     final days = model.weeklyMenu;
@@ -275,6 +369,18 @@ class MenuGenerationRepositoryImpl implements MenuGenerationRepository {
     }
   }
 
+  /// Genera pasos de preparación para una receta usando IA.
+  ///
+  /// [recipeName] - Nombre de la receta.
+  /// [ingredients] - Lista de ingredientes de la receta.
+  /// [description] - Descripción breve de la receta.
+  ///
+  /// Returns: Lista de pasos de preparación en orden.
+  ///
+  /// Throws: Errores de la IA se propagan al llamador.
+  ///
+  /// Nota: Usado cuando las recetas generadas no incluyen pasos o cuando
+  /// el usuario solicita regenerar los pasos.
   @override
   Future<List<String>> generateRecipeSteps({
     required String recipeName,

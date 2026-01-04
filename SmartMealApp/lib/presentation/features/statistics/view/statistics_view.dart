@@ -8,6 +8,65 @@ import 'package:smartmeal/presentation/features/statistics/widgets/goal_status_c
 import 'package:smartmeal/presentation/features/statistics/viewmodel/statistics_view_model.dart';
 import 'package:smartmeal/presentation/theme/colors.dart';
 
+/// Pantalla de estadísticas nutricionales.
+///
+/// Responsabilidades:
+/// - Mostrar métricas del menú actual
+/// - Gráficos de macronutrientes
+/// - Top ingredientes y recetas más usados
+/// - Estado de cumplimiento del objetivo
+/// - Carga automática desde StatisticsViewModel
+///
+/// Métricas principales (MetricCard):
+/// 1. **Calorías diarias promedio**: Suma total / 7 días
+/// 2. **Total de comidas**: 28 recetas (7 días × 4 comidas)
+/// 3. **Costo total estimado**: Cálculo con PriceDatabaseService
+/// 4. **Top 3 ingredientes**: Más usados en el menú
+/// 5. **Top 3 recetas**: Por frecuencia o popularidad
+///
+/// Macronutrientes (MacrosChart):
+/// - **Proteínas**: g/día + % calorías
+/// - **Carbohidratos**: g/día + % calorías
+/// - **Grasas**: g/día + % calorías
+/// - Gráfico de barras con colores temáticos
+///
+/// Estado del objetivo (GoalStatusCard):
+/// - Compara calorías actuales vs objetivo
+/// - Mensaje personalizado según objetivo:
+///   * Perder peso: calorías < objetivo
+///   * Mantener peso: calorías ≈ objetivo
+///   * Ganar peso/músculo: calorías > objetivo
+/// - Indicador visual (verde/amarillo/rojo)
+///
+/// Cálculo de macros:
+/// - StatisticsRepository.calculateStatistics()
+/// - Usa USDA API para macros precisos (Cloudflare Worker)
+/// - Fallback: 100+ ingredientes con macros hardcoded
+/// - Estimación inteligente para ingredientes sin datos
+///
+/// Caché offline:
+/// - StatisticsLocalDatasource guarda stats en SharedPreferences
+/// - Invalidación automática al cambiar menú (menuDate)
+/// - Load rápido desde caché, sync en background
+///
+/// Estados:
+/// - **Loading**: CircularProgressIndicator
+/// - **Error**: Mensaje de error
+/// - **No data**: "No hay estadísticas"
+/// - **Success**: Muestra todas las métricas y gráficos
+///
+/// Carga de datos:
+/// - Automática en initState
+/// - StatisticsViewModel.load() obtiene menú actual
+/// - Calcula stats si no hay caché válida
+///
+/// Navegación:
+/// - Botón volver → NavigationController.navigateToHome()
+///
+/// Uso:
+/// ```dart
+/// Navigator.pushNamed(context, Routes.statistics);
+/// ```
 class StatisticsView extends StatefulWidget {
   const StatisticsView({super.key});
 
@@ -31,17 +90,17 @@ class _StatisticsViewState extends State<StatisticsView> {
     final colorScheme = theme.colorScheme;
 
     final body = vm.loading || !vm.hasLoaded
-      ? const Center(child: CircularProgressIndicator())
-      : vm.error != null
+        ? const Center(child: CircularProgressIndicator())
+        : vm.error != null
         ? Center(child: Text(vm.error!))
         : vm.summary == null
-          ? Center(child: Text(context.l10n.noDataStats))
-          : _buildContent(
+        ? Center(child: Text(context.l10n.noDataStats))
+        : _buildContent(
             context,
             vm,
             theme,
             subtitle: context.l10n.homeCardStatsSubtitle,
-            );
+          );
 
     return Scaffold(
       appBar: AppBar(

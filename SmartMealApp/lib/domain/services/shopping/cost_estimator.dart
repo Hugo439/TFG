@@ -5,9 +5,43 @@ import 'package:smartmeal/domain/services/shopping/ingredient_parser.dart';
 import 'package:smartmeal/domain/services/shopping/smart_category_helper.dart';
 import 'package:smartmeal/domain/services/shopping/smart_ingredient_normalizer.dart';
 
-/// Servicio reutilizable para estimar costes a partir de menús o listas
-/// agregadas de ingredientes. Encapsula la lógica de preload de categorías,
-/// normalización, agregación y aplicación de precios personalizados por usuario.
+/// Servicio para estimar costes totales de menús y listas de compra.
+///
+/// Responsabilidades:
+/// - Estimar coste total de un WeeklyMenu completo
+/// - Agregar ingredientes de múltiples recetas
+/// - Precargar categorías de precios para optimización
+/// - Aplicar precios personalizados por usuario
+///
+/// Proceso de estimación:
+/// 1. **Parsear ingredientes**: Usa IngredientParser para extraer cantidades
+/// 2. **Normalizar nombres**: Usa SmartIngredientNormalizer
+/// 3. **Agregar por nombre**: Suma cantidades de ingredientes similares
+/// 4. **Categorizar**: Usa SmartCategoryHelper para determinar categorías
+/// 5. **Precargar precios**: Carga precios de todas las categorías en paralelo
+/// 6. **Estimar precio**: Usa PriceEstimator con overrides de usuario
+/// 7. **Sumar total**: Redondea a 2 decimales
+///
+/// Optimizaciones:
+/// - Precarga de categorías reduce llamadas a Firestore
+/// - Procesamiento concurrente de múltiples categorías (maxConcurrent: 6)
+/// - Reutiliza instancia de PriceEstimator para aprovechar caché
+///
+/// Ejemplo de uso:
+/// ```dart
+/// final estimator = CostEstimator(
+///   priceEstimator,
+///   categoryHelper,
+///   normalizer,
+///   parser,
+/// );
+///
+/// final totalCost = await estimator.estimateMenuCost(
+///   menu,
+///   userId: "user123",
+/// );
+/// print("Coste total: €$totalCost");
+/// ```
 class CostEstimator {
   final PriceEstimator _priceEstimator;
   final SmartCategoryHelper _categoryHelper;
@@ -21,10 +55,22 @@ class CostEstimator {
     this._parser,
   );
 
-  /// Estima el coste total de un [WeeklyMenu].
-  /// - Agrega ingredientes por nombre normalizado y unidad base
-  /// - Precarga precios por categoría
-  /// - Aplica overrides de usuario si hay sesión
+  /// Estima coste total de un menú semanal.
+  ///
+  /// [menu] - Menú semanal con 7 días de recetas.
+  /// [userId] - ID del usuario para aplicar precios personalizados (opcional).
+  ///
+  /// Returns: Coste total estimado en euros (2 decimales).
+  ///
+  /// Proceso:
+  /// 1. Agregar todos los ingredientes de las 28 recetas
+  /// 2. Identificar categorías únicas
+  /// 3. Precargar precios de todas las categorías
+  /// 4. Estimar precio de cada ingrediente agregado
+  /// 5. Sumar y redondear total
+  ///
+  /// Nota: Si userId es null, usa usuario actual de FirebaseAuth o
+  /// estima sin overrides personalizados.
   Future<double> estimateMenuCost(WeeklyMenu menu, {String? userId}) async {
     double totalCost = 0;
 
@@ -77,8 +123,17 @@ class CostEstimator {
     return double.parse(totalCost.toStringAsFixed(2));
   }
 
-  /// Precarga precios por categoría para una lista agregada de ingredientes.
-  /// Útil para listas de la compra ya agregadas para minimizar lecturas.
+  /// Precarga precios de categorías para lista agregada.
+  ///
+  /// [aggregated] - Lista de ingredientes ya agregados.
+  /// [maxConcurrent] - Máximo de precargas concurrentes (default: 6).
+  ///
+  /// Utilidad:
+  /// - Optimiza estimación de listas grandes
+  /// - Reduce latencia al cargar categorías en paralelo
+  /// - Útil antes de estimar precios de múltiples ingredientes
+  ///
+  /// Procesa categorías en chunks para controlar concurrencia.
   Future<void> preloadCategoriesForAggregated(
     List<AggregatedIngredient> aggregated, {
     int maxConcurrent = 6,

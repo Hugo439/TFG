@@ -1,6 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:smartmeal/domain/entities/user_profile.dart';
 
+/// Card con información de cuenta en SettingsView.
+///
+/// Responsabilidades:
+/// - Avatar del usuario
+/// - Nombre de usuario
+/// - Email
+///
+/// Diseño visual:
+/// - **Gradient**: primary a secondary
+/// - **Dirección**: topLeft a bottomRight
+/// - **BoxShadow**: primary con alpha 0.3, blur 8
+/// - **BorderRadius**: 16px
+/// - **Padding**: 16px
+///
+/// Avatar:
+/// - CircleAvatar radius 32
+/// - Background: surface
+/// - Inicial del nombre en primary
+/// - fontSize 28, bold
+/// - Fallback: "U" si displayName vacío
+///
+/// Nombre:
+/// - fontSize 18, bold
+/// - Color: onPrimary
+/// - Fallback: "Usuario" si vacío
+///
+/// Email:
+/// - fontSize 14, regular
+/// - Color: onPrimary con alpha 0.9
+/// - Value object: profile.emailValue
+///
+/// Layout:
+/// - Row: avatar + columna de texto
+/// - Spacing: 16px entre avatar y texto
+/// - Columna: nombre + email con spacing 4px
+///
+/// Usado en:
+/// - SettingsView: arriba de todo, destaca info de usuario
+///
+/// Consistencia:
+/// - Mismo gradient que otras cards destacadas
+/// - Avatar similar a ProfileHeader
+///
+/// Parámetros:
+/// [profile] - UserProfile con displayName y email
+///
+/// Uso:
+/// ```dart
+/// AccountInfoCard(profile: userProfile)
+/// ```
 class AccountInfoCard extends StatelessWidget {
   final UserProfile profile;
 

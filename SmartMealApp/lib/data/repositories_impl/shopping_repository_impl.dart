@@ -13,6 +13,23 @@ import 'package:smartmeal/domain/services/shopping/ingredient_parser.dart';
 import 'package:smartmeal/data/utils/shopping_repository_impl_helper.dart';
 import 'package:smartmeal/data/datasources/local/statistics_cache_invalidator.dart';
 
+/// Implementación del repositorio de lista de compras.
+///
+/// Gestiona la lista de compras con las siguientes características:
+/// - **Caché local**: Estrategia offline-first para cargas rápidas
+/// - **Precios personalizados**: Aplica overrides de precio por usuario
+/// - **Normalización**: Usa SmartIngredientNormalizer para normalizar nombres
+/// - **Parsing inteligente**: Extrae cantidades con IngredientParser
+/// - **Invalidación de caché**: Invalida estadísticas cuando cambia la lista
+///
+/// Flujo de getShoppingItems:
+/// 1. Intenta cargar desde caché local (instantáneo)
+/// 2. Si no hay caché, carga desde Firestore
+/// 3. Aplica precios personalizados del usuario (O(1) lookups)
+/// 4. Ordena alfabéticamente
+/// 5. Guarda en caché local para próxima carga
+///
+/// Nota: Cada operación de escritura invalida el caché para mantener consistencia.
 class ShoppingRepositoryImpl implements ShoppingRepository {
   final ShoppingDataSource dataSource;
   final UserPriceFirestoreDatasource userPriceDatasource;
@@ -32,6 +49,22 @@ class ShoppingRepositoryImpl implements ShoppingRepository {
 
   StatisticsRepository get statisticsRepository => _getStatisticsRepository();
 
+  /// Obtiene todos los items de la lista de compras.
+  ///
+  /// Estrategia offline-first con precios personalizados:
+  /// 1. 📦 Intenta cargar desde caché local (rápido)
+  /// 2. 🔥 Si no hay caché, carga desde Firestore
+  /// 3. 💰 Aplica precios personalizados del usuario (fetch único + O(1) lookups)
+  /// 4. 🔤 Ordena alfabéticamente por nombre
+  /// 5. 💾 Guarda en caché local para próxima carga
+  ///
+  /// Los precios personalizados se aplican usando:
+  /// - SmartIngredientNormalizer: Para normalizar nombres de ingredientes
+  /// - IngredientParser: Para extraer cantidad y calcular precio total
+  ///
+  /// Returns: Lista ordenada de items con precios personalizados aplicados.
+  ///
+  /// Nota: Imprime logs de rendimiento en debug mode.
   @override
   Future<List<ShoppingItem>> getShoppingItems() async {
     final startTime = DateTime.now();
@@ -156,6 +189,15 @@ class ShoppingRepositoryImpl implements ShoppingRepository {
     return items;
   }
 
+  /// Añade un nuevo item a la lista de compras.
+  ///
+  /// [item] - Item a añadir.
+  ///
+  /// Efectos secundarios:
+  /// - Invalida caché local de shopping (para forzar recarga)
+  /// - Invalida caché de estadísticas (porque cambió el coste estimado)
+  ///
+  /// Throws: [ServerFailure] si falla la operación en Firestore.
   @override
   Future<void> addShoppingItem(ShoppingItem item) async {
     final model = ShoppingItemMapper.toModel(item);
@@ -166,6 +208,17 @@ class ShoppingRepositoryImpl implements ShoppingRepository {
     await StatisticsCacheInvalidator.clearLocalStatisticsCache();
   }
 
+  /// Añade múltiples items en una sola operación batch.
+  ///
+  /// [items] - Lista de items a añadir.
+  ///
+  /// Más eficiente que llamar [addShoppingItem] múltiples veces.
+  ///
+  /// Efectos secundarios:
+  /// - Invalida caché local de shopping
+  /// - Invalida caché de estadísticas
+  ///
+  /// Nota: Si la lista está vacía, no hace nada.
   @override
   Future<void> addShoppingItemsBatch(List<ShoppingItem> items) async {
     if (items.isEmpty) return;
@@ -183,6 +236,11 @@ class ShoppingRepositoryImpl implements ShoppingRepository {
     await StatisticsCacheInvalidator.clearLocalStatisticsCache();
   }
 
+  /// Actualiza un item existente.
+  ///
+  /// [item] - Item con los datos actualizados.
+  ///
+  /// Invalida cachés de shopping y estadísticas.
   @override
   Future<void> updateShoppingItem(ShoppingItem item) async {
     final model = ShoppingItemMapper.toModel(item);
@@ -193,6 +251,13 @@ class ShoppingRepositoryImpl implements ShoppingRepository {
     await StatisticsCacheInvalidator.clearLocalStatisticsCache();
   }
 
+  /// Marca/desmarca un item como comprado.
+  ///
+  /// [id] - ID del item.
+  /// [isChecked] - Nuevo estado (true = comprado, false = pendiente).
+  ///
+  /// Nota: Solo invalida caché de shopping, no de estadísticas
+  /// (porque el precio total no cambia).
   @override
   Future<void> toggleItemChecked(String id, bool isChecked) async {
     await dataSource.updateShoppingItem(id, {'isChecked': isChecked});
@@ -200,6 +265,11 @@ class ShoppingRepositoryImpl implements ShoppingRepository {
     await localDatasource.clearCache();
   }
 
+  /// Elimina un item de la lista.
+  ///
+  /// [itemId] - ID del item a eliminar.
+  ///
+  /// Invalida cachés de shopping y estadísticas.
   @override
   Future<void> deleteShoppingItem(String itemId) async {
     await dataSource.deleteShoppingItem(itemId);
@@ -209,12 +279,22 @@ class ShoppingRepositoryImpl implements ShoppingRepository {
     await StatisticsCacheInvalidator.clearLocalStatisticsCache();
   }
 
+  /// Calcula el precio total de todos los items.
+  ///
+  /// Returns: Suma de los precios de todos los items (comprados y pendientes).
   @override
   Future<double> getTotalPrice() async {
     final items = await getShoppingItems();
     return items.fold<double>(0.0, (sum, item) => sum + item.priceValue);
   }
 
+  /// Elimina todos los items marcados como comprados.
+  ///
+  /// [userId] - ID del usuario (usado para filtrar items).
+  ///
+  /// Útil para limpiar la lista después de hacer la compra.
+  ///
+  /// Invalida cachés de shopping y estadísticas.
   @override
   Future<void> deleteCheckedItems(String userId) async {
     await dataSource.deleteCheckedItems(userId);
@@ -224,6 +304,13 @@ class ShoppingRepositoryImpl implements ShoppingRepository {
     await StatisticsCacheInvalidator.clearLocalStatisticsCache();
   }
 
+  /// Marca/desmarca todos los items como comprados.
+  ///
+  /// [checked] - Estado a aplicar a todos los items.
+  ///
+  /// Útil para operaciones bulk ("marcar todo como comprado").
+  ///
+  /// Solo invalida caché de shopping (no estadísticas).
   @override
   Future<void> setAllChecked(bool checked) async {
     await dataSource.setAllChecked(checked);
@@ -233,13 +320,20 @@ class ShoppingRepositoryImpl implements ShoppingRepository {
     await StatisticsCacheInvalidator.clearLocalStatisticsCache();
   }
 
+  /// Limpia el caché local de shopping.
+  ///
+  /// Fuerza una recarga desde Firestore en la próxima llamada a [getShoppingItems].
   @override
   Future<void> clearLocalCache() async {
     await localDatasource.clearCache();
   }
 
-  /// Invalida el caché de estadísticas cuando cambia algo en shopping
-  /// (porque el coste estimado se recalcula basándose en items)
+  /// Invalida el caché de estadísticas cuando cambia algo en shopping.
+  ///
+  /// Esto es necesario porque el coste estimado se recalcula basándose
+  /// en los items de la lista de compras.
+  ///
+  /// Nota: Falla silenciosamente para no bloquear la operación principal.
   Future<void> _invalidateStatisticsCache() async {
     try {
       final userId = auth.currentUser?.uid;

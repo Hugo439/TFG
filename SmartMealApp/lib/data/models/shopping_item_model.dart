@@ -1,5 +1,40 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+/// Modelo de datos para ShoppingItem compatible con Firestore.
+///
+/// Responsabilidades:
+/// - Serialización/deserialización desde/hacia Firestore
+/// - Almacenar datos primitivos de items de compra
+/// - Proveer métodos de conversión y actualización
+///
+/// Campos:
+/// - **id**: ID único del item
+/// - **name**: nombre del ingrediente
+/// - **quantity**: cantidad con unidad (ej: "500 g", "2 ud")
+/// - **price**: precio estimado en euros
+/// - **category**: categoría (lacteos, carnesYPescados, etc.)
+/// - **usedInMenus**: lista de IDs de menús donde se usa
+/// - **isChecked**: true si ya comprado, false si pendiente
+/// - **createdAt**: timestamp de creación
+///
+/// Métodos:
+/// - **fromFirestore**: DocumentSnapshot → ShoppingItemModel
+/// - **toFirestore**: ShoppingItemModel → Map para update
+/// - **toFirestoreCreate**: ShoppingItemModel → Map para create (con serverTimestamp)
+/// - **copyWith**: crear copia con campos modificados
+///
+/// Ejemplo Firestore:
+/// ```json
+/// {
+///   "name": "Pollo",
+///   "quantity": "500 g",
+///   "price": 4.0,
+///   "category": "carnesYPescados",
+///   "usedInMenus": ["menu_123", "menu_456"],
+///   "isChecked": false,
+///   "createdAt": "2024-01-01T10:00:00.000Z"
+/// }
+/// ```
 class ShoppingItemModel {
   final String id;
   final String name;
@@ -21,7 +56,9 @@ class ShoppingItemModel {
     required this.createdAt,
   });
 
-  /// Crear desde Firestore DocumentSnapshot
+  /// Crea modelo desde DocumentSnapshot de Firestore.
+  ///
+  /// Maneja campos faltantes con valores por defecto.
   factory ShoppingItemModel.fromFirestore(DocumentSnapshot doc) {
     final data = doc.data() as Map<String, dynamic>;
     return ShoppingItemModel(
@@ -36,7 +73,9 @@ class ShoppingItemModel {
     );
   }
 
-  /// Convertir a Map para guardar en Firestore
+  /// Convierte a Map para actualización en Firestore.
+  ///
+  /// Incluye todos los campos incluido 'id'.
   Map<String, dynamic> toFirestore() {
     return {
       'id': id,
@@ -50,7 +89,10 @@ class ShoppingItemModel {
     };
   }
 
-  /// Convertir a Map para crear documento (con serverTimestamp)
+  /// Convierte a Map para creación en Firestore.
+  ///
+  /// Usa FieldValue.serverTimestamp() para createdAt.
+  /// No incluye 'id' porque Firestore lo genera.
   Map<String, dynamic> toFirestoreCreate() {
     return {
       'name': name,
@@ -63,7 +105,9 @@ class ShoppingItemModel {
     };
   }
 
-  /// CopyWith para actualizaciones
+  /// Crea copia del modelo con campos opcionales modificados.
+  ///
+  /// Útil para actualizaciones parciales.
   ShoppingItemModel copyWith({
     String? id,
     String? name,

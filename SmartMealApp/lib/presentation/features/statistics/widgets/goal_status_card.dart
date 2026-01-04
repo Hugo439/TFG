@@ -1,6 +1,65 @@
 import 'package:flutter/material.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
 
+/// Card que muestra el progreso hacia el objetivo calórico.
+///
+/// Responsabilidades:
+/// - Mostrar objetivo calórico del usuario
+/// - Progreso actual vs objetivo
+/// - Badge de estado (cumplido, excedido, pendiente)
+/// - Porcentaje de cumplimiento
+///
+/// Estados posibles:
+/// - **met** (cumplido): verde, "Objetivo cumplido"
+/// - **over** (excedido): naranja/amarillo, "Objetivo excedido"
+/// - **under** (pendiente): azul, "Bajo objetivo"
+///
+/// Cálculo:
+/// - avgDaily: promedio de calorías diarias consumidas
+/// - target: objetivo calórico configurado
+/// - percent: (avgDaily / target) * 100
+/// - status: determinado por el rango de percent
+///
+/// Caso sin datos:
+/// - Si target == null: muestra solo avgDaily sin comparación
+/// - Omite badge y porcentaje
+///
+/// Diseño visual:
+/// - Avatar circular con icono de bandera (radius 28)
+/// - Background: surfaceContainerHighest
+/// - BorderRadius: 16px
+/// - Padding: 16px
+///
+/// Layout:
+/// - Row: avatar + columna de texto
+/// - Columna: título + avgDaily/target + badge + percent
+/// - Badge: background con color del status (alpha 0.15)
+///
+/// Colores por status:
+/// - met: success/green
+/// - over: warning/orange
+/// - under: info/blue
+///
+/// Localización:
+/// - Título: l10n.caloricGoal
+/// - Status: _getLocalizedStatus()
+/// - Unidades: l10n.kcal, l10n.percentOfGoal
+///
+/// Parámetros:
+/// [avgDaily] - Promedio diario de calorías
+/// [target] - Objetivo calórico (null si no configurado)
+/// [percent] - Porcentaje de cumplimiento (null si no hay objetivo)
+/// [status] - Estado: "met", "over", "under" (null si no hay objetivo)
+///
+/// Uso:
+/// ```dart
+/// GoalStatusCard(
+///   avgDaily: 2050.0,
+///   target: 2000,
+///   percent: 102.5,
+///   status: 'over',
+/// )
+/// ```
 class GoalStatusCard extends StatelessWidget {
   final double avgDaily;
   final int? target;
@@ -38,7 +97,10 @@ class GoalStatusCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(context.l10n.caloricGoal, style: theme.textTheme.titleMedium),
+                Text(
+                  context.l10n.caloricGoal,
+                  style: theme.textTheme.titleMedium,
+                ),
                 const SizedBox(height: 4),
                 if (hasData) ...[
                   Text(

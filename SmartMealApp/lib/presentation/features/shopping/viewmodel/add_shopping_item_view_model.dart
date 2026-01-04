@@ -5,8 +5,45 @@ import 'package:smartmeal/domain/value_objects/shopping_item_name.dart';
 import 'package:smartmeal/domain/value_objects/shopping_item_quantity.dart';
 import 'package:smartmeal/domain/value_objects/price.dart';
 
+/// Códigos de error al añadir/editar item de compra.
 enum ShoppingErrorCode { requiredFields, saveError }
 
+/// ViewModel para añadir/editar item de compra.
+///
+/// Responsabilidades:
+/// - Gestionar formulario de item de compra
+/// - Validar campos requeridos
+/// - Crear ShoppingItem con Value Objects
+/// - Guardar en Firestore
+///
+/// Modos:
+/// 1. **Añadir**: itemToEdit == null
+///    - Campos vacíos
+///    - Crea nuevo item
+///
+/// 2. **Editar**: itemToEdit != null
+///    - Campos precargados
+///    - Actualiza item existente
+///
+/// Validaciones:
+/// - name, quantity, price requeridos
+/// - price debe ser número válido
+/// - Value Objects validan formato
+///
+/// Uso:
+/// ```dart
+/// // Añadir
+/// final vm = AddShoppingItemViewModel(addUseCase, null);
+/// vm.setName('Pollo');
+/// vm.setQuantity('500 g');
+/// vm.setPrice('4.0');
+/// await vm.save();
+///
+/// // Editar
+/// final vm = AddShoppingItemViewModel(addUseCase, existingItem);
+/// vm.setPrice('4.5'); // Solo cambia precio
+/// await vm.save();
+/// ```
 class AddShoppingItemViewModel extends ChangeNotifier {
   final AddShoppingItemUseCase _addShoppingItem;
   final ShoppingItem? itemToEdit;
@@ -70,6 +107,26 @@ class AddShoppingItemViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Guarda item de compra en Firestore.
+  ///
+  /// Validaciones:
+  /// 1. name, quantity, price no vacíos
+  /// 2. Crea Value Objects:
+  ///    - ShoppingItemName(name)
+  ///    - ShoppingItemQuantity(quantity)
+  ///    - Price.fromString(price)
+  /// 3. Parsea usedInMenus (separados por comas)
+  ///
+  /// Flujo:
+  /// - Si itemToEdit != null: actualiza item existente
+  /// - Si itemToEdit == null: crea nuevo item
+  ///
+  /// Errores:
+  /// - ShoppingErrorCode.requiredFields: campos vacíos
+  /// - ArgumentError: formato inválido (capturado en errorDetails)
+  /// - ShoppingErrorCode.saveError: error al guardar
+  ///
+  /// Retorna true si éxito, false si error.
   Future<bool> save() async {
     if (_name.trim().isEmpty ||
         _quantity.trim().isEmpty ||

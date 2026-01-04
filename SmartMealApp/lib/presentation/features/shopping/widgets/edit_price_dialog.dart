@@ -8,6 +8,75 @@ import 'package:smartmeal/domain/services/shopping/price_database.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
 import 'package:smartmeal/core/errors/errors.dart';
 
+/// Diálogo para editar el precio de un producto de compra.
+///
+/// Responsabilidades:
+/// - Permitir override de precio estimado
+/// - Guardar precio personalizado del usuario
+/// - Validar entrada numérica
+/// - Sugerir precio promedio por unidad
+/// - Opcional: razón del cambio
+///
+/// Funcionamiento:
+/// 1. Muestra precio actual del item
+/// 2. Usuario introduce nuevo precio
+/// 3. Opcionalmente explica razón
+/// 4. Guarda en Firestore (user_price_overrides)
+/// 5. Actualiza localmente vía SaveUserPriceOverrideUseCase
+/// 6. Callback onPriceSaved() para refresh
+///
+/// Tipo de unidad:
+/// - Detectado automáticamente con _getUnitLabel()
+/// - Busca en PriceDatabase.specificPrices
+/// - Infiere de texto de cantidad (kg, l, ud)
+/// - Fallback: kilogramo
+/// - Tipos: piece (unidad), weight (kg), liter (l)
+///
+/// Iconos por unidad:
+/// - piece: looks_one
+/// - liter: water_drop
+/// - weight: scale
+///
+/// Validación:
+/// - Solo números y punto decimal
+/// - Formato: ##.## (2 decimales)
+/// - inputFormatters: FilteringTextInputFormatter
+///
+/// Estados:
+/// - **Normal**: campos habilitados
+/// - **Guardando**: loading spinner, campos disabled
+/// - **Error**: mensaje en rojo, mantiene edición
+///
+/// Diseño visual:
+/// - Sección "Precio Actual" con badge
+/// - TextField para nuevo precio con icono de unidad
+/// - TextField opcional para razón (maxLines: 3)
+/// - Botones: Cancelar + Guardar
+///
+/// Precio sugerido:
+/// - Muestra precio promedio de la base de datos
+/// - Ejemplo: "Precio promedio: 2.50€/kg"
+/// - Ayuda al usuario a decidir
+///
+/// Persistencia:
+/// - Firestore collection: user_price_overrides
+/// - Documento: {userId}_{itemName}
+/// - Campos: price, reason, timestamp
+///
+/// Parámetros:
+/// [item] - ShoppingItem a editar precio
+/// [onPriceSaved] - Callback al guardar exitosamente
+///
+/// Uso:
+/// ```dart
+/// showDialog(
+///   context: context,
+///   builder: (_) => EditPriceDialog(
+///     item: shoppingItem,
+///     onPriceSaved: () => refreshList(),
+///   ),
+/// )
+/// ```
 class EditPriceDialog extends StatefulWidget {
   final ShoppingItem item;
   final VoidCallback? onPriceSaved;

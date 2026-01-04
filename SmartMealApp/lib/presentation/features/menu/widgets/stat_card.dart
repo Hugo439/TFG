@@ -1,5 +1,47 @@
 import 'package:flutter/material.dart';
 
+/// Card simple para mostrar una estadística con icono.
+///
+/// Responsabilidades:
+/// - Icono + valor + etiqueta
+/// - Diseño compacto horizontal
+///
+/// Usado en:
+/// - RecipeDetailView: stats de receta
+/// - DayMenuCard: stats del día (puede ser similar)
+/// - Cualquier vista con métricas rápidas
+///
+/// Layout:
+/// - Row: icon + columna (value + label)
+/// - Icon: 28px, color personalizable
+/// - Value: 20px, bold
+/// - Label: 13px, alpha 0.7
+///
+/// Diseño visual:
+/// - Background: primary con alpha 0.08
+/// - BorderRadius: 16px
+/// - Padding: 16px
+/// - Margin bottom: 12px (spacing entre cards)
+///
+/// Diferencia con MetricCard:
+/// - StatCard: horizontal, más compacto
+/// - MetricCard: vertical, más espacioso, con unidad
+///
+/// Parámetros:
+/// [icon] - IconData a mostrar
+/// [value] - Valor numérico o texto principal
+/// [label] - Etiqueta descriptiva
+/// [color] - Color del icono
+///
+/// Uso:
+/// ```dart
+/// StatCard(
+///   icon: Icons.restaurant,
+///   value: '12',
+///   label: 'Ingredientes',
+///   color: Colors.orange,
+/// )
+/// ```
 class StatCard extends StatelessWidget {
   final IconData icon;
   final String value;

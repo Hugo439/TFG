@@ -4,6 +4,57 @@ import 'package:smartmeal/presentation/widgets/navigation/bottom_nav_bar.dart';
 import 'package:smartmeal/presentation/widgets/layout/smart_meal_app_bar.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
 
+/// Layout principal que envuelve las pantallas con navegación inferior.
+///
+/// Responsabilidades:
+/// - Proporcionar estructura común (AppBar + Body + BottomNav)
+/// - Manejo de notificaciones FCM en primer plano
+/// - Navegación consistente entre sección principales
+///
+/// Componentes:
+/// - **SmartMealAppBar**: Barra superior con título, subtítulo, avatar, notificaciones
+/// - **Body**: Contenido de la pantalla actual
+/// - **BottomNavBar**: Navegación inferior (3 items: Menús, Home, Compras)
+///
+/// Notificaciones FCM:
+/// - Escucha FirebaseMessaging.onMessage en primer plano
+/// - Muestra SnackBar flotante con:
+///   * Icono de notificación
+///   * Título y cuerpo del mensaje
+///   * Botón "Ver" que navega a /support
+/// - SnackBar visible durante 4 segundos
+/// - Diseño personalizado con colorScheme
+///
+/// Navegación inferior:
+/// - 3 items principales:
+///   * 0: Menús (MenuView)
+///   * 1: Home (HomeView)
+///   * 2: Compras (ShoppingView)
+/// - selectedIndex indica tab actual
+/// - onNavChange callback para cambiar tab
+///
+/// Parámetros:
+/// [title] - Título de la pantalla (AppBar)
+/// [subtitle] - Subtítulo descriptivo
+/// [selectedIndex] - Índice del tab seleccionado (0-2)
+/// [onNavChange] - Callback al cambiar tab
+/// [body] - Contenido principal de la pantalla
+/// [onNotifications] - Callback del botón notificaciones (opcional)
+/// [leading] - Widget custom en leading de AppBar (opcional)
+/// [actions] - Acciones adicionales en AppBar (opcional)
+/// [centerTitle] - Centrar título en AppBar (default: false)
+/// [showNotification] - Mostrar botón notificaciones (default: true)
+///
+/// Uso:
+/// ```dart
+/// AppShell(
+///   title: 'Mi Menú',
+///   subtitle: 'Planificación semanal',
+///   selectedIndex: 0,
+///   onNavChange: (index) => navigate(index),
+///   body: MenuContent(),
+/// )
+/// ```
 class AppShell extends StatefulWidget {
   final String title;
   final String subtitle;

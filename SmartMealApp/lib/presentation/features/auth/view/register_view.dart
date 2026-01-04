@@ -8,6 +8,49 @@ import 'package:smartmeal/presentation/features/auth/widgets/register_form.dart'
 import 'package:smartmeal/presentation/features/auth/widgets/login_prompt.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
 
+/// Pantalla de registro de nuevo usuario.
+///
+/// Responsabilidades:
+/// - Formulario de registro completo (RegisterForm)
+/// - Validación de datos antes de crear cuenta
+/// - Navegación a Login tras registro exitoso
+/// - Link para volver a Login (LoginPrompt)
+///
+/// Componentes:
+/// - **AppBar**: Botón volver + título
+/// - **RegisterHeader**: Icono + mensaje descriptivo
+/// - **RegisterForm**: Email, contraseña, confirmar contraseña + botón
+/// - **LoginPrompt**: Link "Ya tienes cuenta? Inicia sesión"
+///
+/// State management:
+/// - RegisterViewModel con ChangeNotifierProvider
+/// - UseCase: SignUpUseCase
+///
+/// Validaciones:
+/// - Email: formato válido
+/// - Contraseña: mínimo 6 caracteres
+/// - Confirmar contraseña: debe coincidir
+///
+/// Flujo:
+/// 1. Usuario llena formulario
+/// 2. RegisterForm valida campos
+/// 3. SignUpUseCase crea cuenta en Firebase Auth
+/// 4. CreateUserProfileUseCase crea perfil en Firestore
+/// 5. Navega a Login con email prellenado
+///
+/// Navegación:
+/// - Éxito: pop() para volver a Login con email prellenado
+/// - Cancelar: pop() para volver a Login
+///
+/// Responsive:
+/// - Max width: 420px (centrado)
+/// - Padding: 48px (>1000px), 32px (>800px), 16px (<800px)
+///
+/// Uso:
+/// ```dart
+/// // Desde LoginView
+/// Navigator.pushNamed(context, Routes.register);
+/// ```
 class RegisterView extends StatelessWidget {
   const RegisterView({super.key});
 

@@ -7,6 +7,59 @@ import 'package:smartmeal/domain/usecases/initialize_app_usecase.dart';
 import 'package:smartmeal/domain/usecases/auth/check_auth_status_usecase.dart';
 import 'package:smartmeal/presentation/routes/routes.dart';
 
+/// Gate de splash screen con navegación automática.
+///
+/// Responsabilidades:
+/// - Inicializar app (InitializeAppUseCase)
+/// - Verificar estado de autenticación
+/// - Precache de assets (logo)
+/// - Navegación automática a Home o Login
+///
+/// Flujo:
+/// 1. SplashGate crea SplashViewModel con Use Cases
+/// 2. initialize() ejecuta verificación de auth
+/// 3. Selector escucha cambios de SplashState
+/// 4. Cuando state = authenticated/notAuthenticated:
+///    - Precache logo en assets/branding/
+///    - pushReplacementNamed a destination
+/// 5. Durante proceso: muestra SplashView
+///
+/// Estados:
+/// - **loading**: inicializando, mostrando splash
+/// - **authenticated**: usuario autenticado → Routes.home
+/// - **notAuthenticated**: sin auth → Routes.login
+/// - **error**: error en inicialización → muestra error en SplashView
+///
+/// Precache:
+/// - precacheImage para logo.png
+/// - Try/catch ignora errores para no bloquear navegación
+/// - Mejora UX cargando imagen antes de mostrarla
+///
+/// Navegación:
+/// - pushReplacementNamed: reemplaza splash (no permite volver)
+/// - addPostFrameCallback: asegura que navegación sea después del build
+/// - Verifica mounted antes de navegar (evita errores)
+///
+/// Use Cases inyectados:
+/// - InitializeAppUseCase: inicialización general de la app
+/// - CheckAuthStatusUseCase: verifica Firebase Auth currentUser
+///
+/// _SplashGateBody:
+/// - StatefulWidget interno para lifecycle
+/// - Selector<SplashViewModel, SplashState> para optimización
+/// - Solo reconstruye cuando state cambia
+///
+/// Usado como:
+/// - initialRoute en Routes (Routes.splash)
+/// - Primera pantalla que ve el usuario
+/// - Auth gate pattern
+///
+/// Uso:
+/// ```dart
+/// // En Routes
+/// case splash:
+///   return MaterialPageRoute(builder: (_) => const SplashGate());
+/// ```
 class SplashGate extends StatelessWidget {
   const SplashGate({super.key});
 

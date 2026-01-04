@@ -12,6 +12,68 @@ import 'package:image_picker/image_picker.dart';
 import '../widgets/contact_links.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
 
+/// Pantalla de soporte y ayuda.
+///
+/// Responsabilidades:
+/// - Formulario para enviar mensajes al admin
+/// - Historial de mensajes previos con respuestas
+/// - Sección de FAQs (Preguntas Frecuentes)
+/// - Enlaces de contacto (email, redes sociales)
+///
+/// Secciones principales (Tabs):
+/// 1. **Enviar mensaje (SupportForm)**:
+///    - Mensaje de texto
+///    - Categoría (dropdown: técnico, sugerencia, bug, otro)
+///    - Adjunto opcional (imagen con ImagePicker)
+///    - Botón enviar
+///
+/// 2. **Historial (SupportHistory)**:
+///    - Lista de mensajes enviados
+///    - Estado: pendiente/respondido
+///    - Respuesta del admin (si existe)
+///    - Fecha de envío y respuesta
+///
+/// 3. **FAQs (FAQList)**:
+///    - Preguntas frecuentes agrupadas por categoría
+///    - ExpansionTile para ver respuestas
+///    - Cargadas desde FAQLocalDatasource
+///    - Por locale (es/en)
+///
+/// 4. **Contacto (ContactLinks)**:
+///    - Email de soporte
+///    - Redes sociales
+///    - Enlaces externos
+///
+/// Envío de mensaje:
+/// - SupportViewModel.sendSupportMessage()
+/// - Validación: texto no vacío, categoría seleccionada
+/// - Guarda en Firestore: support_messages collection
+/// - SnackBar de confirmación
+/// - Limpia formulario tras enviar
+///
+/// Adjuntos:
+/// - ImagePicker.pickImage(source: gallery)
+/// - Sube a Firebase Storage (opcional)
+/// - Asocia URL con el mensaje
+///
+/// Carga de datos:
+/// - Automática en initState
+/// - loadMessages(userId) obtiene historial
+/// - loadFAQs(locale) obtiene preguntas frecuentes
+///
+/// Estados:
+/// - **Loading**: CircularProgressIndicator
+/// - **Error**: Mensaje de error
+/// - **Success**: Muestra tabs con contenido
+///
+/// Navegación:
+/// - Acceso desde HomeView
+/// - Botón volver a Home
+///
+/// Uso:
+/// ```dart
+/// Navigator.pushNamed(context, Routes.support);
+/// ```
 class SupportView extends StatelessWidget {
   const SupportView({super.key});
 

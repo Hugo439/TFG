@@ -3,6 +3,63 @@ import 'package:smartmeal/domain/entities/user_profile.dart';
 import 'package:smartmeal/domain/value_objects/goal.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
 
+/// Sección que muestra objetivos y restricciones alimentarias.
+///
+/// Responsabilidades:
+/// - Mostrar objetivo principal del usuario
+/// - Listar alergias e intolerancias
+///
+/// Contenido:
+/// 1. **Objetivo principal**: dropdown con goal actual
+/// 2. **Alergias**: lista de chips con alergias del usuario
+///
+/// Objetivos disponibles:
+/// - loseWeight: Perder peso
+/// - maintainWeight: Mantener peso
+/// - gainMuscle: Ganar músculo
+/// - healthyEating: Alimentación saludable
+///
+/// Alergias:
+/// - Lista separada por comas
+/// - Mostrada como chips individuales
+/// - Color: primary con alpha 0.1
+/// - Sin alergias: muestra "Ninguna"
+///
+/// Diseño visual:
+/// - **Background**: surfaceContainerHighest (dark) o tertiary (light)
+/// - **BorderRadius**: 16px
+/// - **Padding**: 16px
+/// - **Título**: "Objetivos y Restricciones", primary color, bold
+///
+/// _buildDropdown:
+/// - Label + container con valor actual
+/// - Simula dropdown pero solo lectura
+/// - Background: surface
+/// - BorderRadius: 8px
+/// - Icon chevron_right a la derecha
+///
+/// _buildAllergies:
+/// - Label "Alergias e Intolerancias"
+/// - Wrap con chips para cada alergia
+/// - Spacing: 8px entre chips
+/// - Chip: primary background, small size
+///
+/// Estados:
+/// - Con alergias: muestra lista
+/// - Sin alergias: muestra "Ninguna" en texto regular
+///
+/// Localización:
+/// - Título: l10n.profileGoalsSection
+/// - Objetivo: l10n.goalLoseWeight, etc.
+/// - Alergias: directamente del value object
+///
+/// Parámetros:
+/// [profile] - UserProfile con goal y allergies
+///
+/// Uso:
+/// ```dart
+/// GoalsSection(profile: userProfile)
+/// ```
 class GoalsSection extends StatelessWidget {
   final UserProfile profile;
 

@@ -8,8 +8,10 @@ import 'package:smartmeal/domain/usecases/user/get_user_profile_usecase.dart';
 import 'package:smartmeal/domain/usecases/auth/sign_out_usecase.dart';
 import 'package:smartmeal/domain/usecases/auth/delete_account_usecase.dart';
 
+/// Estados de la pantalla de configuración.
 enum SettingsStatus { idle, loading, loaded, error }
 
+/// Estado del ViewModel de configuración.
 class SettingsState {
   final SettingsStatus status;
   final UserProfile? profile;
@@ -42,6 +44,38 @@ class SettingsState {
   }
 }
 
+/// ViewModel para pantalla de configuración.
+///
+/// Responsabilidades:
+/// - Gestionar preferencias de la aplicación
+/// - Activar/desactivar notificaciones push (FCM)
+/// - Cambiar idioma de la aplicación
+/// - Cerrar sesión y eliminar cuenta
+///
+/// Configuraciones:
+/// 1. **Notificaciones push**:
+///    - Guarda preferencia en SharedPreferences
+///    - Activa/desactiva FCM con FCMService
+///
+/// 2. **Idioma**:
+///    - Cambia idioma de la app (es/en)
+///    - Se aplica en toda la UI
+///
+/// 3. **Perfil**:
+///    - Carga perfil para mostrar info del usuario
+///
+/// 4. **Cuenta**:
+///    - Cerrar sesión (SignOutUseCase)
+///    - Eliminar cuenta (DeleteAccountUseCase)
+///
+/// Uso:
+/// ```dart
+/// final vm = Provider.of<SettingsViewModel>(context);
+/// await vm.loadProfile();
+/// await vm.loadPreferences();
+/// await vm.toggleNotifications(true);
+/// vm.changeLanguage('en');
+/// ```
 class SettingsViewModel extends ChangeNotifier {
   final GetUserProfileUseCase _getProfile;
   final SignOutUseCase _signOut;
@@ -74,6 +108,15 @@ class SettingsViewModel extends ChangeNotifier {
     }
   }
 
+  /// Activa/desactiva notificaciones push.
+  ///
+  /// Parámetros:
+  /// - **value**: true = activar, false = desactivar
+  ///
+  /// Flujo:
+  /// 1. Guarda preferencia en SharedPreferences
+  /// 2. Si activar: FCMService.enableNotifications()
+  /// 3. Si desactivar: FCMService.disableNotifications()
   Future<void> toggleNotifications(bool value) async {
     _update(_state.copyWith(notificationsEnabled: value));
     final prefs = await SharedPreferences.getInstance();

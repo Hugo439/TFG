@@ -14,6 +14,75 @@ import 'package:smartmeal/presentation/theme/theme_provider.dart';
 import 'package:smartmeal/presentation/routes/routes.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
 
+/// Pantalla de configuración de la app.
+///
+/// Responsabilidades:
+/// - Información de cuenta (nombre, email)
+/// - Preferencias de usuario (idioma, tema, notificaciones)
+/// - Navegación a perfil
+/// - Enlaces a políticas (privacidad, términos)
+/// - Acciones de cuenta (cerrar sesión, eliminar)
+///
+/// Secciones (SettingsSection):
+///
+/// 1. **AccountInfoCard**:
+///    - Avatar + nombre + email
+///    - Vista rápida del perfil
+///
+/// 2. **Perfil**:
+///    - "Mi perfil" → ProfileView
+///    - Acceso rápido a edición de datos
+///
+/// 3. **Preferencias**:
+///    - **Notificaciones**: Switch para activar/desactivar
+///      * Guarda en SharedPreferences
+///      * Actualiza FCM token
+///    - **Idioma**: LanguageCard con selector
+///      * Español (es) / English (en)
+///      * Cambia mediante LocaleProvider
+///      * Persiste en SharedPreferences
+///    - **Tema**: Switch Dark Mode
+///      * Cambia mediante ThemeProvider
+///      * Persiste en SharedPreferences
+///
+/// 4. **Legal**:
+///    - "Política de privacidad" → PrivacyPolicyView
+///    - "Términos y condiciones" → TermsConditionsView
+///    - Documentos legales en scroll
+///
+/// 5. **Cuenta**:
+///    - **Cerrar sesión**:
+///      * SignOutUseCase
+///      * Limpia estado de autenticación
+///      * Navega a LoginView (replacement)
+///    - **Eliminar cuenta**:
+///      * Diálogo de confirmación
+///      * DeleteAccountUseCase elimina todo
+///      * Navega a LoginView tras eliminar
+///
+/// Guardado de preferencias:
+/// - LocaleProvider guarda idioma en SharedPreferences (key: 'locale')
+/// - ThemeProvider guarda tema en SharedPreferences (key: 'darkMode')
+/// - Notificaciones en SharedPreferences (key: 'notificationsEnabled')
+///
+/// Estados:
+/// - **Loading**: CircularProgressIndicator
+/// - **Loaded**: Muestra todas las secciones
+///
+/// Carga inicial:
+/// - loadProfile() obtiene datos del usuario
+/// - loadPreferences() lee SharedPreferences
+///
+/// Navegación:
+/// - Mi perfil → ProfileView
+/// - Privacidad → PrivacyPolicyView
+/// - Términos → TermsConditionsView
+/// - Cerrar sesión/Eliminar → LoginView (replacement)
+///
+/// Uso:
+/// ```dart
+/// Navigator.pushNamed(context, Routes.settings);
+/// ```
 class SettingsView extends StatelessWidget {
   const SettingsView({super.key});
 
@@ -101,7 +170,11 @@ class _SettingsContent extends StatelessWidget {
                             await vm.toggleNotifications(value);
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: Text(value ? context.l10n.notificationsEnabled : context.l10n.notificationsDisabled),
+                                content: Text(
+                                  value
+                                      ? context.l10n.notificationsEnabled
+                                      : context.l10n.notificationsDisabled,
+                                ),
                               ),
                             );
                           },

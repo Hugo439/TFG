@@ -4,6 +4,36 @@ import '../../domain/repositories/support_message_repository.dart';
 import '../mappers/support_message_mapper.dart';
 import '../models/support_message_model.dart';
 
+/// Implementación del repositorio de mensajes de soporte.
+///
+/// Responsabilidad:
+/// - CRUD de mensajes de soporte en Firestore
+/// - Mapeo entre modelos y entidades
+///
+/// Colección Firestore: 'support_messages'
+///
+/// Operaciones:
+/// - **getMessagesByUser**: obtiene mensajes de un usuario ordenados por fecha desc
+/// - **sendMessage**: crea nuevo mensaje de soporte
+/// - **updateMessage**: actualiza mensaje (usado por admin para responder)
+///
+/// Flujo típico:
+/// 1. Usuario envía mensaje desde app
+/// 2. sendMessage() crea documento en Firestore
+/// 3. Admin responde desde panel
+/// 4. updateMessage() añade response y responseDate
+/// 5. Usuario ve respuesta con getMessagesByUser()
+///
+/// Uso:
+/// ```dart
+/// final repo = SupportMessageRepositoryImpl();
+///
+/// // Enviar mensaje
+/// await repo.sendMessage(SupportMessage(...));
+///
+/// // Ver historial
+/// final messages = await repo.getMessagesByUser(userId);
+/// ```
 class SupportMessageRepositoryImpl implements SupportMessageRepository {
   final FirebaseFirestore firestore;
 

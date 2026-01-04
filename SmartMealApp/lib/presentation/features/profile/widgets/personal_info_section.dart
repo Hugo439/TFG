@@ -3,6 +3,68 @@ import 'package:smartmeal/domain/entities/user_profile.dart';
 import 'package:smartmeal/domain/value_objects/gender.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
 
+/// Sección que muestra información personal del usuario.
+///
+/// Responsabilidades:
+/// - Mostrar datos personales del perfil
+/// - Email, teléfono, edad, género
+/// - Altura, peso, BMI
+/// - Iconos temáticos por campo
+///
+/// Campos mostrados:
+/// 1. **Email** (obligatorio): email.value
+/// 2. **Teléfono** (opcional): phone.formatted
+/// 3. **Edad** (opcional): age + "años"
+/// 4. **Género** (opcional): localizado (Masculino/Femenino/Otro)
+/// 5. **Altura**: height.formatted (ej: "175 cm")
+/// 6. **Peso**: weight.formatted (ej: "70 kg")
+/// 7. **BMI**: bmi.formatted (ej: "22.9")
+///
+/// Iconos:
+/// - Email: email_outlined
+/// - Teléfono: phone_outlined
+/// - Edad: cake_outlined
+/// - Género: person_outline
+/// - Altura: height
+/// - Peso: monitor_weight_outlined
+/// - BMI: analytics_outlined
+///
+/// Diseño visual:
+/// - **Background**: surfaceContainerHighest (dark) o tertiary (light)
+/// - **BorderRadius**: 16px
+/// - **Padding**: 16px
+/// - **Título**: primary color, bold, 16px
+///
+/// Layout:
+/// - Columna vertical
+/// - Título: "Información Personal"
+/// - _InfoRow por cada campo (label + value + icon)
+/// - Spacing: 12px entre rows
+///
+/// _InfoRow:
+/// - Row con icon + columna de texto
+/// - Icon en CircleAvatar (radius 20)
+/// - Label en onSurface con alpha 0.6
+/// - Value en onSurface, fontSize 14
+///
+/// Campos opcionales:
+/// - Si phone == null: no muestra row
+/// - Si age == null: no muestra row
+/// - Si gender == null: no muestra row
+/// - Otros campos siempre presentes
+///
+/// Género localizado:
+/// - Male: l10n.genderMale
+/// - Female: l10n.genderFemale
+/// - Other: l10n.genderOther
+///
+/// Parámetros:
+/// [profile] - UserProfile con toda la información
+///
+/// Uso:
+/// ```dart
+/// PersonalInfoSection(profile: userProfile)
+/// ```
 class PersonalInfoSection extends StatelessWidget {
   final UserProfile profile;
 

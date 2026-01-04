@@ -1,6 +1,66 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
+/// Gráfico de dona para mostrar distribución de macronutrientes.
+///
+/// Responsabilidades:
+/// - Visualizar proporción de proteínas, carbohidratos y grasas
+/// - Gráfico de dona (donut chart) con CustomPainter
+/// - Colores personalizables por macro
+///
+/// Funcionamiento:
+/// - Recibe gramos de cada macronutriente
+/// - Calcula porcentajes relativos
+/// - Dibuja arcos proporcionales en círculo
+///
+/// Cálculo de porcentajes:
+/// - Total = proteinG + carbsG + fatG
+/// - proteinPct = proteinG / total
+/// - carbsPct = carbsG / total
+/// - fatPct = fatG / total
+///
+/// Orden de dibujado:
+/// - Proteínas (rojo/rosa)
+/// - Carbohidratos (naranja/amarillo)
+/// - Grasas (azul/morado)
+///
+/// Caso sin datos:
+/// - Si total == 0, muestra "Sin datos"
+/// - SizedBox con tamaño especificado
+///
+/// Colores por defecto:
+/// - proteinColor: primary del theme
+/// - carbsColor: tertiary del theme
+/// - fatColor: secondary del theme
+///
+/// MacrosPainter:
+/// - CustomPainter que dibuja los arcos
+/// - Grosor del arco configurable
+/// - Espacio central (dona, no pie chart completo)
+///
+/// Responsive:
+/// - Tamaño configurable con parámetro size
+/// - Default: 140x140
+/// - Escala proporcional del grosor
+///
+/// Parámetros:
+/// [proteinG] - Gramos de proteínas
+/// [carbsG] - Gramos de carbohidratos
+/// [fatG] - Gramos de grasas
+/// [size] - Tamaño del gráfico (default: 140)
+/// [proteinColor] - Color para proteínas (opcional)
+/// [carbsColor] - Color para carbohidratos (opcional)
+/// [fatColor] - Color para grasas (opcional)
+///
+/// Uso:
+/// ```dart
+/// MacrosChart(
+///   proteinG: 150.0,
+///   carbsG: 300.0,
+///   fatG: 80.0,
+///   size: 180,
+/// )
+/// ```
 class MacrosChart extends StatelessWidget {
   final double proteinG;
   final double carbsG;

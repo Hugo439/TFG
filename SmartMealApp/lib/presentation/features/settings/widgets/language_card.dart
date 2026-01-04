@@ -1,5 +1,71 @@
 import 'package:flutter/material.dart';
 
+/// Card para selección de idioma.
+///
+/// Responsabilidades:
+/// - Mostrar bandera del idioma (emoji)
+/// - Título del idioma
+/// - Descripción breve
+/// - Indicador de selección
+/// - Tap para cambiar idioma
+///
+/// Contenido típico:
+/// - Español: 🇪🇸 | Español | "Idioma español"
+/// - English: 🇬🇧 | English | "English language"
+///
+/// Estados:
+/// - **isSelected**: border más grueso o color destacado
+/// - **Normal**: border sutil
+///
+/// Diseño visual:
+/// - Background: surfaceContainerHighest
+/// - BorderRadius: 16px
+/// - Border: outline con alpha 0.2
+/// - Padding: 16px horizontal, 14px vertical
+///
+/// Layout:
+/// - Row: flag + columna de texto + arrow
+/// - Flag: emoji 32px
+/// - Columna: title + description
+/// - Arrow: arrow_forward_ios, 16px, primary
+///
+/// Título:
+/// - fontSize: 16px
+/// - fontWeight: w600
+/// - color: onSurface
+///
+/// Descripción:
+/// - fontSize: 13px
+/// - color: onSurface con alpha 0.6
+///
+/// Interacción:
+/// - GestureDetector con onTap
+/// - Cambiar locale en LocaleProvider
+/// - Actualiza UI de toda la app
+///
+/// Usado en:
+/// - SettingsView: sección de idioma
+/// - Diálogo de selección de idioma
+///
+/// Parámetros:
+/// [flag] - Emoji de bandera (🇪🇸, 🇬🇧)
+/// [title] - Nombre del idioma
+/// [description] - Descripción breve
+/// [onTap] - Callback al seleccionar
+/// [colorScheme] - ColorScheme del theme
+/// [isSelected] - Si está seleccionado actualmente
+///
+/// Uso:
+/// ```dart
+/// LanguageCard(
+///   flag: '🇪🇸',
+///   title: 'Español',
+///   description: 'Idioma español',
+///   onTap: () => setLocale('es'),
+///   colorScheme: Theme.of(context).colorScheme,
+///   isSelected: currentLocale == 'es',
+/// )
+/// ```
 class LanguageCard extends StatelessWidget {
   final String flag;
   final String title;

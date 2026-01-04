@@ -2,6 +2,70 @@ import 'package:flutter/material.dart';
 import 'package:smartmeal/presentation/theme/colors.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
 
+/// Card de navegación usado en HomeView.
+///
+/// Responsabilidades:
+/// - Mostrar opción de navegación con icono + título + subtítulo
+/// - Responsive: ajusta tamaños según espacio disponible
+/// - Estados: enabled/disabled, highlight
+/// - Animaciones hover y tap
+/// - Accesibilidad con semantic labels
+///
+/// Diseño:
+/// - **Icono circular**: Container con background color
+/// - **Título**: Texto bold, color primario
+/// - **Subtítulo**: Texto regular, color secundario
+/// - **Background**: Blanco/oscuro según theme
+/// - **Borde**: Sutil con elevation
+///
+/// Responsive breakpoints:
+/// - **Tiny** (<140px): iconPlate 42, icon 24, padding reducido
+/// - **Small** (<180px): iconPlate 48, icon 28
+/// - **Medium** (<230px): iconPlate 54, icon 30
+/// - **Large** (≥230px): iconPlate 60, icon 34, padding amplio
+///
+/// Estados visuales:
+/// - **Normal**: colors estándar
+/// - **Highlight**: fondo primary, texto onPrimary (destacado)
+/// - **Disabled**: opacidad reducida, sin hover/tap
+/// - **Hover**: scale up 1.02 (si no reduce motion)
+/// - **Tap**: scale down 0.98
+///
+/// Animaciones:
+/// - Scale hover/tap con AnimatedScale
+/// - Duration: 150ms (hover), 100ms (tap)
+/// - Respeta MediaQuery.disableAnimations (accesibilidad)
+///
+/// TextScaler:
+/// - Aplica MediaQuery.textScalerOf(context)
+/// - Clamp máximo 1.3 para evitar overflow
+/// - Recalcula tamaños de texto dinámicamente
+///
+/// Accesibilidad:
+/// - Semantic label custom (opcional)
+/// - ExcludeSemantics si onTap es null
+/// - Tappable area amplia
+///
+/// Parámetros:
+/// [icon] - IconData a mostrar
+/// [title] - Título principal
+/// [subtitle] - Subtítulo descriptivo
+/// [onTap] - Callback al tocar (null = disabled)
+/// [enabled] - Habilitar interacción (default: true)
+/// [highlight] - Estilo destacado (default: false)
+/// [backgroundColor] - Color de fondo custom (opcional)
+/// [iconColor] - Color del icono custom (opcional)
+/// [semanticLabel] - Label de accesibilidad (opcional)
+///
+/// Uso en HomeView:
+/// ```dart
+/// MenuCard(
+///   icon: Icons.restaurant_menu,
+///   title: 'Mi Menú',
+///   subtitle: 'Ver menú semanal',
+///   onTap: () => Navigator.pushNamed(context, Routes.menu),
+/// )
+/// ```
 class MenuCard extends StatelessWidget {
   final IconData icon;
   final String title;

@@ -6,8 +6,10 @@ import 'package:smartmeal/domain/usecases/profile/update_user_profile_usecase.da
 import 'package:smartmeal/domain/usecases/auth/sign_out_usecase.dart';
 import 'package:smartmeal/domain/usecases/auth/delete_account_usecase.dart';
 
+/// Estados de la pantalla de perfil.
 enum ProfileStatus { idle, loading, loaded, error }
 
+/// Estado del ViewModel de perfil.
 class ProfileState {
   final ProfileStatus status;
   final UserProfile? profile;
@@ -32,6 +34,35 @@ class ProfileState {
   }
 }
 
+/// ViewModel para pantalla de perfil de usuario.
+///
+/// Responsabilidades:
+/// - Cargar perfil del usuario desde Firestore
+/// - Actualizar datos del perfil
+/// - Cerrar sesión (sign out)
+/// - Eliminar cuenta
+///
+/// Funcionalidades:
+/// 1. **loadProfile()**: carga perfil desde GetUserProfileUseCase
+/// 2. **updateProfile()**: actualiza perfil con UpdateUserProfileUseCase
+/// 3. **signOut()**: cierra sesión con SignOutUseCase
+/// 4. **deleteAccount()**: elimina cuenta con DeleteAccountUseCase
+///
+/// Estados:
+/// - **idle**: sin datos cargados
+/// - **loading**: cargando perfil
+/// - **loaded**: perfil cargado exitosamente
+/// - **error**: error al cargar/actualizar
+///
+/// Uso:
+/// ```dart
+/// final vm = Provider.of<ProfileViewModel>(context);
+/// await vm.loadProfile();
+/// if (vm.state.status == ProfileStatus.loaded) {
+///   final profile = vm.state.profile;
+///   await vm.updateProfile(updatedProfile);
+/// }
+/// ```
 class ProfileViewModel extends ChangeNotifier {
   final GetUserProfileUseCase _getProfile;
   final UpdateUserProfileUseCase _updateProfile;
@@ -48,6 +79,10 @@ class ProfileViewModel extends ChangeNotifier {
     this._deleteAccount,
   );
 
+  /// Carga perfil del usuario desde Firestore.
+  ///
+  /// Llama a GetUserProfileUseCase.
+  /// Actualiza estado a loaded si éxito, error si falla.
   Future<void> loadProfile() async {
     _update(_state.copyWith(status: ProfileStatus.loading, error: null));
     try {
@@ -60,6 +95,12 @@ class ProfileViewModel extends ChangeNotifier {
     }
   }
 
+  /// Actualiza perfil del usuario en Firestore.
+  ///
+  /// Parámetros:
+  /// - **profile**: perfil actualizado
+  ///
+  /// Retorna true si éxito, false si error.
   Future<bool> updateProfile(UserProfile profile) async {
     try {
       await _updateProfile(profile);
@@ -71,6 +112,10 @@ class ProfileViewModel extends ChangeNotifier {
     }
   }
 
+  /// Cierra sesión del usuario.
+  ///
+  /// Llama a SignOutUseCase.
+  /// Retorna true si éxito, false si error.
   Future<bool> signOut() async {
     try {
       await _signOut(const NoParams());
@@ -81,6 +126,14 @@ class ProfileViewModel extends ChangeNotifier {
     }
   }
 
+  /// Elimina cuenta del usuario.
+  ///
+  /// Elimina:
+  /// - Usuario de Firebase Auth
+  /// - Datos de Firestore (perfil, menús, recetas, compras)
+  ///
+  /// Llama a DeleteAccountUseCase.
+  /// Retorna true si éxito, false si error.
   Future<bool> deleteAccount() async {
     try {
       await _deleteAccount(const NoParams());

@@ -3,7 +3,42 @@ import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smartmeal/data/models/faq_model.dart';
 
-/// Datasource local para cachear FAQs en SharedPreferences
+/// Datasource local para cachear FAQs por idioma.
+///
+/// Responsabilidad:
+/// - Cachear FAQs en SharedPreferences
+/// - Soportar múltiples idiomas (es, en)
+/// - Cargar instantáneamente mientras carga Firestore
+///
+/// Estrategia de caché:
+/// - Caché separado por locale: 'faq_cache_es', 'faq_cache_en'
+/// - Al cambiar idioma, carga caché del nuevo idioma
+/// - Si no hay caché, carga desde Firestore y cachea
+///
+/// Uso típico:
+/// 1. Usuario abre pantalla soporte
+/// 2. Muestra FAQs cacheadas (instantáneo)
+/// 3. Carga desde Firestore en background
+/// 4. Actualiza caché y UI si hay cambios
+///
+/// Claves:
+/// - 'faq_cache_es': FAQs en español
+/// - 'faq_cache_en': FAQs en inglés
+///
+/// Uso:
+/// ```dart
+/// final ds = FAQLocalDatasource(prefs);
+///
+/// // Cargar caché para español
+/// final cached = await ds.getLatest('es');
+/// if (cached != null) {
+///   // Mostrar FAQs cacheadas
+/// }
+///
+/// // Actualizar con datos de Firestore
+/// final faqs = await firestoreDS.getFAQs('es');
+/// await ds.saveLatest(faqs, 'es');
+/// ```
 class FAQLocalDatasource {
   static const String _keyPrefix = 'faq_cache_';
 
@@ -11,8 +46,12 @@ class FAQLocalDatasource {
 
   FAQLocalDatasource(this._prefs);
 
-  /// Obtiene las FAQs cacheadas para un locale específico
-  /// Retorna null si no hay caché disponible
+  /// Obtiene FAQs cacheadas para un idioma.
+  ///
+  /// Parámetros:
+  /// - **locale**: código de idioma ('es', 'en')
+  ///
+  /// Retorna null si no hay caché o error.
   Future<List<FAQModel>?> getLatest(String locale) async {
     try {
       final key = '$_keyPrefix$locale';
@@ -37,7 +76,11 @@ class FAQLocalDatasource {
     }
   }
 
-  /// Guarda una lista de FAQs en caché para un locale específico
+  /// Guarda FAQs en caché para un idioma.
+  ///
+  /// Parámetros:
+  /// - **faqs**: lista de FAQModel
+  /// - **locale**: código de idioma ('es', 'en')
   Future<void> saveLatest(List<FAQModel> faqs, String locale) async {
     try {
       final key = '$_keyPrefix$locale';
@@ -58,7 +101,9 @@ class FAQLocalDatasource {
     }
   }
 
-  /// Limpia todos los cachés de FAQs
+  /// Limpia todos los cachés de FAQs (todos los idiomas).
+  ///
+  /// Se usa al actualizar FAQs en Firestore.
   Future<void> clearAll() async {
     try {
       final keys = _prefs.getKeys().toList();

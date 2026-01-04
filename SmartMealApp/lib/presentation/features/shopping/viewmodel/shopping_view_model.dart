@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:smartmeal/core/usecases/usecase.dart';
-import 'package:smartmeal/core/errors/menu_already_generated_exception.dart';
+import 'package:smartmeal/core/errors/errors.dart';
 import 'package:smartmeal/domain/entities/shopping_item.dart';
 import 'package:smartmeal/domain/usecases/shopping/get_shopping_items_usecase.dart';
 import 'package:smartmeal/domain/usecases/shopping/add_shopping_item_usecase.dart';
@@ -13,8 +13,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
 
+/// Estados de la pantalla de lista de compra.
 enum ShoppingStatus { idle, loading, loaded, error, info }
 
+/// Estado del ViewModel de lista de compra.
 class ShoppingState {
   final ShoppingStatus status;
   final List<ShoppingItem> items;
@@ -53,6 +55,40 @@ class ShoppingState {
   }
 }
 
+/// ViewModel para lista de compra.
+///
+/// Responsabilidades:
+/// - Cargar items de compra del usuario
+/// - Generar lista desde menús activos
+/// - Marcar items como comprados/pendientes
+/// - Eliminar items comprados
+/// - Calcular precio total
+///
+/// Funcionalidades principales:
+/// 1. **loadShoppingItems()**: Carga items desde Firestore
+/// 2. **generateFromMenus()**: Genera lista desde menús
+/// 3. **toggleItem()**: Marca item como comprado/pendiente
+/// 4. **deleteCheckedItems()**: Elimina todos los comprados
+/// 5. **setAllChecked()**: Marca/desmarca todos
+///
+/// Optimistic UI:
+/// - toggleItem y setAllChecked actualizan UI inmediatamente
+/// - Si falla, revierte cambios automáticamente
+///
+/// Estados:
+/// - **idle**: Sin actividad
+/// - **loading**: Cargando/procesando
+/// - **loaded**: Items cargados
+/// - **error**: Error en operación
+/// - **info**: Información al usuario (ej: menú ya generado)
+///
+/// Uso:
+/// ```dart
+/// final vm = Provider.of<ShoppingViewModel>(context);
+/// await vm.loadShoppingItems();
+/// await vm.generateFromMenus(context);
+/// await vm.toggleItem(itemId, true);
+/// ```
 class ShoppingViewModel extends ChangeNotifier {
   final GetShoppingItemsUseCase _getShoppingItems;
   final AddShoppingItemUseCase _addShoppingItem;
@@ -77,6 +113,15 @@ class ShoppingViewModel extends ChangeNotifier {
   ShoppingState _state = const ShoppingState();
   ShoppingState get state => _state;
 
+  /// Carga items de compra del usuario desde Firestore.
+  ///
+  /// Parámetros:
+  /// - **preserveInfoMessage**: mantener mensaje informativo actual
+  ///
+  /// Flujo:
+  /// 1. Llama a GetShoppingItemsUseCase
+  /// 2. Llama a GetTotalPriceUseCase
+  /// 3. Actualiza estado con items y total
   Future<void> loadShoppingItems({bool preserveInfoMessage = false}) async {
     _update(
       _state.copyWith(
@@ -116,6 +161,18 @@ class ShoppingViewModel extends ChangeNotifier {
     }
   }
 
+  /// Marca/desmarca item como comprado con Optimistic UI.
+  ///
+  /// Parámetros:
+  /// - **id**: ID del item
+  /// - **isChecked**: true = comprado, false = pendiente
+  ///
+  /// Optimistic UI:
+  /// 1. Actualiza UI inmediatamente
+  /// 2. Llama a ToggleShoppingItemUseCase
+  /// 3. Si falla, revierte cambios
+  ///
+  /// Retorna true si éxito, false si error.
   Future<bool> toggleItem(String id, bool isChecked) async {
     // Optimistic UI: actualizar localmente sin recargar toda la lista
     final previousState = _state;
@@ -144,6 +201,21 @@ class ShoppingViewModel extends ChangeNotifier {
     }
   }
 
+  /// Genera lista de compra desde menús activos.
+  ///
+  /// Flujo:
+  /// 1. Llama a GenerateShoppingFromMenusUseCase
+  /// 2. UseCase agrega ingredientes de menús
+  /// 3. Normaliza y agrega cantidades
+  /// 4. Estima precios
+  /// 5. Recarga items
+  ///
+  /// Casos especiales:
+  /// - **MenuAlreadyGeneratedException**: menú ya pasado a compra
+  ///   - Muestra mensaje informativo (no error)
+  /// - **Otros errores**: muestra error
+  ///
+  /// Retorna true si éxito, false si ya generado o error.
   Future<bool> generateFromMenus(BuildContext context) async {
     _update(
       _state.copyWith(
@@ -157,11 +229,14 @@ class ShoppingViewModel extends ChangeNotifier {
       await _generateFromMenus(const NoParams());
       await loadShoppingItems();
       return true;
-    } on MenuAlreadyGeneratedException catch (e) {
+    } on MenuAlreadyGeneratedException {
       // Es un aviso, no un error: menú ya fue pasado
       // Usar mensaje localizado
       _update(
-        _state.copyWith(status: ShoppingStatus.info, infoMessage: context.l10n.menuAlreadyGenerated),
+        _state.copyWith(
+          status: ShoppingStatus.info,
+          infoMessage: context.l10n.menuAlreadyGenerated,
+        ),
       );
       return false;
     } catch (e) {
@@ -173,7 +248,12 @@ class ShoppingViewModel extends ChangeNotifier {
     }
   }
 
-  /// Elimina todos los ítems marcados como comprados
+  /// Elimina todos los items marcados como comprados.
+  ///
+  /// Optimistic UI:
+  /// 1. Remueve items localmente
+  /// 2. Llama a DeleteCheckedShoppingItemsUseCase
+  /// 3. Si falla, revierte cambios
   Future<void> deleteCheckedItems() async {
     final currentUser = _auth.currentUser;
     if (currentUser == null) return;
@@ -199,6 +279,15 @@ class ShoppingViewModel extends ChangeNotifier {
     }
   }
 
+  /// Marca/desmarca todos los items.
+  ///
+  /// Parámetros:
+  /// - **checked**: true = marcar todos, false = desmarcar todos
+  ///
+  /// Optimistic UI:
+  /// 1. Actualiza todos los items localmente
+  /// 2. Llama a SetAllShoppingItemsCheckedUseCase
+  /// 3. Si falla, revierte cambios
   Future<void> setAllChecked(bool checked) async {
     // Optimistic: marcar/desmarcar localmente
     final previousState = _state;

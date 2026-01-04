@@ -8,6 +8,74 @@ import 'package:smartmeal/presentation/widgets/buttons/primary_button.dart';
 import 'package:smartmeal/presentation/routes/routes.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
 
+/// Formulario de registro de nueva cuenta.
+///
+/// Responsabilidades:
+/// - Campos de datos personales y cuenta
+/// - Validación de inputs
+/// - Llamar a RegisterViewModel.register()
+/// - Mostrar errores localizados
+/// - Crear perfil completo del usuario
+///
+/// Campos:
+/// 1. **Nombre**: FilledTextField
+/// 2. **Email**: FilledTextField con validación
+/// 3. **Contraseña**: obscureText
+/// 4. **Confirmar contraseña**: obscureText, validar igualdad
+/// 5. **Altura**: numérico (cm)
+/// 6. **Peso**: numérico (kg)
+/// 7. **Edad**: AgeField (numérico)
+/// 8. **Género**: GenderDropdown (Masculino/Femenino/Otro)
+/// 9. **Alergias**: TextField multiline (opcional)
+///
+/// Flujo de uso:
+/// 1. Usuario completa todos los campos
+/// 2. Toca "Crear cuenta"
+/// 3. Validación local (contraseñas iguales, campos requeridos)
+/// 4. vm.register() crea cuenta en Firebase Auth
+/// 5. vm.createProfile() guarda perfil en Firestore
+/// 6. Si éxito: navega a Home
+/// 7. Si error: muestra mensaje localizado
+///
+/// Estados:
+/// - **Normal**: formulario habilitado
+/// - **Loading**: botón con spinner, campos disabled
+/// - **Error**: mensaje rojo al final del formulario
+///
+/// Códigos de error:
+/// - emailInUse: Email ya registrado
+/// - invalidEmail: Formato de email inválido
+/// - weakPassword: Contraseña débil (<6 caracteres)
+/// - generic: Error genérico
+///
+/// Validación:
+/// - Email: formato válido
+/// - Contraseña: mínimo 6 caracteres
+/// - Confirmar contraseña: igual a contraseña
+/// - Altura/Peso/Edad: numéricos positivos
+/// - Nombre: no vacío
+/// - Género: selección requerida
+/// - Alergias: opcional
+///
+/// Estructura visual:
+/// - Sección 1: Datos de cuenta (nombre, email, contraseñas)
+/// - Sección 2: Datos físicos (altura, peso, edad, género)
+/// - Sección 3: Restricciones (alergias)
+/// - Labels en bold encima de cada campo
+/// - Spacing consistente (8px entre label y campo, 16px entre campos)
+///
+/// _getErrorText:
+/// - Mapea RegisterErrorCode a strings localizados
+/// - Usa l10n para multi-idioma
+///
+/// Navegación:
+/// - Al éxito: pushReplacementNamed(Routes.home)
+/// - Reemplaza stack para evitar volver a registro
+///
+/// Uso:
+/// ```dart
+/// RegisterForm()
+/// ```
 class RegisterForm extends StatefulWidget {
   const RegisterForm({super.key});
 

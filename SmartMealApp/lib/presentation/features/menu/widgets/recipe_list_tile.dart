@@ -1,8 +1,63 @@
 import 'package:flutter/material.dart';
 import 'package:smartmeal/domain/entities/recipe.dart';
 import 'package:smartmeal/presentation/features/menu/widgets/meal_type_icon.dart';
-import 'package:smartmeal/l10n/l10n_ext.dart';
 
+/// Tile para mostrar una receta en lista.
+///
+/// Responsabilidades:
+/// - Icono del tipo de comida
+/// - Nombre de la receta
+/// - Badge de calorías
+/// - Navegación a detalle de receta
+///
+/// Diseño visual:
+/// - Container con surface background
+/// - BorderRadius: 12px
+/// - Border: outline con alpha 0.1
+/// - BoxShadow: shadow con alpha 0.05
+/// - Margin: 16px horizontal, 4px vertical
+///
+/// Layout:
+/// - Row: icon container + columna de texto
+/// - Icon container: 48x48, primaryContainer background
+/// - Columna: nombre + badge de calorías
+///
+/// Icon container:
+/// - Background: primaryContainer
+/// - BorderRadius: 12px
+/// - Icon: recipe.mealType.icon (24px, primary color)
+///
+/// Nombre:
+/// - fontSize: 16px
+/// - fontWeight: w600
+/// - color: onSurface
+/// - maxLines: 1 con ellipsis
+///
+/// Badge de calorías:
+/// - Container con padding horizontal 8px, vertical 2px
+/// - Background: primary con alpha 0.1
+/// - BorderRadius: 12px
+/// - Texto: "XXX kcal" en primary color, fontSize 12
+///
+/// Interacción:
+/// - InkWell con ripple effect
+/// - onTap navega a RecipeDetailView
+///
+/// Usado en:
+/// - DayMenuCard: lista de 4 recetas por día
+/// - MenuView: cualquier lista de recetas
+///
+/// Parámetros:
+/// [recipe] - Recipe entity con todos los datos
+/// [onTap] - Callback al tocar (opcional)
+///
+/// Uso:
+/// ```dart
+/// RecipeListTile(
+///   recipe: breakfast,
+///   onTap: () => navigateToRecipeDetail(breakfast.id),
+/// )
+/// ```
 class RecipeListTile extends StatelessWidget {
   final Recipe recipe;
   final VoidCallback? onTap;
@@ -12,7 +67,6 @@ class RecipeListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final l10n = context.l10n;
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
@@ -75,7 +129,10 @@ class RecipeListTile extends StatelessWidget {
                       const SizedBox(height: 4),
                       // Calorías
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 2,
+                        ),
                         decoration: BoxDecoration(
                           color: colorScheme.secondaryContainer,
                           borderRadius: BorderRadius.circular(8),

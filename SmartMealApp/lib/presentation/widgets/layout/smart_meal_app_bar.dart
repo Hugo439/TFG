@@ -1,5 +1,59 @@
 import 'package:flutter/material.dart';
 
+/// AppBar personalizado de SmartMeal con título, subtítulo y avatar.
+///
+/// Responsabilidades:
+/// - Barra superior con diseño consistente
+/// - Título y subtítulo apilados
+/// - Avatar circular en leading (o widget custom)
+/// - Botón de notificaciones (opcional)
+/// - Acciones adicionales personalizables
+///
+/// Características:
+/// - **Altura fija**: 80px (más alto que AppBar estándar)
+/// - **Leading**: Avatar circular por defecto, customizable
+/// - **Title**: Columna con título + subtítulo
+/// - **Actions**: Botón notificaciones por defecto + acciones extra
+///
+/// Título y subtítulo:
+/// - Título: fontSize 20, bold, color onSurface
+/// - Subtítulo: fontSize 12, regular, color onSurface con alpha 0.6
+/// - Alineación: izquierda por defecto, centrado si centerTitle=true
+///
+/// Avatar por defecto:
+/// - Container circular con iniciales del usuario
+/// - Colores del theme (surfaceContainerHigh + onSurface)
+/// - Icono person si no hay iniciales
+///
+/// Botón notificaciones:
+/// - Icono notifications_none
+/// - onNotification callback opcional
+/// - Oculto si showNotification=false
+/// - Splash y highlight colors personalizados
+///
+/// Padding ajustado:
+/// - Leading: 12px left, 8px top
+/// - Título: 8px top
+/// - Acciones: 8px top
+/// - Diseño asimétrico para mejor visual
+///
+/// Parámetros:
+/// [title] - Título principal del AppBar
+/// [subtitle] - Subtítulo descriptivo
+/// [centerTitle] - Centrar título (default: false)
+/// [showNotification] - Mostrar botón notificaciones (default: true)
+/// [onNotification] - Callback al tocar notificaciones
+/// [leading] - Widget custom para leading (default: avatar)
+/// [actions] - Acciones adicionales al final del AppBar
+///
+/// Uso:
+/// ```dart
+/// SmartMealAppBar(
+///   title: 'Menú Semanal',
+///   subtitle: '7 días de comidas',
+///   onNotification: () => showNotifications(),
+/// )
+/// ```
 class SmartMealAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final String subtitle;

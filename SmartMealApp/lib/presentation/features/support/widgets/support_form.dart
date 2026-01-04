@@ -4,6 +4,87 @@ import 'package:image_picker/image_picker.dart';
 import 'package:smartmeal/presentation/theme/theme_helpers.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
 
+/// Formulario para enviar mensajes de soporte.
+///
+/// Responsabilidades:
+/// - Dropdown de categorías de soporte
+/// - Campo de texto para mensaje
+/// - Adjuntar imagen (opcional)
+/// - Botón de enviar
+/// - Estados: loading, success, error
+///
+/// Categorías:
+/// - Dudas
+/// - Errores
+/// - Sugerencias
+/// - Cuenta
+/// - Menús
+/// - Otro
+///
+/// Flujo de uso:
+/// 1. Usuario selecciona categoría
+/// 2. Escribe mensaje (TextField multiline, 5 líneas)
+/// 3. Opcionalmente adjunta imagen
+/// 4. Toca "Enviar"
+/// 5. Loading state mientras envía
+/// 6. Success o error message
+///
+/// Adjunto:
+/// - Botón "Adjuntar imagen"
+/// - ImagePicker para seleccionar de galería
+/// - Preview de imagen seleccionada
+/// - Botón para quitar adjunto
+///
+/// Estados visuales:
+/// - **Normal**: formulario habilitado
+/// - **Loading**: botón enviar con spinner, campos disabled
+/// - **Success**: snackbar verde de confirmación
+/// - **Error**: mensaje rojo debajo del formulario
+///
+/// Diseño:
+/// - **Dropdown**: filled, borderRadius 12px
+/// - **TextField**: 5 maxLines, filled, borderRadius 12px
+/// - **Botón adjuntar**: ElevatedButton con icon attach_file
+/// - **Botón enviar**: ElevatedButton con texto "Enviar"
+///
+/// Layout:
+/// - Columna vertical
+/// - Dropdown arriba
+/// - TextField en medio
+/// - Row con botones (adjuntar + enviar)
+/// - Preview de imagen si existe
+/// - Mensaje de error si error != null
+///
+/// Validación:
+/// - Categoría requerida
+/// - Mensaje no vacío
+/// - Adjunto opcional
+///
+/// Parámetros:
+/// [controller] - TextEditingController para mensaje
+/// [loading] - Estado de carga
+/// [error] - Mensaje de error (null si no hay)
+/// [success] - Flag de éxito
+/// [selectedCategory] - Categoría seleccionada
+/// [onCategoryChanged] - Callback al cambiar categoría
+/// [attachment] - XFile con imagen adjunta
+/// [onPickAttachment] - Callback para seleccionar imagen
+/// [onSend] - Callback para enviar mensaje
+///
+/// Uso:
+/// ```dart
+/// SupportForm(
+///   controller: messageController,
+///   loading: viewModel.isLoading,
+///   error: viewModel.error,
+///   success: viewModel.success,
+///   selectedCategory: viewModel.category,
+///   onCategoryChanged: viewModel.setCategory,
+///   attachment: viewModel.attachment,
+///   onPickAttachment: viewModel.pickImage,
+///   onSend: viewModel.sendMessage,
+/// )
+/// ```
 class SupportForm extends StatelessWidget {
   final TextEditingController controller;
   final bool loading;

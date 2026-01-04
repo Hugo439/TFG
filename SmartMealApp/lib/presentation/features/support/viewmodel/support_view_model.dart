@@ -14,6 +14,46 @@ import 'package:smartmeal/domain/value_objects/support_message_content.dart';
 import 'package:smartmeal/domain/value_objects/support_category.dart';
 import 'package:smartmeal/data/datasources/local/faq_local_datasource.dart';
 
+/// ViewModel para pantalla de soporte.
+///
+/// Responsabilidades:
+/// - Cargar historial de mensajes de soporte del usuario
+/// - Enviar nuevos mensajes de soporte
+/// - Subir archivos adjuntos a Firebase Storage
+/// - Cargar FAQs (Preguntas Frecuentes)
+///
+/// Funcionalidades:
+/// 1. **loadMessages(userId)**: carga historial de mensajes
+/// 2. **sendSupportMessage()**: envía mensaje con adjunto opcional
+/// 3. **loadFAQs()**: carga FAQs desde JSON local o Firestore
+///
+/// Mensaje de soporte incluye:
+/// - **message**: contenido del mensaje (validado con Value Object)
+/// - **category**: categoría ("bug", "feature", "ayuda", etc.)
+/// - **attachment**: archivo adjunto opcional (imagen/documento)
+///
+/// Adjuntos:
+/// - Se suben a Firebase Storage en support_attachments/
+/// - Genera URL pública
+/// - Se almacena en supportMessageRepository
+///
+/// Estados:
+/// - **loadingHistory**: cargando mensajes
+/// - **loadingForm**: enviando mensaje
+/// - **success**: mensaje enviado correctamente
+/// - **formError**: error al enviar mensaje
+/// - **historyError**: error al cargar historial
+///
+/// Uso:
+/// ```dart
+/// final vm = Provider.of<SupportViewModel>(context);
+/// await vm.loadMessages(userId);
+/// await vm.sendSupportMessage(
+///   'Tengo un problema con el menú',
+///   'bug',
+///   imageFile
+/// );
+/// ```
 class SupportViewModel extends ChangeNotifier {
   final GetSupportMessagesUseCase? getSupportMessagesUseCase;
   final SupportMessageRepository? supportMessageRepository;
@@ -70,6 +110,26 @@ class SupportViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Envía mensaje de soporte a Firestore.
+  ///
+  /// Parámetros:
+  /// - **message**: contenido del mensaje
+  /// - **category**: categoría ("bug", "feature", "ayuda", etc.)
+  /// - **attachment**: archivo adjunto opcional (imagen/documento)
+  ///
+  /// Validaciones:
+  /// - SupportMessageContent valida mensaje no vacío
+  /// - SupportCategory valida categoría
+  ///
+  /// Flujo:
+  /// 1. Valida message y category con Value Objects
+  /// 2. Si attachment != null:
+  ///    - Sube a Firebase Storage
+  ///    - Obtiene URL pública
+  /// 3. Crea SupportMessage
+  /// 4. Guarda en supportMessageRepository
+  ///
+  /// Retorna true si éxito, false si error.
   Future<bool> sendSupportMessage(
     String message,
     String? category,

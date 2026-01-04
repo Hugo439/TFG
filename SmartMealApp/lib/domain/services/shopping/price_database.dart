@@ -2,12 +2,22 @@ import 'package:smartmeal/domain/services/shopping/smart_ingredient_normalizer.d
 import 'package:smartmeal/domain/services/shopping/seasonal_pricing_service.dart';
 import 'package:smartmeal/domain/services/shopping/price_cache_service.dart';
 
+/// Tipo de unidad para precios.
 enum UnitType {
   weight, // €/kg
   liter, // €/L
   piece, // €/unidad
 }
 
+/// Representa rango de precios de un ingrediente.
+///
+/// Propiedades:
+/// - **min**: precio mínimo observado
+/// - **max**: precio máximo observado
+/// - **avg**: precio promedio (usado por defecto)
+/// - **unit**: tipo de unidad (weight, liter, piece)
+///
+/// Usado para almacenar estadísticas de precios y permitir ajustes.
 class PriceRange {
   final double min;
   final double max;
@@ -66,6 +76,43 @@ class PriceRange {
       'PriceRange(min: €$min, max: €$max, avg: €$avg, unit: ${unit.name})';
 }
 
+/// Base de datos de precios de ingredientes con sistema de caché y ajustes.
+///
+/// Responsabilidades:
+/// - Proveer precios específicos por ingrediente
+/// - Precios promedio por categoría como fallback
+/// - Integración con PriceCacheService
+/// - Aplicación de ajustes estacionales
+/// - Normalización y fuzzy matching de nombres
+///
+/// Estructura de precios:
+/// 1. **Precios específicos**: ingredientes comunes con precio exacto
+/// 2. **Precios por categoría**: fallback cuando no hay precio específico
+/// 3. **Caché**: evita recálculos repetidos
+/// 4. **Ajustes estacionales**: multiplica por SeasonalPricingService
+///
+/// Ejemplos de precios específicos:
+/// - Huevo: €0.25/ud
+/// - Leche: €1.20/L
+/// - Pollo: €8.00/kg
+/// - Aguacate: €2.50/ud
+///
+/// Categorías fallback:
+/// - frutas_y_verduras: €3.50/kg
+/// - carnes_y_pescados: €15.00/kg
+/// - lacteos: €4.50/kg
+/// - panaderia: €5.00/kg
+///
+/// Uso típico:
+/// ```dart
+/// final price = PriceDatabase.getEstimatedPrice(
+///   ingredientName: "pechuga de pollo",
+///   category: "carnes_y_pescados",
+///   quantityBase: 500, // 500g
+///   unitKind: "weight",
+///   applySeasonalAdjustment: true,
+/// );
+/// ```
 class PriceDatabase {
   static final _cache = PriceCacheService();
 

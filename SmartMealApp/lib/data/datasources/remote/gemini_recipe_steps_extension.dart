@@ -2,7 +2,53 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/foundation.dart';
 import 'package:smartmeal/data/datasources/remote/gemini_menu_datasource.dart';
+import 'package:smartmeal/core/errors/errors.dart';
 
+/// Extensión para GeminiMenuDatasource que genera pasos de recetas DETALLADOS.
+///
+/// Responsabilidad:
+/// - Generar pasos profesionales con técnicas culinarias
+/// - Incluir temperaturas, tiempos, puntos críticos
+/// - Hasta 2 reintentos en caso de error
+///
+/// Diferencias con GeminiStepsDatasource:
+/// - **GeminiStepsDatasource**: pasos SIMPLES y concisos (5-8 pasos)
+/// - **GeminiRecipeStepsExtension**: pasos DETALLADOS y profesionales (6-8 pasos)
+///
+/// Características de pasos detallados:
+/// 1. Técnicas culinarias específicas (saltear, hornear, pochar)
+/// 2. Temperaturas exactas (200°C, fuego medio-alto)
+/// 3. Tiempos aproximados (5-7 minutos)
+/// 4. Puntos críticos (señales visuales, textura esperada)
+/// 5. Tips profesionales para mejor resultado
+///
+/// Estructura de cada paso:
+/// - Acción principal + cómo hacerlo + qué esperar + señal de finalización
+///
+/// Ejemplos:
+/// - "Precalentar horno a 200°C durante 10 minutos. Debe estar bien caliente para sellar la carne."
+/// - "Saltear la cebolla en aceite a fuego medio-alto hasta que esté dorada y fragante (5-7 minutos)."
+///
+/// Comunicación:
+/// - URL: groq-worker.smartmealgroq.workers.dev/gemini
+/// - Hasta 2 reintentos en caso de error
+/// - Timeout: por defecto del cliente HTTP
+///
+/// Formato respuesta:
+/// ```json
+/// ["Paso 1 detallado...", "Paso 2 detallado...", ...]
+/// ```
+///
+/// Uso:
+/// ```dart
+/// final datasource = GeminiMenuDatasource();
+/// final steps = await datasource.generateRecipeSteps(
+///   recipeName: 'Pollo al horno',
+///   ingredients: ['pollo', 'romero', 'limón'],
+///   description: 'Jugoso pollo asado con hierbas',
+/// );
+/// // steps[0]: "Precalentar horno a 200°C. Debe estar bien caliente..."
+/// ```
 extension GeminiRecipeStepsExtension on GeminiMenuDatasource {
   Future<List<String>> generateRecipeSteps({
     required String recipeName,
@@ -62,12 +108,12 @@ Responde ÚNICAMENTE con un JSON array de strings, sin markdown:
               '[GeminiSteps] Error ${response.statusCode}: ${response.body}',
             );
           }
-          throw Exception('Error del servidor: ${response.statusCode}');
+          throw ServerFailure('Error del servidor: ${response.statusCode}');
         }
 
         final data = json.decode(response.body);
         if (data.containsKey('error')) {
-          throw Exception('Error del worker: ${data['error']}');
+          throw ServerFailure('Error del worker: ${data['error']}');
         }
 
         String content = (data['content'] as String? ?? '').trim();
@@ -85,20 +131,20 @@ Responde ÚNICAMENTE con un JSON array de strings, sin markdown:
         final endIdx = content.lastIndexOf(']');
 
         if (startIdx == -1 || endIdx == -1 || endIdx <= startIdx) {
-          throw Exception('No se encontró JSON array válido');
+          throw ServerFailure('No se encontró JSON array válido');
         }
 
         final jsonStr = content.substring(startIdx, endIdx + 1);
         final decoded = json.decode(jsonStr);
 
         if (decoded is! List) {
-          throw Exception('La respuesta no es un array');
+          throw ServerFailure('La respuesta no es un array');
         }
 
         final steps = decoded.map((e) => e.toString()).toList();
 
         if (steps.isEmpty) {
-          throw Exception('No se generaron pasos');
+          throw ServerFailure('No se generaron pasos');
         }
 
         return steps;
@@ -121,6 +167,6 @@ Responde ÚNICAMENTE con un JSON array de strings, sin markdown:
       }
     }
 
-    throw Exception('Error generando pasos de receta');
+    throw ServerFailure('Error generando pasos de receta');
   }
 }

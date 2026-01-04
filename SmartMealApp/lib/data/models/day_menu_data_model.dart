@@ -1,3 +1,28 @@
+/// Modelo de datos para distribución de recetas de IA por día.
+///
+/// Responsabilidad:
+/// - Parsear índices de recetas desde respuesta JSON de IA
+///
+/// Campos:
+/// - **breakfast**: índice de receta para desayuno en array recipes
+/// - **lunch**: índice de receta para comida
+/// - **snack**: índice de receta para merienda
+/// - **dinner**: índice de receta para cena
+///
+/// Formato JSON esperado:
+/// ```json
+/// {
+///   "breakfast": 0,  // índice en array recipes
+///   "lunch": 4,
+///   "snack": 8,
+///   "dinner": 12
+/// }
+/// ```
+///
+/// Uso:
+/// 1. AiMenuResponseModel contiene Map<String, DayMenuDataModel>
+/// 2. Cada día apunta a índices del array de 28 recetas
+/// 3. getRecipeIndicesInOrder() devuelve [0, 4, 8, 12] en orden correcto
 class DayMenuDataModel {
   final int? breakfast;
   final int? lunch;
@@ -15,8 +40,11 @@ class DayMenuDataModel {
     );
   }
 
-  /// Devuelve los índices de recetas en el orden correcto:
-  /// breakfast → lunch → snack → dinner
+  /// Devuelve índices de recetas en orden correcto del día.
+  ///
+  /// Orden: breakfast → lunch → snack → dinner
+  ///
+  /// Usado por AiMenuMapper para mapear recetas a entidades.
   List<int> getRecipeIndicesInOrder() {
     final indices = <int>[];
     if (breakfast != null) indices.add(breakfast!);

@@ -2,6 +2,41 @@ import 'package:flutter/material.dart';
 import 'package:smartmeal/presentation/features/settings/widgets/privacy_content.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
 
+/// Pantalla de política de privacidad.
+///
+/// Responsabilidades:
+/// - Mostrar texto legal de la política de privacidad
+/// - Contenido localizado (es/en)
+/// - Scroll vertical para lectura completa
+///
+/// Contenido (PrivacyContent):
+/// - Información recopilada (datos personales, uso)
+/// - Cómo se usa la información
+/// - Compartir datos con terceros
+/// - Seguridad de los datos
+/// - Derechos del usuario
+/// - Cambios en la política
+/// - Contacto
+///
+/// Localización:
+/// - PrivacyContent recibe languageCode (es/en)
+/// - Muestra texto en idioma correspondiente
+/// - Cargado desde widget separado para facilitar edición
+///
+/// Layout:
+/// - AppBar con título localizado
+/// - SingleChildScrollView para texto largo
+/// - Padding 16px
+/// - DefaultTextStyle para consistencia visual
+///
+/// Navegación:
+/// - Acceso desde SettingsView (sección Legal)
+/// - Botón volver a Settings
+///
+/// Uso:
+/// ```dart
+/// Navigator.pushNamed(context, Routes.privacyPolicy);
+/// ```
 class PrivacyPolicyView extends StatelessWidget {
   const PrivacyPolicyView({super.key});
 

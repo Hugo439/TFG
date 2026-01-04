@@ -1,4 +1,4 @@
-import 'package:smartmeal/domain/value_objects/shopping_item_unit_kind.dart';
+import 'package:smartmeal/domain/value_objects/unit_kind.dart';
 
 class IngredientPortion {
   final String name;

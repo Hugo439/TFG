@@ -1,6 +1,59 @@
 import 'package:smartmeal/domain/value_objects/statistics_models.dart';
 import 'package:smartmeal/domain/entities/recipe.dart';
 
+/// Modelo de datos para caché de estadísticas del menú.
+///
+/// Responsabilidad:
+/// - Cachear estadísticas calculadas del menú semanal en Firestore
+/// - Evitar recalcular estadísticas cada vez que se abre la pantalla
+///
+/// Casos de uso:
+/// 1. Usuario genera menú → se calculan estadísticas → se cachean
+/// 2. Usuario abre pantalla estadísticas → se cargan desde caché
+/// 3. Usuario modifica menú → caché invalida (menuDate cambia)
+///
+/// Campos:
+/// - **mealTypeCounts**: contador de comidas por tipo (Map<string, int>)
+/// - **topIngredients**: top 10 ingredientes más usados
+/// - **topRecipes**: top 10 recetas más frecuentes
+/// - **totalWeeklyCalories**: calorías totales de la semana
+/// - **avgDailyCalories**: promedio diario de calorías
+/// - **uniqueRecipesCount**: número de recetas únicas
+/// - **totalIngredientsCount**: número total de ingredientes
+/// - **estimatedCost**: coste estimado del menú
+/// - **totalProteinG**: gramos totales de proteína
+/// - **totalCarbsG**: gramos totales de carbohidratos
+/// - **totalFatG**: gramos totales de grasa
+/// - **menuDate**: fecha del menú (para detectar cambios)
+/// - **cachedAt**: timestamp de cacheado
+///
+/// Ruta Firestore:
+/// ```
+/// users/{userId}/statistics_cache/{menuId}
+/// ```
+///
+/// Ejemplo:
+/// ```json
+/// {
+///   "mealTypeCounts": {"breakfast": 7, "lunch": 7, "snack": 7, "dinner": 7},
+///   "topIngredients": [{"name": "Pollo", "count": 5}, ...],
+///   "topRecipes": [{"name": "Pollo al horno", "count": 2}, ...],
+///   "totalWeeklyCalories": 14000,
+///   "avgDailyCalories": 2000.0,
+///   "uniqueRecipesCount": 20,
+///   "totalIngredientsCount": 45,
+///   "estimatedCost": 45.50,
+///   "totalProteinG": 350.0,
+///   "totalCarbsG": 1200.0,
+///   "totalFatG": 450.0,
+///   "menuDate": "2024-01-01T00:00:00.000Z",
+///   "cachedAt": "2024-01-01T10:30:00.000Z"
+/// }
+/// ```
+///
+/// Validación de caché:
+/// - Si menuDate != weeklyMenu.weekStartDate → recalcular
+/// - Si cachedAt > 7 días → recalcular
 class StatisticsCacheModel {
   final Map<String, int> mealTypeCounts; // string representation
   final List<Map<String, dynamic>> topIngredients;
@@ -32,7 +85,13 @@ class StatisticsCacheModel {
     required this.cachedAt,
   });
 
-  // Convertir de StatisticsSummary a cache model
+  /// Crea modelo desde StatisticsSummary del dominio.
+  ///
+  /// Convierte:
+  /// - MealType enum → string ("breakfast", "lunch", etc.)
+  /// - IngredientCount/RecipeFrequency → Map<String, dynamic>
+  ///
+  /// Usado al cachear estadísticas recién calculadas.
   factory StatisticsCacheModel.fromSummary(
     StatisticsSummary summary,
     DateTime menuDate,
@@ -60,7 +119,14 @@ class StatisticsCacheModel {
     );
   }
 
-  // Convertir de JSON (desde Firestore)
+  /// Parsea modelo desde Map de Firestore.
+  ///
+  /// Reconstruye tipos complejos:
+  /// - Map<String, int> para mealTypeCounts
+  /// - List<Map> para topIngredients/topRecipes
+  /// - DateTime desde strings ISO 8601
+  ///
+  /// Usado al cargar caché desde Firestore.
   factory StatisticsCacheModel.fromJson(Map<String, dynamic> json) {
     // Reconstruir mealTypeCounts desde string keys
     final mealMap = <String, int>{};
@@ -96,7 +162,9 @@ class StatisticsCacheModel {
     );
   }
 
-  // Convertir a JSON (para Firestore)
+  /// Convierte a Map para persistencia en Firestore.
+  ///
+  /// Convierte DateTime → ISO 8601 strings.
   Map<String, dynamic> toJson() => {
     'mealTypeCounts': mealTypeCounts,
     'topIngredients': topIngredients,
@@ -113,7 +181,13 @@ class StatisticsCacheModel {
     'cachedAt': cachedAt.toIso8601String(),
   };
 
-  // Convertir de cache model a StatisticsSummary (para mostrarlo)
+  /// Convierte modelo cacheado a StatisticsSummary del dominio.
+  ///
+  /// Reconstruye:
+  /// - string → MealType enum
+  /// - Map<String, dynamic> → IngredientCount/RecipeFrequency
+  ///
+  /// Usado al mostrar estadísticas desde caché.
   StatisticsSummary toSummary() {
     // Reconstruir MealType enum desde strings
     final mealMap = <MealType, int>{};
@@ -141,7 +215,7 @@ class StatisticsCacheModel {
     );
   }
 
-  // Helper methods para convertir MealType
+  /// Convierte MealType enum a string para Firestore.
   static String _mealTypeToString(MealType type) {
     switch (type) {
       case MealType.breakfast:
@@ -155,6 +229,9 @@ class StatisticsCacheModel {
     }
   }
 
+  /// Convierte string de Firestore a MealType enum.
+  ///
+  /// Default: MealType.breakfast si string no reconocido.
   static MealType _stringToMealType(String type) {
     switch (type) {
       case 'breakfast':

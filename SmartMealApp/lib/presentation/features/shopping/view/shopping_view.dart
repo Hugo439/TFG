@@ -19,6 +19,58 @@ import 'package:smartmeal/presentation/routes/navigation_controller.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+/// Pantalla de lista de compras.
+///
+/// Responsabilidades:
+/// - Mostrar lista de ingredientes a comprar
+/// - Marcar/desmarcar items como comprados
+/// - Añadir ingredientes manualmente
+/// - Generar lista desde menú semanal
+/// - Calcular costo total estimado
+/// - Eliminar items comprados en batch
+///
+/// Componentes:
+/// - **ShoppingHeaderCard**: Botón "Generar desde menú" + contador items
+/// - **ShoppingItemCard**: Checkbox + nombre + cantidad + precio
+/// - **TotalPriceCard**: Suma total del costo estimado
+///
+/// Funcionalidades en AppBar:
+/// - **Check/Uncheck All**: Marca todos los items o desmarca todos
+/// - **Delete Checked**: Elimina todos los items marcados (con confirmación)
+///
+/// FAB (FloatingActionButton):
+/// - Botón "+" para añadir ingrediente manual
+/// - Navega a AddShoppingItemView
+///
+/// Generación desde menú:
+/// - Botón en ShoppingHeaderCard
+/// - Agrega todos los ingredientes del menú actual
+/// - Agrupa por ingrediente y suma cantidades
+/// - Detecta duplicados (muestra SnackBar informativo)
+///
+/// Cálculo de precios:
+/// - Usa PriceDatabaseService
+/// - Prioridad: UserPriceOverride > PriceCatalog > Fallback
+/// - Muestra "~X.XX€" para estimaciones
+///
+/// Estados:
+/// - **Loading**: CircularProgressIndicator
+/// - **Empty**: Mensaje "Lista vacía" + hint "Genera desde menú"
+/// - **Items**: Lista scrolleable con ShoppingItemCard
+///
+/// Caché offline:
+/// - ShoppingLocalDatasource guarda lista en SharedPreferences
+/// - Instant+sync: muestra caché instantáneamente, sync en background
+///
+/// Navegación:
+/// - AppShell con BottomNavigationBar (selectedIndex: 2)
+/// - Botón "+" → AddShoppingItemView
+/// - Tap item → AddShoppingItemView(itemToEdit)
+///
+/// Uso:
+/// ```dart
+/// Navigator.pushNamed(context, Routes.shopping);
+/// ```
 class ShoppingView extends StatelessWidget {
   const ShoppingView({super.key});
 

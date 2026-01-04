@@ -1,5 +1,44 @@
 import 'package:flutter/material.dart';
 
+/// Card de encabezado para la vista de lista de compra.
+///
+/// Responsabilidades:
+/// - Título "Lista de la Compra"
+/// - Subtítulo informativo (ej: número de items)
+/// - Icono de carrito de compras
+///
+/// Diseño visual:
+/// - **Gradient**: primary a primary con alpha 0.8
+/// - **Dirección**: topLeft a bottomRight
+/// - **BoxShadow**: primary con alpha 0.3, blur 8, offset (0,4)
+/// - **BorderRadius**: 16px
+/// - **Padding**: 20px
+///
+/// Layout:
+/// - Row: columna de texto (expandida) + container con icono
+/// - Columna: título + subtítulo
+/// - Icono: shopping_cart, 32px, en container decorado
+///
+/// Container del icono:
+/// - Padding: 12px
+/// - Background: onPrimary con alpha 0.2
+/// - BorderRadius: 12px
+///
+/// Tipografía:
+/// - **Título**: 20px, bold, onPrimary
+/// - **Subtítulo**: 14px, regular, onPrimary
+///
+/// Consistencia visual:
+/// - Mismo estilo que TotalPriceCard (ambos con gradient)
+/// - Colores complementarios (primary vs secondary)
+///
+/// Parámetros:
+/// [subtitle] - Texto informativo (ej: "8 productos")
+///
+/// Uso:
+/// ```dart
+/// ShoppingHeaderCard(subtitle: '12 productos')
+/// ```
 class ShoppingHeaderCard extends StatelessWidget {
   final String subtitle;
 

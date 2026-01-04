@@ -3,6 +3,38 @@ import 'package:smartmeal/presentation/theme/colors.dart';
 import 'package:smartmeal/presentation/widgets/branding/animated_logo.dart';
 import 'package:smartmeal/l10n/app_localizations.dart';
 
+/// Pantalla de splash mostrada durante la inicialización de la app.
+///
+/// Responsabilidades:
+/// - Mostrar logo animado con AnimatedLogo widget
+/// - Indicador de progreso durante carga
+/// - Manejo de errores de inicialización
+/// - Botón de reintentar si falla
+///
+/// Estados:
+/// 1. **Loading**: logo + CircularProgressIndicator
+/// 2. **Error**: logo + icono error + mensaje + botón reintentar
+///
+/// Controlado por SplashViewModel:
+/// - Inicializa Firebase
+/// - Verifica autenticación
+/// - Navega a Home (autenticado) o Login (no autenticado)
+///
+/// Responsive:
+/// - Logo 180px en pantallas normales
+/// - Logo 140px en pantallas pequeñas (<360px width)
+///
+/// Uso:
+/// ```dart
+/// // Sin error (loading)
+/// SplashView(showProgress: true)
+///
+/// // Con error
+/// SplashView(
+///   error: 'Firebase init failed',
+///   onRetry: () => viewModel.retry(),
+/// )
+/// ```
 class SplashView extends StatelessWidget {
   final Object? error;
   final VoidCallback? onRetry;

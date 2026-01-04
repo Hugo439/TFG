@@ -10,6 +10,47 @@ import 'package:smartmeal/presentation/features/auth/widgets/login_header.dart';
 import 'package:smartmeal/presentation/features/auth/widgets/register_prompt.dart';
 import 'package:smartmeal/presentation/routes/routes.dart';
 
+/// Pantalla de inicio de sesión.
+///
+/// Responsabilidades:
+/// - Formulario de login (LoginForm)
+/// - "Recordar credenciales" con checkbox
+/// - Navegación a Home tras login exitoso
+/// - Link a pantalla de registro (RegisterPrompt)
+///
+/// Componentes:
+/// - **LoginHeader**: Logo + título + mensaje bienvenida
+/// - **LoginForm**: Email + contraseña + checkbox + botón
+/// - **RegisterPrompt**: Link "No tienes cuenta? Regístrate"
+///
+/// State management:
+/// - LoginViewModel con ChangeNotifierProvider
+/// - UseCases: SignInUseCase, LoadSavedCredentialsUseCase, SaveCredentialsUseCase
+///
+/// Funcionalidad "Remember me":
+/// - Si activado: guarda email/password en SharedPreferences
+/// - Al abrir app: carga credenciales guardadas
+/// - Al desactivar: borra credenciales guardadas
+///
+/// Navegación:
+/// - Éxito: pushReplacementNamed(Routes.home)
+/// - Ir a registro: Navigator.pushNamed(Routes.register)
+///
+/// Responsive:
+/// - Max width: 420px (centrado)
+/// - Padding: 48px (>1000px), 32px (>800px), 16px (<800px)
+///
+/// Parámetros:
+/// [prefilledEmail] - Email prellenado (opcional, usado tras registro)
+///
+/// Uso:
+/// ```dart
+/// // Login normal
+/// Navigator.pushNamed(context, Routes.login);
+///
+/// // Login con email prellenado
+/// LoginView(prefilledEmail: 'user@example.com');
+/// ```
 class LoginView extends StatelessWidget {
   final String? prefilledEmail;
 

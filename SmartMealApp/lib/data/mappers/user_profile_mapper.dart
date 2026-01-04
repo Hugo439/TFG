@@ -9,7 +9,49 @@ import 'package:smartmeal/domain/value_objects/allergies.dart';
 import 'package:smartmeal/domain/value_objects/age.dart';
 import 'package:smartmeal/domain/value_objects/gender.dart';
 
+/// Mapper para convertir entre UserProfile (entidad del dominio) y datos de Firestore.
+///
+/// Responsabilidades:
+/// - **fromFirestore**: Convierte Map<String, dynamic> de Firestore → UserProfile con Value Objects validados
+/// - **toFirestore**: Convierte UserProfile → Map para actualización en Firestore
+/// - **toFirestoreCreate**: Igual que toFirestore pero añade timestamp de creación
+///
+/// Manejo de errores:
+/// - Age y Gender pueden fallar en parsing → devuelve null (campos opcionales)
+/// - Otros campos tienen valores por defecto si faltan en Firestore
+///
+/// Formato Firestore:
+/// ```json
+/// {
+///   "displayName": "Juan Pérez",
+///   "email": "juan@example.com",
+///   "heightCm": 175,
+///   "weightKg": 70.5,
+///   "goal": "Perder peso",
+///   "allergies": "gluten, lactosa",
+///   "age": 30,
+///   "gender": "male",
+///   "phone": "+34666777888",
+///   "createdAt": "2024-01-01T10:00:00.000Z",
+///   "updatedAt": "2024-01-15T15:30:00.000Z"
+/// }
+/// ```
 class UserProfileMapper {
+  /// Convierte datos de Firestore a entidad UserProfile del dominio.
+  ///
+  /// [data] - Mapa de datos desde Firestore (documento del perfil).
+  /// [uid] - ID del usuario desde Firebase Auth.
+  /// [emailString] - Email desde Firebase Auth (fuente de verdad).
+  /// [photoUrl] - URL de foto desde Firebase Auth (puede ser null).
+  ///
+  /// Returns: UserProfile con todos los Value Objects validados.
+  ///
+  /// Validación:
+  /// - DisplayName, Email, Height, Weight, Goal son obligatorios (con defaults)
+  /// - Phone, Allergies, Age, Gender son opcionales
+  /// - Age y Gender usan parsers especiales que retornan null si fallan
+  ///
+  /// Nota: El email siempre viene de Firebase Auth, no de Firestore.
   static UserProfile fromFirestore(
     Map<String, dynamic> data,
     String uid,
@@ -31,6 +73,9 @@ class UserProfileMapper {
     );
   }
 
+  /// Parsea edad desde valor dinámico de Firestore.
+  ///
+  /// Maneja tanto int como string. Retorna null si falla el parsing.
   static Age? _parseAge(dynamic value) {
     if (value == null) return null;
     try {
@@ -41,6 +86,9 @@ class UserProfileMapper {
     }
   }
 
+  /// Parsea género desde valor dinámico de Firestore.
+  ///
+  /// Retorna null si el valor es null, vacío o inválido.
   static Gender? _parseGender(dynamic value) {
     if (value == null || value.toString().trim().isEmpty) return null;
     try {
@@ -50,6 +98,12 @@ class UserProfileMapper {
     }
   }
 
+  /// Convierte UserProfile a Map para actualización en Firestore.
+  ///
+  /// Extrae los valores primitivos de los Value Objects.
+  /// Incluye timestamp de actualización.
+  ///
+  /// Returns: Map listo para Firestore update().
   static Map<String, dynamic> toFirestore(UserProfile profile) {
     return {
       'displayName': profile.displayName.value,
@@ -65,6 +119,11 @@ class UserProfileMapper {
     };
   }
 
+  /// Convierte UserProfile a Map para creación inicial en Firestore.
+  ///
+  /// Igual que toFirestore pero añade timestamp de creación.
+  ///
+  /// Returns: Map listo para Firestore set().
   static Map<String, dynamic> toFirestoreCreate(UserProfile profile) {
     return {
       ...toFirestore(profile),

@@ -65,6 +65,89 @@ import 'package:smartmeal/presentation/features/menu/viewmodel/menu_view_model.d
 import 'package:smartmeal/presentation/features/menu/viewmodel/generate_menu_view_model.dart';
 import 'package:smartmeal/core/services/fcm_service.dart';
 
+/// Service Locator central de la aplicación usando GetIt.
+///
+/// Responsabilidades:
+/// - Registro de dependencias (DI)
+/// - Singleton pattern para servicios
+/// - Factory pattern para casos de uso
+/// - Modularización con DI sub-modules
+///
+/// GetIt (sl):
+/// - Singleton global: sl = GetIt.instance
+/// - Acceso: sl<T>() para obtener instancia
+/// - Tipos de registro:
+///   * registerLazySingleton: instancia única lazy
+///   * registerSingleton: instancia única eager
+///   * registerFactory: nueva instancia cada vez
+///
+/// setupServiceLocator():
+/// - Función async de inicialización
+/// - Llamada desde main() antes de runApp
+/// - Orden de registro:
+///   1. External dependencies (Firebase, SharedPreferences)
+///   2. Data Sources (local y remote)
+///   3. Repositories
+///   4. Services
+///   5. Use Cases
+///   6. ViewModels
+///   7. Sub-modules (setupXXX)
+///
+/// External dependencies:
+/// - SharedPreferences: persistencia local
+/// - FirebaseAuth: autenticación
+/// - FirebaseFirestore: base de datos
+///
+/// Data Sources:
+/// - Local: AuthLocalDataSource, ShoppingLocalDatasource, etc.
+/// - Remote: FirebaseAuthDatasource, FirestoreDatasource, etc.
+///
+/// Sub-modules:
+/// - setupAuthDI(): auth use cases, repositories, ViewModels
+/// - setupMenusDI(): menu generation, weekly menus
+/// - setupRecipesDI(): recipe management
+/// - setupShoppingDI(): shopping list, aggregation, prices
+/// - setupStatisticsDI(): statistics calculation
+/// - setupSupportDI(): FAQs, support messages
+/// - setupPriceSystemDI(): price database, estimation
+/// - setupAppDI(): app-level dependencies
+///
+/// Services registrados:
+/// - FCMService: Firebase Cloud Messaging
+/// - IngredientAggregator: agregación de ingredientes
+/// - IngredientParser: parsing de cantidades
+/// - SmartCategoryHelper: categorización inteligente
+/// - SmartIngredientNormalizer: normalización de nombres
+/// - CostEstimator: estimación de costos
+///
+/// ViewModels registrados:
+/// - LoginViewModel: Singleton para mantener estado
+/// - MenuViewModel: Singleton para cache de menús
+/// - GenerateMenuViewModel: Singleton para generación
+/// - Otros ViewModels: registrados en sus respectivos sub-modules
+///
+/// Patrones de uso:
+/// ```dart
+/// // Obtener instancia
+/// final repo = sl<UserRepository>();
+///
+/// // Inyectar en constructor
+/// class UseCase {
+///   final Repository repo;
+///   UseCase(this.repo);
+/// }
+/// sl.registerFactory(() => UseCase(sl()));
+///
+/// // En widgets
+/// final vm = sl<MenuViewModel>();
+/// ```
+///
+/// Ventajas:
+/// - Desacoplamiento de código
+/// - Facilita testing (mocks)
+/// - Singleton automático
+/// - Lazy initialization
+/// - Organización modular
 final sl = GetIt.instance;
 
 Future<void> setupServiceLocator() async {

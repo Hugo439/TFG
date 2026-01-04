@@ -5,6 +5,67 @@ import 'package:smartmeal/presentation/widgets/inputs/filled_text_field.dart';
 import 'package:smartmeal/presentation/widgets/buttons/primary_button.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
 
+/// Formulario de inicio de sesión.
+///
+/// Responsabilidades:
+/// - Campos de email y contraseña
+/// - Validación de inputs
+/// - Llamar a LoginViewModel.login()
+/// - Mostrar errores localizados
+/// - Opción "Recordar contraseña"
+/// - Botón de login
+///
+/// Campos:
+/// 1. **Email**: FilledTextField con validación
+/// 2. **Contraseña**: FilledTextField con obscureText
+///
+/// Flujo de uso:
+/// 1. Usuario introduce email y password
+/// 2. Toca botón "Iniciar sesión"
+/// 3. Llama vm.login(email, password)
+/// 4. LoginViewModel maneja autenticación Firebase
+/// 5. Si éxito: onSuccess() callback
+/// 6. Si error: muestra mensaje localizado
+///
+/// Estados:
+/// - **Normal**: formulario habilitado
+/// - **Loading**: botón con spinner, campos disabled
+/// - **Error**: mensaje rojo debajo del formulario
+///
+/// Códigos de error:
+/// - fieldsRequired: Campos requeridos
+/// - userNotFound: Usuario no encontrado
+/// - wrongPassword: Contraseña incorrecta
+/// - invalidEmail: Email inválido
+/// - userDisabled: Cuenta deshabilitada
+/// - invalidCredential: Credenciales inválidas
+/// - generic: Error genérico
+///
+/// Prefill:
+/// - Acepta prefilledEmail para pre-llenar campo
+/// - Útil al venir de RegisterView
+/// - didChangeDependencies actualiza desde ViewModel
+///
+/// Recordar contraseña:
+/// - Checkbox para guardar credenciales
+/// - Almacenado en SharedPreferences
+/// - vm.rememberMe controla estado
+///
+/// _getErrorText:
+/// - Mapea LoginErrorCode a strings localizados
+/// - Usa l10n para multi-idioma
+///
+/// Parámetros:
+/// [onSuccess] - Callback al login exitoso
+/// [prefilledEmail] - Email pre-llenado (opcional)
+///
+/// Uso:
+/// ```dart
+/// LoginForm(
+///   onSuccess: () => navigateToHome(),
+///   prefilledEmail: 'user@example.com',
+/// )
+/// ```
 class LoginForm extends StatefulWidget {
   final VoidCallback? onSuccess;
   final String? prefilledEmail;

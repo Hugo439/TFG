@@ -11,8 +11,10 @@ import 'package:smartmeal/domain/value_objects/weight.dart';
 import 'package:smartmeal/domain/value_objects/age.dart';
 import 'package:smartmeal/domain/value_objects/gender.dart';
 
+/// Estados del formulario de edición de perfil.
 enum EditProfileStatus { idle, loading, success, error }
 
+/// Códigos de error en edición de perfil.
 enum EditProfileErrorCode {
   nameRequired,
   heightInvalid,
@@ -22,6 +24,7 @@ enum EditProfileErrorCode {
   generic,
 }
 
+/// Estado del ViewModel de edición de perfil.
 class EditProfileState {
   final EditProfileStatus status;
   final EditProfileErrorCode? errorCode;
@@ -46,6 +49,43 @@ class EditProfileState {
   }
 }
 
+/// ViewModel para edición de perfil de usuario.
+///
+/// Responsabilidades:
+/// - Gestionar formulario de edición de perfil
+/// - Validar campos con Value Objects
+/// - Subir foto de perfil a Firebase Storage
+/// - Actualizar perfil en Firestore
+///
+/// Campos editables:
+/// - **displayName**: nombre del usuario (requerido)
+/// - **phone**: teléfono (opcional)
+/// - **heightCm**: altura en cm (requerido, > 0)
+/// - **weightKg**: peso en kg (requerido, > 0)
+/// - **goal**: objetivo ("Perder peso", "Mantener", "Ganar músculo")
+/// - **allergies**: alergias separadas por comas (opcional)
+/// - **age**: edad (opcional, 10-120)
+/// - **gender**: género ("Hombre", "Mujer", "Otro", opcional)
+/// - **photoUrl**: URL de foto de perfil (opcional)
+///
+/// Validaciones:
+/// - Value Objects validan formato de cada campo
+/// - DisplayName, Height, Weight son requeridos
+/// - Age debe estar en rango 10-120 si se proporciona
+///
+/// Subida de foto:
+/// - uploadPhoto(XFile) sube a Firebase Storage
+/// - Genera URL pública
+/// - Actualiza photoUrl automáticamente
+///
+/// Uso:
+/// ```dart
+/// final vm = EditProfileViewModel(updateUseCase, uploadUseCase, currentProfile);
+/// vm.setDisplayName('Nuevo Nombre');
+/// vm.setHeightCm('175');
+/// await vm.uploadPhoto(imageFile);
+/// await vm.save();
+/// ```
 class EditProfileViewModel extends ChangeNotifier {
   final UpdateUserProfileUseCase _updateProfile;
   final UploadProfilePhotoUseCase _uploadProfilePhoto;

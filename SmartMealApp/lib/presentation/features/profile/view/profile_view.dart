@@ -13,6 +13,57 @@ import 'package:smartmeal/presentation/features/profile/widgets/account_actions_
 import 'package:smartmeal/presentation/routes/routes.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
 
+/// Pantalla de perfil de usuario.
+///
+/// Responsabilidades:
+/// - Mostrar datos del perfil (vista de solo lectura)
+/// - Botón editar que navega a EditProfileView
+/// - Acciones de cuenta (cerrar sesión, eliminar cuenta)
+/// - Cargar perfil desde Firestore al abrir
+///
+/// Secciones (widgets):
+/// 1. **ProfileHeader**: Avatar + nombre + email
+/// 2. **PersonalInfoSection**: Edad, género, peso, altura
+/// 3. **GoalsSection**: Objetivo nutricional, alergias, calorías objetivo
+/// 4. **AccountActionsSection**: Cambiar contraseña, cerrar sesión, eliminar cuenta
+///
+/// Estados:
+/// - **Loading**: CircularProgressIndicator
+/// - **Error**: Mensaje de error
+/// - **NoData**: Mensaje "No hay datos de perfil"
+/// - **Success**: Muestra secciones con datos
+///
+/// Botón editar (AppBar):
+/// - Icono lápiz
+/// - Navega a EditProfileView
+/// - Al volver, recarga perfil si hubo cambios
+///
+/// Acción cerrar sesión:
+/// - SignOutUseCase
+/// - Navega a LoginView (pushReplacementNamed)
+/// - Limpia estado de autenticación
+///
+/// Acción eliminar cuenta:
+/// - Diálogo de confirmación
+/// - DeleteAccountUseCase elimina:
+///   1. Usuario de Firebase Auth
+///   2. Perfil de Firestore
+///   3. Menús, recetas, lista de compras
+/// - Navega a LoginView tras eliminar
+///
+/// Cambiar contraseña:
+/// - Muestra SnackBar "Funcionalidad no implementada"
+/// - TODO: Implementar reset password por email
+///
+/// Navegación:
+/// - Editar → EditProfileView
+/// - Cerrar sesión/Eliminar → LoginView (replacement)
+/// - Volver → pop() a HomeView
+///
+/// Uso:
+/// ```dart
+/// Navigator.pushNamed(context, Routes.profile);
+/// ```
 class ProfileView extends StatelessWidget {
   const ProfileView({super.key});
 

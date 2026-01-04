@@ -12,6 +12,71 @@ import 'package:smartmeal/presentation/widgets/inputs/age_field.dart';
 import 'package:smartmeal/presentation/widgets/inputs/gender_dropdown.dart';
 import 'package:image_picker/image_picker.dart';
 
+/// Pantalla de edición de perfil de usuario.
+///
+/// Responsabilidades:
+/// - Formulario completo de edición de perfil
+/// - Cambiar foto de perfil con ImagePicker
+/// - Validación de campos obligatorios
+/// - Guardar cambios en Firestore
+///
+/// Campos editables:
+/// - **Foto de perfil**: Tap para cambiar (galería)
+/// - **Nombre**: String obligatorio
+/// - **Email**: Solo lectura (no editable)
+/// - **Edad**: AgeField con validación (1-150)
+/// - **Género**: GenderDropdown (masculino/femenino/otro)
+/// - **Peso**: Decimal con validación (20-300 kg)
+/// - **Altura**: Decimal con validación (50-250 cm)
+/// - **Objetivo**: Dropdown (perder/mantener/ganar peso, ganar músculo)
+/// - **Alergias**: MultiSelectChip (gluten, lactosa, frutos secos, etc.)
+///
+/// Validaciones:
+/// - **Nombre**: no vacío
+/// - **Peso**: 20-300 kg, formato decimal
+/// - **Altura**: 50-250 cm, formato decimal
+/// - **Edad**: 1-150 años
+/// - Muestra mensaje de error específico por campo
+///
+/// Cambio de foto:
+/// - ImagePicker.pickImage(source: gallery)
+/// - UploadProfilePhotoUseCase sube a Firebase Storage
+/// - Ruta: users/{userId}/profile/avatar.jpg
+/// - Actualiza photoUrl en Firestore
+/// - Muestra SnackBar de éxito/error
+///
+/// Estados de guardado:
+/// - **Idle**: Formulario editable
+/// - **Saving**: Botón deshabilitado + indicador
+/// - **Success**: SnackBar + pop() con true
+/// - **Error**: SnackBar con mensaje de error
+///
+/// Códigos de error (EditProfileErrorCode):
+/// - **nameRequired**: Nombre vacío
+/// - **heightInvalid**: Altura fuera de rango
+/// - **weightInvalid**: Peso fuera de rango
+/// - **ageInvalid**: Edad fuera de rango
+/// - **validationError**: Error de validación genérico
+/// - **generic**: Error desconocido
+///
+/// Navegación:
+/// - Éxito: pop(true) para recargar ProfileView
+/// - Cancelar: pop() sin resultado
+///
+/// Parámetros:
+/// [profile] - Perfil actual del usuario
+///
+/// Uso:
+/// ```dart
+/// final result = await Navigator.pushNamed(
+///   context,
+///   Routes.editProfile,
+///   arguments: userProfile,
+/// );
+/// if (result == true) {
+///   // Recargar perfil
+/// }
+/// ```
 class EditProfileView extends StatelessWidget {
   final UserProfile profile;
 

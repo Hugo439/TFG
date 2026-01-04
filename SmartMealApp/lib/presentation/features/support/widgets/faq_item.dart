@@ -1,5 +1,55 @@
 import 'package:flutter/material.dart';
 
+/// Item individual de FAQ (pregunta y respuesta).
+///
+/// Responsabilidades:
+/// - Mostrar pregunta destacada
+/// - Mostrar respuesta debajo
+/// - Icono de ayuda para identificación rápida
+///
+/// Diseño visual:
+/// - **Background**: surfaceContainerHighest
+/// - **BorderRadius**: 12px
+/// - **Border**: outline con alpha 0.2
+/// - **Margin**: 12px bottom (separación entre items)
+/// - **Padding**: 16px
+///
+/// Layout:
+/// - Columna vertical
+/// - Row arriba: icon + pregunta
+/// - Respuesta debajo con padding left 28px (alineada con texto)
+///
+/// Pregunta:
+/// - Icon: help_outline, primary color, 20px
+/// - Texto: bold, 15px, primary color
+/// - Expanded para wrap text
+///
+/// Respuesta:
+/// - fontSize: 14px
+/// - color: onSurface con alpha 0.8
+/// - height: 1.4 (line height)
+/// - Indent left para alineación visual
+///
+/// Estados:
+/// - No expandible (diferencia con ExpansionTile)
+/// - Siempre muestra respuesta completa
+/// - Diseño simple y directo
+///
+/// Usado en:
+/// - FAQList: renderiza colección de estos items
+/// - SupportView: sección de ayuda
+///
+/// Parámetros:
+/// [question] - Texto de la pregunta
+/// [answer] - Texto de la respuesta
+///
+/// Uso:
+/// ```dart
+/// FAQItem(
+///   question: '¿Cómo genero un menú?',
+///   answer: 'Ve a la pestaña Menús y toca "Generar menú"...',
+/// )
+/// ```
 class FAQItem extends StatelessWidget {
   final String question;
   final String answer;

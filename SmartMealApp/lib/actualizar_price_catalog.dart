@@ -139,19 +139,27 @@ Future<void> subirCatalogoPreciosRespetandoCampos() async {
   final firestore = FirebaseFirestore.instance;
 
   for (final producto in productos) {
-    final docRef = firestore.collection('price_catalog').doc(producto['nombre'].replaceAll(' ', '_'));
+    final docRef = firestore
+        .collection('price_catalog')
+        .doc(producto['nombre'].replaceAll(' ', '_'));
     final docSnap = await docRef.get();
-    final categoria = _categoryHelper.guessCategory(producto['nombre']).firestoreKey;
+    final categoria = _categoryHelper
+        .guessCategory(producto['nombre'])
+        .firestoreKey;
 
     if (docSnap.exists) {
       // Si existe, solo añade los campos que no estén presentes
       final data = docSnap.data()!;
       final Map<String, dynamic> updateData = {};
 
-      if (!data.containsKey('priceRef')) updateData['priceRef'] = producto['precio'];
-      if (!data.containsKey('unitKind')) updateData['unitKind'] = _mapUnidad(producto['unidad']);
-      if (!data.containsKey('displayName')) updateData['displayName'] = producto['nombre'];
-      if (!data.containsKey('normalizedName')) updateData['normalizedName'] = producto['nombre'].toLowerCase();
+      if (!data.containsKey('priceRef'))
+        updateData['priceRef'] = producto['precio'];
+      if (!data.containsKey('unitKind'))
+        updateData['unitKind'] = _mapUnidad(producto['unidad']);
+      if (!data.containsKey('displayName'))
+        updateData['displayName'] = producto['nombre'];
+      if (!data.containsKey('normalizedName'))
+        updateData['normalizedName'] = producto['nombre'].toLowerCase();
       if (!data.containsKey('category')) updateData['category'] = categoria;
 
       if (updateData.isNotEmpty) {
@@ -189,6 +197,5 @@ String _mapUnidad(String unidad) {
       return 'unit';
   }
 }
-
 
 //TODO: archivo para actualizar el catálogo de precios

@@ -1,6 +1,97 @@
 import 'package:flutter/material.dart';
 
-/// Colores usados en SmartMeal (light + dark variants).
+/// Paleta de colores completa de SmartMeal (light + dark).
+///
+/// Responsabilidades:
+/// - Definir todos los colores usados en la app
+/// - Variantes light y dark para cada color
+/// - Colores semánticos (success, error, warning, info)
+/// - Colores de estadísticas (macros, costos)
+/// - Colores de categorías de soporte
+///
+/// Estructura:
+/// - **Base light**: primary, secondary, tertiary
+/// - **Text**: primaryText, secondaryText, mutedText
+/// - **Backgrounds**: primaryBackground, secondaryBackground
+/// - **Accents**: accent1-4 para variaciones
+/// - **Semantic**: success, error, warning, info
+/// - **Stats**: protein, carbs, fats, cost
+/// - **Containers**: errorContainer, onErrorContainer
+/// - **Interaction**: splash, highlight, shadow, border
+/// - **Navigation**: navBackground, navBorder
+/// - **Dark variants**: darkPrimary, darkSecondary, etc.
+///
+/// Colores principales:
+/// - primary: #4CAF50 (verde principal)
+/// - secondary: #A5D6A7 (verde claro)
+/// - tertiary: #C8E6C9 (verde muy claro)
+///
+/// Colores de texto:
+/// - primaryText: #000000 (negro)
+/// - secondaryText: #4A4A4A (gris oscuro)
+/// - mutedText: #757575 (gris medio)
+///
+/// Backgrounds light:
+/// - primaryBackground: #E8F5E9 (verde muy claro)
+/// - secondaryBackground: #C8E6C9 (verde claro)
+///
+/// Accents:
+/// - accent1: #76FF03 (verde brillante)
+/// - accent2: #B2FF59 (verde lima)
+/// - accent3: #388E3C (verde oscuro)
+/// - accent4: #B2DFDB (turquesa claro)
+///
+/// Semánticos:
+/// - success: #4CAF50 (verde)
+/// - error: #F44336 (rojo)
+/// - warning: #FFA726 (naranja)
+/// - info: #2196F3 (azul)
+///
+/// Estadísticas:
+/// - statProtein: #7C3AED (púrpura)
+/// - statCarbs: #EC4899 (rosa)
+/// - statFats: #0EA5E9 (azul cielo)
+/// - statCost: #FB923C (naranja)
+///
+/// Dark variants:
+/// - darkPrimary: #2E7D32 (verde oscuro)
+/// - darkSecondary: #1B5E20 (verde muy oscuro)
+/// - darkPrimaryBackground: #0D1117 (negro azulado)
+/// - darkSecondaryBackground: #161B22 (gris muy oscuro)
+/// - darkPrimaryText: #FFFFFF (blanco)
+/// - darkSecondaryText: #CBCBCB (gris claro)
+///
+/// Categorías de soporte:
+/// - categoryDudas / darkCategoryDudas
+/// - categoryErrores / darkCategoryErrores
+/// - categorySugerencias / darkCategorySugerencias
+/// - categoryCuenta / darkCategoryCuenta
+/// - categoryMenus / darkCategoryMenus
+/// - categoryOtro / darkCategoryOtro
+///
+/// Interaction overlays:
+/// - splash: 10% primary para ripple
+/// - highlight: 5% primary para hover
+/// - shadow: 10% negro para sombras
+/// - shadowStrong: 20% negro para sombras intensas
+/// - border: 12% negro para bordes suaves
+///
+/// Uso:
+/// ```dart
+/// Container(
+///   color: AppColors.primary,
+///   child: Text(
+///     'Título',
+///     style: TextStyle(color: AppColors.primaryText),
+///   ),
+/// )
+///
+/// // Con tema
+/// final isDark = Theme.of(context).brightness == Brightness.dark;
+/// final bgColor = isDark
+///   ? AppColors.darkPrimaryBackground
+///   : AppColors.primaryBackground;
+/// ```
 class AppColors {
   // Base light
   static const Color primary = Color(0xFF4CAF50); // #4caf50
@@ -72,8 +163,12 @@ class AppColors {
   static const Color darkPrimaryText = Color(0xFFFFFFFF); // #ffffff
   static const Color darkSecondaryText = Color(0xFFCBCBCB); // #cbcbcb
 
-  static const Color darkPrimaryBackground = Color(0xFF0D1117); // Fondo primario
-  static const Color darkSecondaryBackground = Color(0xFF161B22); // Fondo secundario
+  static const Color darkPrimaryBackground = Color(
+    0xFF0D1117,
+  ); // Fondo primario
+  static const Color darkSecondaryBackground = Color(
+    0xFF161B22,
+  ); // Fondo secundario
 
   static const Color darkAccent1 = Color(0xFFA5D6A7); // #a5d6a7
   static const Color darkAccent2 = Color(0xFF7CB342); // #7cb342
@@ -116,8 +211,12 @@ class AppColors {
   // Nuevos colores para dark mode mejorado
   static const Color darkSurface = Color(0xFF161B22); // Superficie
   static const Color darkSurfaceContainer = Color(0xFF21262D); // Contenedor
-  static const Color darkSurfaceContainerHigh = Color(0xFF30363D); // Contenedor alto
-  static const Color darkSurfaceContainerHighest = Color(0xFF484F58); // Contenedor más alto
+  static const Color darkSurfaceContainerHigh = Color(
+    0xFF30363D,
+  ); // Contenedor alto
+  static const Color darkSurfaceContainerHighest = Color(
+    0xFF484F58,
+  ); // Contenedor más alto
   static const Color darkOnSurface = Color(0xFFE6EDF3); // Texto en superficie
   static const Color darkOnSurfaceVariant = Color(0xFF7D8590); // Texto variante
   static const Color darkOutline = Color(0xFF6E7681); // Bordes

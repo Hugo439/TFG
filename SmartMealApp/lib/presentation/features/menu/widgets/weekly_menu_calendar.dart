@@ -3,6 +3,57 @@ import 'package:smartmeal/domain/entities/weekly_menu.dart';
 import 'package:smartmeal/presentation/features/menu/widgets/day_menu_card.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
 
+/// Widget que muestra el calendario semanal de menús.
+///
+/// Responsabilidades:
+/// - Mostrar 7 días de menús en formato calendario
+/// - Header decorativo con gradiente
+/// - DayMenuCard por cada día de la semana
+/// - Navegación a detalle de recetas
+///
+/// Estructura visual:
+/// 1. **Header decorativo**:
+///    - Gradiente: primaryContainer → secondaryContainer
+///    - Icono restaurant_menu en contenedor circular
+///    - Título: "Menú Semanal"
+///    - Subtítulo: "7 días de comidas planificadas"
+///    - Sombra suave para profundidad
+///
+/// 2. **Lista de días**:
+///    - 7 DayMenuCard (lunes a domingo)
+///    - Espaciado 16px entre cards
+///    - Cada card muestra:
+///      * Nombre del día
+///      * 4 comidas (breakfast, lunch, snack, dinner)
+///      * Tap en receta → callback onRecipeTap
+///
+/// Interacción:
+/// - onRecipeTap(recipeId) al tocar cualquier receta
+/// - Normalmente navega a RecipeDetailView
+/// - DayMenuCard maneja el layout de cada día
+///
+/// Localización:
+/// - Títulos y subtítulos traducidos
+/// - Nombres de días en DayMenuCard localizados
+///
+/// Parámetros:
+/// [menu] - WeeklyMenu con 7 días de recetas
+/// [onRecipeTap] - Callback al tocar una receta (opcional)
+///
+/// Uso:
+/// ```dart
+/// WeeklyMenuCalendar(
+///   menu: weeklyMenu,
+///   onRecipeTap: (recipeId) {
+///     Navigator.push(
+///       context,
+///       MaterialPageRoute(
+///         builder: (_) => RecipeDetailView(recipeId: recipeId),
+///       ),
+///     );
+///   },
+/// )
+/// ```
 class WeeklyMenuCalendar extends StatelessWidget {
   final WeeklyMenu menu;
   final void Function(String recipeId)? onRecipeTap;

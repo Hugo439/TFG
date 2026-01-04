@@ -1,8 +1,36 @@
 import 'package:flutter/foundation.dart';
 import 'package:smartmeal/domain/usecases/auth/sign_up_usecase.dart';
 
+/// Códigos de error en registro.
 enum RegisterErrorCode { emailInUse, invalidEmail, weakPassword, generic }
 
+/// ViewModel para pantalla de registro.
+///
+/// Responsabilidades:
+/// - Gestionar formulario de registro
+/// - Crear cuenta con Firebase Auth
+/// - Crear perfil de usuario en Firestore
+/// - Mapear errores de Firebase a códigos localizables
+///
+/// Datos requeridos:
+/// - Email, password (Auth)
+/// - DisplayName, altura, peso, objetivo (Perfil)
+/// - Opcionales: alergias, edad, género
+///
+/// Manejo de errores:
+/// - email-already-in-use → RegisterErrorCode.emailInUse
+/// - invalid-email → RegisterErrorCode.invalidEmail
+/// - weak-password → RegisterErrorCode.weakPassword
+///
+/// Uso:
+/// ```dart
+/// final vm = Provider.of<RegisterViewModel>(context);
+/// final success = await vm.signUp(
+///   displayName, email, password,
+///   heightCm, weightKg, goal,
+///   allergies, age, gender
+/// );
+/// ```
 class RegisterViewModel extends ChangeNotifier {
   final SignUpUseCase _signUp;
 
@@ -36,6 +64,25 @@ class RegisterViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Crea cuenta de usuario con Firebase Auth y perfil en Firestore.
+  ///
+  /// Parámetros:
+  /// - **displayName**: nombre del usuario
+  /// - **email**: correo
+  /// - **password**: contraseña (mín 6 caracteres)
+  /// - **heightCm**: altura en cm
+  /// - **weightKg**: peso en kg
+  /// - **goal**: objetivo ("Perder peso", "Mantener", "Ganar músculo")
+  /// - **allergies**: alergias separadas por comas (opcional)
+  /// - **age**: edad (opcional)
+  /// - **gender**: género (opcional)
+  ///
+  /// Flujo:
+  /// 1. Llama a SignUpUseCase
+  /// 2. UseCase crea usuario en Auth
+  /// 3. UseCase crea perfil en Firestore
+  ///
+  /// Retorna true si éxito, false si error.
   Future<bool> signUp(
     String displayName,
     String email,

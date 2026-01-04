@@ -11,8 +11,10 @@ import 'package:smartmeal/domain/repositories/weekly_menu_repository.dart';
 import 'package:smartmeal/domain/repositories/statistics_repository.dart';
 import 'package:smartmeal/core/errors/errors.dart';
 
+/// Estados del proceso de generación de menú.
 enum GenerateMenuStatus { idle, generating, preview, saving, success, error }
 
+/// Estado del ViewModel de generación de menú.
 class GenerateMenuState {
   final GenerateMenuStatus status;
   final WeeklyMenu? generatedMenu;
@@ -41,6 +43,48 @@ class GenerateMenuState {
   }
 }
 
+/// ViewModel para generación de menú semanal con IA.
+///
+/// Responsabilidades:
+/// - Orquestar generación de menú con Gemini/Groq
+/// - Gestionar preview del menú generado
+/// - Guardar menú y recetas en Firestore
+/// - Invalidar caché de estadísticas
+///
+/// Flujo completo:
+/// 1. **Generación** (generateMenu):
+///    - Obtiene usuario y perfil
+///    - Calcula calorías objetivo según perfil
+///    - Llama a GenerateWeeklyMenuUseCase (IA)
+///    - Cambia estado a 'preview'
+///
+/// 2. **Preview**:
+///    - Usuario revisa menú generado
+///    - Opciones: guardar o descartar
+///
+/// 3. **Guardado** (saveGeneratedMenu):
+///    - Guarda 28 recetas en Firestore
+///    - Guarda menú semanal con referencias
+///    - Invalida caché de estadísticas
+///    - Cambia estado a 'success'
+///
+/// Estados:
+/// - **idle**: Sin menú generado
+/// - **generating**: Llamando a IA (0.0-1.0 progress)
+/// - **preview**: Menú generado, esperando decisión
+/// - **saving**: Guardando en Firestore (0.0-1.0 progress)
+/// - **success**: Guardado exitoso
+/// - **error**: Error en generación o guardado
+///
+/// Uso:
+/// ```dart
+/// final vm = Provider.of<GenerateMenuViewModel>(context);
+/// await vm.generateMenu();
+/// if (vm.state.status == GenerateMenuStatus.preview) {
+///   // Mostrar preview
+///   await vm.saveGeneratedMenu();
+/// }
+/// ```
 class GenerateMenuViewModel extends ChangeNotifier {
   final GetUserProfileUseCase _getUserProfile;
   final GetCurrentUserUseCase _getCurrentUser;
@@ -61,7 +105,26 @@ class GenerateMenuViewModel extends ChangeNotifier {
     this._statisticsRepository, // Nuevo parámetro
   );
 
-  /// Genera un nuevo menú semanal y lo muestra en preview
+  /// Genera un nuevo menú semanal con IA (Gemini/Groq).
+  ///
+  /// Proceso completo:
+  /// 1. Obtiene usuario actual (0.1 progress)
+  /// 2. Obtiene perfil del usuario (0.2 progress)
+  /// 3. Calcula calorías objetivo según perfil (0.3 progress)
+  /// 4. Extrae alergias del perfil
+  /// 5. Llama a GenerateWeeklyMenuUseCase con parámetros (0.4-1.0 progress)
+  /// 6. Cambia estado a 'preview' con menú generado
+  ///
+  /// El menú generado contiene:
+  /// - 28 recetas (4 por día × 7 días)
+  /// - Distribución semanal (breakfast, lunch, snack, dinner)
+  /// - Calorías balanceadas según objetivo
+  /// - Sin ingredientes alérgicos
+  ///
+  /// Lanza excepciones si:
+  /// - Usuario no autenticado
+  /// - Perfil no encontrado
+  /// - Error en llamada a IA
   Future<void> generateMenu() async {
     _state = _state.copyWith(
       status: GenerateMenuStatus.generating,
@@ -145,7 +208,28 @@ class GenerateMenuViewModel extends ChangeNotifier {
     }
   }
 
-  /// Guarda el menú generado (recetas + menú semanal)
+  /// Guarda el menú generado en Firestore.
+  ///
+  /// Requiere:
+  /// - state.generatedMenu != null
+  /// - state.status == preview
+  ///
+  /// Proceso en 2 pasos:
+  /// 1. **Guardar recetas** (0.3 progress):
+  ///    - SaveMenuRecipesUseCase guarda 28 recetas
+  ///    - Cada receta obtiene ID único
+  ///
+  /// 2. **Guardar menú** (0.7 progress):
+  ///    - WeeklyMenuRepository guarda menú semanal
+  ///    - Menú contiene referencias a IDs de recetas
+  ///
+  /// 3. **Invalidar caché**:
+  ///    - StatisticsRepository.clearStatisticsCache()
+  ///    - Fuerza recalcular estadísticas
+  ///
+  /// Cambia estado a 'success' si todo OK.
+  ///
+  /// Lanza NotFoundFailure si generatedMenu == null.
   Future<void> saveGeneratedMenu() async {
     if (_state.generatedMenu == null) {
       throw NotFoundFailure('No hay menú para guardar');
@@ -218,23 +302,36 @@ class GenerateMenuViewModel extends ChangeNotifier {
     }
   }
 
-  /// Rechaza el menú generado y vuelve a idle
+  /// Descarta el menú generado y vuelve a estado idle.
+  ///
+  /// Usado cuando usuario rechaza el preview.
   void discardMenu() {
     _state = const GenerateMenuState(status: GenerateMenuStatus.idle);
     notifyListeners();
   }
 
-  /// Resetea el estado a idle
+  /// Resetea el ViewModel a estado inicial.
   void reset() {
     _state = const GenerateMenuState();
     notifyListeners();
   }
 
+  /// Actualiza progreso durante generación/guardado.
+  ///
+  /// Parámetros:
+  /// - **value**: 0.0-1.0
   void _updateProgress(double value) {
     _state = _state.copyWith(progress: value);
     notifyListeners();
   }
 
+  /// Calcula calorías diarias objetivo según perfil del usuario.
+  ///
+  /// Usa CalorieCalculator con:
+  /// - Peso, altura, edad, género
+  /// - Objetivo (perder/mantener/ganar peso)
+  ///
+  /// Retorna: calorías/día (ej: 2000)
   int _calculateCaloriesFromProfile(UserProfile profile) {
     return CalorieCalculator.calculateFromProfile(
       weightKg: profile.weightKg,

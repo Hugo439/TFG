@@ -10,6 +10,41 @@ import 'package:smartmeal/presentation/features/menu/widgets/stat_card.dart';
 import 'package:smartmeal/presentation/features/menu/widgets/weekly_menu_calendar.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
 
+/// Pantalla principal de visualización del menú semanal.
+///
+/// Responsabilidades:
+/// - Mostrar menú semanal actual con WeeklyMenuCalendar
+/// - Estadísticas del menú en StatCards (calorías, costo, ingredientes, recetas)
+/// - Botón para generar nuevo menú
+/// - Detección de menú duplicado con modal de confirmación
+/// - Navegación a detalle de recetas
+///
+/// Estados:
+/// 1. **Loading**: CircularProgressIndicator
+/// 2. **Error**: Icono error + mensaje
+/// 3. **Empty**: Mensaje "No hay menú" + botón generar
+/// 4. **Success**: Calendario + stats + botón generar
+///
+/// StatCards mostradas:
+/// - **Calorías totales**: Suma de todas las recetas del menú
+/// - **Costo estimado**: Cálculo basado en PriceDatabaseService
+/// - **Ingredientes únicos**: Conteo de ingredientes distintos
+/// - **Total recetas**: 28 recetas (7 días × 4 comidas)
+///
+/// Navegación:
+/// - AppShell con BottomNavigationBar (selectedIndex: 0)
+/// - Tap en receta → RecipeDetailView
+/// - Botón generar → GenerateMenuView
+///
+/// Manejo de duplicados:
+/// - Detecta si ya hay menú para fecha actual
+/// - Muestra modal de confirmación
+/// - Permite sobrescribir o cancelar
+///
+/// Uso:
+/// ```dart
+/// Navigator.pushNamed(context, Routes.menu);
+/// ```
 class MenuView extends StatelessWidget {
   const MenuView({super.key});
 

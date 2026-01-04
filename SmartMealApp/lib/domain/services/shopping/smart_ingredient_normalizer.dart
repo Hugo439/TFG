@@ -1,5 +1,38 @@
 import 'package:fuzzywuzzy/fuzzywuzzy.dart';
 
+/// Servicio para normalizar nombres de ingredientes y prevenir duplicados.
+///
+/// Responsabilidades:
+/// - **Remover palabras de ruido**: elimina adjetivos y descriptores innecesarios
+/// - **Convertir plural → singular**: unifica variaciones de cantidad
+/// - **Reemplazar sinónimos**: consolida ingredientes equivalentes
+/// - **Normalizar acentos**: elimina tildes para consistencia
+/// - **Fuzzy matching**: detecta variantes similares
+///
+/// Proceso de normalización (aplicado en orden):
+/// 1. **Lowercase**: todo a minúsculas
+/// 2. **Remover ruido**: quita palabras como "virgen", "extra", "ecológico", "fresco", etc.
+/// 3. **Plural → singular**: "huevos" → "huevo", "tomates" → "tomate"
+/// 4. **Sinónimos ordenados**: reemplazos priorizados por especificidad
+///    - Más específico primero: "claras de huevo" → "huevo" antes de "clara" → "huevo"
+///    - Evita conflictos: "pechuga de pollo" → "pollo" antes de "pechuga" → "pollo"
+/// 5. **Remover acentos**: ó → o, é → e, etc.
+/// 6. **Trim y limpieza**: elimina espacios extras
+///
+/// Ejemplos:
+/// ```dart
+/// normalize("Aceite de oliva virgen extra") → "aceite oliva"
+/// normalize("3 huevos frescos") → "huevo"
+/// normalize("Tomates cherry ecológicos") → "tomate cherry"
+/// normalize("Pechuga de pollo") → "pollo"
+/// normalize("Claras de huevo") → "huevo"
+/// normalize("Azúcar moreno") → "azucar"
+/// ```
+///
+/// Impacto:
+/// - Reduce duplicados en listas de compra: "200g Pollo" + "300g pollo fresco" = "500g pollo"
+/// - Mejora búsqueda de precios: "tomate" encuentra "tomate cherry", "tomates rama", etc.
+/// - Facilita agregación de ingredientes en IngredientAggregator
 class SmartIngredientNormalizer {
   // Palabras de ruido
   static const _noiseWords = {
@@ -104,7 +137,15 @@ class SmartIngredientNormalizer {
     'porridge': 'avena',
   };
 
-  /// Normaliza un ingrediente
+  /// Normaliza nombre de ingrediente aplicando todas las transformaciones.
+  ///
+  /// [raw] - Nombre original del ingrediente.
+  ///
+  /// Returns: Nombre normalizado y limpio.
+  ///
+  /// Pipeline:
+  /// lowercase → remover paréntesis/corchetes → remover acentos →
+  /// plural→singular → sinónimos → remover ruido → trim espacios
   String normalize(String raw) {
     var s = raw.toLowerCase().trim();
     if (s.isEmpty) return '';
@@ -122,6 +163,9 @@ class SmartIngredientNormalizer {
     return s;
   }
 
+  /// Elimina acentos y caracteres especiales españoles.
+  ///
+  /// Conversiones: á→a, é→e, í→i, ó→o, ú→u, ü→u, ñ→n, ç→c
   String _stripAccents(String s) {
     const withAccents = 'áéíóúüñç';
     const without = 'aeiouunc';
@@ -131,6 +175,9 @@ class SmartIngredientNormalizer {
     return s;
   }
 
+  /// Elimina palabras de ruido definidas en _noiseWords.
+  ///
+  /// Usa RegExp con \b (word boundary) para evitar reemplazos parciales.
   String _removeStopWords(String s) {
     for (final w in _noiseWords) {
       s = s.replaceAll(RegExp('\\b$w\\b'), '');
@@ -138,6 +185,9 @@ class SmartIngredientNormalizer {
     return s;
   }
 
+  /// Convierte plurales a singular usando _pluralSingularMap.
+  ///
+  /// Usa word boundaries para evitar reemplazos parciales.
   String _convertPluralToSingular(String s) {
     for (final e in _pluralSingularMap.entries) {
       s = s.replaceAll(RegExp('\\b${e.key}\\b'), e.value);
@@ -145,6 +195,9 @@ class SmartIngredientNormalizer {
     return s;
   }
 
+  /// Reemplaza sinónimos usando _synonyms map.
+  ///
+  /// IMPORTANTE: El orden en _synonyms importa (más específico primero).
   String _replaceSynonyms(String s) {
     for (final e in _synonyms.entries) {
       s = s.replaceAll(RegExp('\\b${e.key}\\b'), e.value);
@@ -152,7 +205,15 @@ class SmartIngredientNormalizer {
     return s;
   }
 
-  /// Fuzzy: mejor coincidencia en candidatos
+  /// Encuentra mejor coincidencia fuzzy entre candidatos.
+  ///
+  /// [input] - Ingrediente a buscar.
+  /// [candidates] - Lista de ingredientes candidatos.
+  /// [minScore] - Puntuación mínima (0-100), default 80.
+  ///
+  /// Returns: Mejor match si score >= minScore, null si no hay coincidencias.
+  ///
+  /// Usa fuzzywuzzy para comparación, normaliza input y candidatos antes.
   static String? findBestMatch(
     String input,
     List<String> candidates, {

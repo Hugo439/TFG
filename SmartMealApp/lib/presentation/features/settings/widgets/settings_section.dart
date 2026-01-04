@@ -1,5 +1,74 @@
 import 'package:flutter/material.dart';
 
+/// Agrupador de items de configuración con título.
+///
+/// Responsabilidades:
+/// - Agrupar tiles relacionados
+/// - Título de sección
+/// - Divisores entre items
+/// - Container decorado
+///
+/// Estructura:
+/// - Título arriba (fuera del container)
+/// - Container con todos los children
+/// - Dividers automáticos entre children
+///
+/// Título:
+/// - fontSize: 14px
+/// - fontWeight: w600
+/// - color: onSurface con alpha 0.6
+/// - letterSpacing: 0.5
+/// - padding left: 16px, bottom: 8px
+/// - Uppercase implícito por estilo
+///
+/// Container:
+/// - Background: surfaceContainerHighest (dark) o surface (light)
+/// - BorderRadius: 12px
+/// - BoxShadow: sutil, alpha 0.05
+///
+/// Dividers:
+/// - Insertados automáticamente entre children
+/// - height: 1px
+/// - indent: 56px (alinea con texto de tiles)
+/// - color: onSurface con alpha 0.1
+/// - No divider después del último item
+///
+/// _buildChildrenWithDividers:
+/// - Loop por children
+/// - Inserta Divider entre cada par
+/// - Omite divider final
+///
+/// Usado en:
+/// - SettingsView: agrupa tiles por categoría
+/// - Ejemplos: "Cuenta", "Apariencia", "Privacidad"
+///
+/// Típicos children:
+/// - SettingsTile con Switch
+/// - SettingsTile con chevron_right
+/// - Cualquier widget custom
+///
+/// Parámetros:
+/// [title] - Título de la sección
+/// [children] - Lista de widgets (típicamente SettingsTile)
+///
+/// Uso:
+/// ```dart
+/// SettingsSection(
+///   title: 'APARIENCIA',
+///   children: [
+///     SettingsTile(
+///       icon: Icons.dark_mode,
+///       title: 'Modo oscuro',
+///       trailing: Switch(...),
+///     ),
+///     SettingsTile(
+///       icon: Icons.language,
+///       title: 'Idioma',
+///       trailing: Icon(Icons.chevron_right),
+///     ),
+///   ],
+/// )
+/// ```
 class SettingsSection extends StatelessWidget {
   final String title;
   final List<Widget> children;

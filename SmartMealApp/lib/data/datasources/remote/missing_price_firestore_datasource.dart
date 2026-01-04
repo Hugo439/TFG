@@ -2,7 +2,54 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:smartmeal/data/models/missing_price_entry_model.dart';
 
-/// Datasource para tracking de precios faltantes en Firestore
+/// Datasource para tracking de precios faltantes en Firestore.
+///
+/// Colección: 'missing_prices'
+///
+/// Responsabilidades:
+/// - Registrar ingredientes sin precio en el catálogo
+/// - Contar solicitudes para priorizar adiciones
+/// - Listar ingredientes faltantes ordenados por popularidad
+///
+/// Estructura del documento:
+/// ```
+/// missing_prices/{normalizedName}
+///   - normalizedName: string ("aguacate")
+///   - displayName: string ("Aguacate")
+///   - category: string ("frutas_y_verduras")
+///   - requestCount: number (5)
+///   - lastRequested: string (ISO8601)
+/// ```
+///
+/// Flujo típico:
+/// 1. Usuario genera menú con "aguacate"
+/// 2. PriceDatabaseService no encuentra precio en catalog
+/// 3. trackMissingPrice() se llama:
+///    - Si existe: incrementa requestCount
+///    - Si no existe: crea nuevo doc con requestCount=1
+/// 4. Admin consulta getTopMissingPrices(20)
+/// 5. Admin añade "aguacate" al price_catalog
+/// 6. removeMissingPrice("aguacate")
+///
+/// Ordenamiento:
+/// - getTopMissingPrices: por requestCount descendente
+/// - getAllMissingPrices: por requestCount descendente
+///
+/// Logging:
+/// - Solo en debug mode
+/// - Prefijo: 📊 para operaciones normales, ❌ para errores
+///
+/// Uso:
+/// ```dart
+/// final ds = MissingPriceFirestoreDatasource(firestore);
+///
+/// // Registrar ingrediente faltante
+/// await ds.trackMissingPrice(MissingPriceEntryModel(...));
+///
+/// // Ver top 20 más solicitados
+/// final top = await ds.getTopMissingPrices(limit: 20);
+/// // [{"aguacate": 15 requests}, {"quinoa": 8 requests}, ...]
+/// ```
 class MissingPriceFirestoreDatasource {
   final FirebaseFirestore _firestore;
 

@@ -1,5 +1,5 @@
 import 'package:smartmeal/domain/services/shopping/price_database.dart';
-import 'package:smartmeal/domain/value_objects/shopping_item_unit_kind.dart';
+import 'package:smartmeal/domain/value_objects/unit_kind.dart';
 
 /// Calcula el precio total basado en el precio por unidad y la cantidad
 double calculatePriceWithQuantity({

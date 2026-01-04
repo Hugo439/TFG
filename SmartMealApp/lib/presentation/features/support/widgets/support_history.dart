@@ -7,6 +7,78 @@ import 'package:smartmeal/presentation/theme/colors.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
 import 'package:smartmeal/presentation/l10n/support_localizer.dart';
 
+/// Historial de mensajes de soporte enviados.
+///
+/// Responsabilidades:
+/// - Mostrar lista de mensajes de soporte
+/// - Estados: loading, error, empty, data
+/// - Timer para actualizar fechas relativas
+/// - Iconos por categoría
+/// - Badges de estado (pendiente, resuelto, cerrado)
+///
+/// Estados visuales:
+/// - **Loading**: loading spinner centrado
+/// - **Error**: mensaje de error con retry
+/// - **Empty**: "No hay mensajes" con icono
+/// - **Data**: lista de SupportMessageCard
+///
+/// Timer:
+/// - Actualiza cada minuto para refrescar fechas
+/// - "Hoy", "Ayer", "Hace X días"
+/// - Timer.periodic con duración 1 minuto
+/// - Cancelado en dispose
+///
+/// _getCategoryIcon:
+/// - Mapea categoría a IconData
+/// - Dudas: help_outline
+/// - Errores: error_outline
+/// - Sugerencias: lightbulb_outline
+/// - Cuenta: person_outline
+/// - Menús: restaurant_menu
+/// - Otro: more_horiz
+/// - Default: label_outline
+///
+/// SupportMessageCard:
+/// - Card individual con:
+///   * Icono de categoría
+///   * Título (categoría)
+///   * Mensaje
+///   * Fecha relativa
+///   * Badge de estado
+/// - Expandible para ver mensaje completo
+///
+/// Estados de mensaje:
+/// - pending: naranja, "Pendiente"
+/// - resolved: verde, "Resuelto"
+/// - closed: gris, "Cerrado"
+///
+/// Fecha relativa:
+/// - Hoy: "Hoy a las HH:mm"
+/// - Ayer: "Ayer a las HH:mm"
+/// - >2 días: "Hace X días"
+/// - Usa DateFormat para formateo
+///
+/// didUpdateWidget:
+/// - Actualiza _now cuando cambian los datos
+/// - Refresca fechas relativas
+///
+/// Usado en:
+/// - SupportView: sección de historial
+/// - Tab o sección expandible
+///
+/// Parámetros:
+/// [loading] - Estado de carga
+/// [error] - Mensaje de error (null si no hay)
+/// [messages] - Lista de SupportMessage
+///
+/// Uso:
+/// ```dart
+/// SupportHistory(
+///   loading: viewModel.isLoading,
+///   error: viewModel.error,
+///   messages: viewModel.messages,
+/// )
+/// ```
 class SupportHistory extends StatefulWidget {
   final bool loading;
   final String? error;

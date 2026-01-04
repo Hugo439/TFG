@@ -11,6 +11,56 @@ import 'package:smartmeal/domain/repositories/weekly_menu_repository.dart';
 import 'package:smartmeal/domain/repositories/statistics_repository.dart';
 import 'package:smartmeal/l10n/l10n_ext.dart';
 
+/// Pantalla de generación de menú semanal con IA.
+///
+/// Responsabilidades:
+/// - Formulario de configuración del menú
+/// - Proceso de generación con IA (Gemini/Groq)
+/// - Preview del menú generado antes de guardar
+/// - Navegación a lista de compras automática
+///
+/// Flujo de estados (GenerateMenuStatus):
+/// 1. **Idle**: Formulario de configuración
+///    - Calorías objetivo por comida (slider)
+///    - Alergias/restricciones (checkboxes)
+///    - Objetivo nutricional (dropdown)
+/// 2. **Generating**: Indicador de progreso + mensaje
+///    - Comunicación con Gemini API
+///    - Validación de 28 recetas
+///    - Hasta 2 reintentos si falla
+/// 3. **Preview**: Vista previa del menú
+///    - WeeklyMenuCalendar con recetas
+///    - Botón "Guardar menú"
+///    - Botón "Regenerar"
+/// 4. **Success**: Mensaje de éxito
+///    - Opción "Ir a lista de compras"
+///    - Opción "Ver mi menú"
+///
+/// Configuración del menú:
+/// - **Calorías por comida**: 100-1500 kcal (default: 500)
+/// - **Alergias**: gluten, lactosa, frutos secos, mariscos, huevos
+/// - **Objetivo**: perder peso, mantener peso, ganar peso, ganar músculo
+///
+/// Validaciones:
+/// - Perfil de usuario completo (peso, altura, objetivo)
+/// - Calorías en rango válido
+/// - Menú debe tener exactamente 28 recetas
+///
+/// Generación automática de lista de compras:
+/// - Tras guardar menú exitosamente
+/// - Agrega ingredientes del menú completo
+/// - Agrupa por categoría
+/// - Calcula cantidades totales
+///
+/// Navegación:
+/// - Éxito + "Ir a lista" → ShoppingView
+/// - Éxito + "Ver menú" → pop() a MenuView
+/// - Cancelar → pop() a pantalla anterior
+///
+/// Uso:
+/// ```dart
+/// Navigator.pushNamed(context, Routes.generateMenu);
+/// ```
 class GenerateMenuView extends StatelessWidget {
   const GenerateMenuView({super.key});
 

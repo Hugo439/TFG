@@ -1,5 +1,71 @@
 import 'package:flutter/material.dart';
 
+/// Campo de texto con estilo filled (relleno).
+///
+/// Responsabilidades:
+/// - Input de texto con diseño consistente
+/// - Validación integrada con Form
+/// - Estados: enabled/disabled
+/// - Iconos y sufijos personalizables
+///
+/// Características visuales:
+/// - **Background**: surfaceContainerHighest (relleno)
+/// - **Bordes**: outline con alpha 0.2
+/// - **Border radius**: 8px
+/// - **Label**: flotante, color onSurface con alpha 0.6
+/// - **Hint**: color onSurface con alpha 0.6
+/// - **Texto**: fontSize 14
+///
+/// Estados visuales:
+/// - **Enabled**: colores normales
+/// - **Disabled**: opacidad reducida, background con alpha 0.3
+/// - **Focus**: borde primary, label primary
+/// - **Error**: borde error, mensaje de error debajo
+///
+/// Iconos:
+/// - **prefixIcon**: icono a la izquierda (color primary, size 20)
+/// - **suffix**: widget custom a la derecha (ej: botón visibilidad)
+///
+/// Validación:
+/// - Usa TextFormField para integración con Form
+/// - validator retorna String? (null = válido, String = error)
+/// - Muestra mensaje de error debajo del campo
+///
+/// Soporte multiline:
+/// - maxLines: 1 por defecto (single line)
+/// - maxLines > 1: textarea expandible
+/// - Ajusta contentPadding vertical automáticamente
+///
+/// Controller vs initialValue:
+/// - controller: control externo del texto
+/// - initialValue: valor inicial sin control externo
+/// - Assert: no se pueden usar ambos simultáneamente
+///
+/// Parámetros:
+/// [hintText] - Texto de ayuda (placeholder)
+/// [label] - Label flotante
+/// [controller] - TextEditingController para control externo
+/// [initialValue] - Valor inicial (sin controller)
+/// [keyboardType] - Tipo de teclado (text, email, number, etc.)
+/// [obscureText] - Ocultar texto (para contraseñas)
+/// [prefixIcon] - Icono prefijo
+/// [suffix] - Widget sufijo
+/// [validator] - Función de validación
+/// [onChanged] - Callback al cambiar texto
+/// [enabled] - Habilitar input
+/// [maxLines] - Número de líneas (1 = single line)
+///
+/// Uso:
+/// ```dart
+/// FilledTextField(
+///   label: 'Email',
+///   hintText: 'usuario@ejemplo.com',
+///   controller: emailController,
+///   keyboardType: TextInputType.emailAddress,
+///   prefixIcon: Icons.email,
+///   validator: (value) => validateEmail(value),
+/// )
+/// ```
 class FilledTextField extends StatelessWidget {
   final String? hintText;
   final String? label;
