@@ -17,11 +17,11 @@ import 'package:smartmeal/domain/repositories/app_repository.dart';
 ///
 /// Uso típico:
 /// ```dart
-/// // En main.dart o splash screen
+/// En main.dart o splash screen
 /// void main() async {
 ///   WidgetsFlutterBinding.ensureInitialized();
 ///
-///   // Inicializar app
+///    Inicializar app
 ///   await initializeAppUseCase(NoParams());
 ///
 ///   runApp(MyApp());
