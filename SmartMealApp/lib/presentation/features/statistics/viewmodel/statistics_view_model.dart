@@ -80,7 +80,16 @@ class StatisticsViewModel extends ChangeNotifier {
   /// GetStatisticsSummaryUseCase:
   /// - Intenta cargar desde caché
   /// - Si no válido, recalcula y cachea
-  Future<void> load() async {
+  ///
+  /// Parámetro [forceRefresh]:
+  /// - true: Recalcula aunque ya haya datos cargados
+  /// - false (default): Solo carga si no hay datos (_hasLoaded == false)
+  Future<void> load({bool forceRefresh = false}) async {
+    // Si ya se cargó y no es refresh forzado, no recargar
+    if (_hasLoaded && !forceRefresh) {
+      return;
+    }
+
     _loading = true;
     _error = null;
     notifyListeners();
@@ -109,6 +118,18 @@ class StatisticsViewModel extends ChangeNotifier {
       _hasLoaded = true;
       notifyListeners();
     }
+  }
+
+  /// Fuerza un refresh de las estadísticas.
+  ///
+  /// Útil cuando:
+  /// - Se crea un nuevo menú
+  /// - Se modifica la lista de compras
+  /// - El usuario quiere actualizar manualmente
+  ///
+  /// A diferencia de load(), este método SIEMPRE recalcula.
+  Future<void> refresh() async {
+    await load(forceRefresh: true);
   }
 
   /// Calcula cumplimiento de objetivo calórico.

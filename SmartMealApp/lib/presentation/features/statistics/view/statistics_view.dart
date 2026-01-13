@@ -78,8 +78,10 @@ class _StatisticsViewState extends State<StatisticsView> {
   @override
   void initState() {
     super.initState();
+    // Cargar datos solo en la primera apertura de la pantalla
+    // El ViewModel es singleton, así que mantiene el estado entre navegaciones
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<StatisticsViewModel>().load();
+      context.read<StatisticsViewModel>().load(forceRefresh: false);
     });
   }
 
@@ -95,11 +97,16 @@ class _StatisticsViewState extends State<StatisticsView> {
         ? Center(child: Text(vm.error!))
         : vm.summary == null
         ? Center(child: Text(context.l10n.noDataStats))
-        : _buildContent(
-            context,
-            vm,
-            theme,
-            subtitle: context.l10n.homeCardStatsSubtitle,
+        : RefreshIndicator(
+            onRefresh: () async {
+              await vm.refresh();
+            },
+            child: _buildContent(
+              context,
+              vm,
+              theme,
+              subtitle: context.l10n.homeCardStatsSubtitle,
+            ),
           );
 
     return Scaffold(

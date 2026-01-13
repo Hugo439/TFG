@@ -155,12 +155,8 @@ class Routes {
         );
       case statistics:
         return MaterialPageRoute(
-          builder: (_) => ChangeNotifierProvider(
-            create: (_) => StatisticsViewModel(
-              sl<GetCurrentUserUseCase>(),
-              sl<GetStatisticsSummaryUseCase>(),
-              sl<GetUserProfileUseCase>(),
-            ),
+          builder: (_) => ChangeNotifierProvider.value(
+            value: sl<StatisticsViewModel>(),
             child: const StatisticsView(),
           ),
         );

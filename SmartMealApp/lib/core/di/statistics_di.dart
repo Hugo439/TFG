@@ -7,6 +7,9 @@ import 'package:smartmeal/domain/usecases/statistics/get_statistics_summary_usec
 import 'package:smartmeal/domain/repositories/weekly_menu_repository.dart';
 import 'package:smartmeal/domain/services/shopping/smart_ingredient_normalizer.dart';
 import 'package:smartmeal/domain/services/shopping/smart_category_helper.dart';
+import 'package:smartmeal/presentation/features/statistics/viewmodel/statistics_view_model.dart';
+import 'package:smartmeal/domain/usecases/user/get_current_user_usecase.dart';
+import 'package:smartmeal/domain/usecases/user/get_user_profile_usecase.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 void setupStatisticsDI(GetIt sl) {
@@ -28,5 +31,14 @@ void setupStatisticsDI(GetIt sl) {
   // Use case
   sl.registerLazySingleton(
     () => GetStatisticsSummaryUseCase(sl<StatisticsRepository>()),
+  );
+
+  // ViewModel - Singleton para mantener el caché entre cambios de tema
+  sl.registerLazySingleton(
+    () => StatisticsViewModel(
+      sl<GetCurrentUserUseCase>(),
+      sl<GetStatisticsSummaryUseCase>(),
+      sl<GetUserProfileUseCase>(),
+    ),
   );
 }

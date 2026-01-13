@@ -96,6 +96,8 @@ class GenerateMenuViewModel extends ChangeNotifier {
   GenerateMenuState _state = const GenerateMenuState();
   GenerateMenuState get state => _state;
 
+  bool _disposed = false;
+
   GenerateMenuViewModel(
     this._getUserProfile,
     this._getCurrentUser,
@@ -104,6 +106,18 @@ class GenerateMenuViewModel extends ChangeNotifier {
     this._saveMenuRecipesUseCase,
     this._statisticsRepository, // Nuevo parámetro
   );
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
+
+  void _safeNotifyListeners() {
+    if (!_disposed) {
+      notifyListeners();
+    }
+  }
 
   /// Genera un nuevo menú semanal con IA (Gemini/Groq).
   ///
@@ -131,7 +145,7 @@ class GenerateMenuViewModel extends ChangeNotifier {
       error: null,
       progress: 0.0,
     );
-    notifyListeners();
+    _safeNotifyListeners();
 
     try {
       // Paso 1: Obtener usuario actual
@@ -195,7 +209,7 @@ class GenerateMenuViewModel extends ChangeNotifier {
         generatedMenu: menu,
         progress: 1.0,
       );
-      notifyListeners();
+      _safeNotifyListeners();
     } catch (e) {
       if (kDebugMode) {
         print('❌ [GenerateMenuVM] Error generando: $e');
@@ -204,7 +218,7 @@ class GenerateMenuViewModel extends ChangeNotifier {
         status: GenerateMenuStatus.error,
         error: e.toString(),
       );
-      notifyListeners();
+      _safeNotifyListeners();
     }
   }
 
@@ -240,7 +254,7 @@ class GenerateMenuViewModel extends ChangeNotifier {
       error: null,
       progress: 0.0,
     );
-    notifyListeners();
+    _safeNotifyListeners();
 
     try {
       if (kDebugMode) {
@@ -285,7 +299,7 @@ class GenerateMenuViewModel extends ChangeNotifier {
         status: GenerateMenuStatus.success,
         progress: 1.0,
       );
-      notifyListeners();
+      _safeNotifyListeners();
 
       if (kDebugMode) {
         print('🎉 [GenerateMenuVM] Guardado completado con éxito');
@@ -298,7 +312,7 @@ class GenerateMenuViewModel extends ChangeNotifier {
         status: GenerateMenuStatus.error,
         error: e.toString(),
       );
-      notifyListeners();
+      _safeNotifyListeners();
     }
   }
 
@@ -307,13 +321,13 @@ class GenerateMenuViewModel extends ChangeNotifier {
   /// Usado cuando usuario rechaza el preview.
   void discardMenu() {
     _state = const GenerateMenuState(status: GenerateMenuStatus.idle);
-    notifyListeners();
+    _safeNotifyListeners();
   }
 
   /// Resetea el ViewModel a estado inicial.
   void reset() {
     _state = const GenerateMenuState();
-    notifyListeners();
+    _safeNotifyListeners();
   }
 
   /// Actualiza progreso durante generación/guardado.
@@ -322,7 +336,7 @@ class GenerateMenuViewModel extends ChangeNotifier {
   /// - **value**: 0.0-1.0
   void _updateProgress(double value) {
     _state = _state.copyWith(progress: value);
-    notifyListeners();
+    _safeNotifyListeners();
   }
 
   /// Calcula calorías diarias objetivo según perfil del usuario.

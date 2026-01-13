@@ -1,3 +1,10 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
 allprojects {
     repositories {
         google()
@@ -9,6 +16,12 @@ rootProject.layout.buildDirectory = rootProject.layout.buildDirectory.dir("../..
 
 subprojects {
     layout.buildDirectory = rootProject.layout.buildDirectory.dir(name).get()
+    
+    afterEvaluate {
+        project.extensions.findByType<com.android.build.gradle.BaseExtension>()?.apply {
+            compileSdkVersion(36)
+        }
+    }
 }
 
 tasks.register<Delete>("clean") {
